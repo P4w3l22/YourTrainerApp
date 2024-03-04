@@ -1,0 +1,51 @@
+﻿@model TrainingPlanViewModel
+
+<div class="container">
+	<h2 class="mb-5"><a style="text-decoration: none" href="#">Zaloguj się</a> aby wczytać zapisane plany treningowe</h2>
+	<div>
+		<a asp-controller="TrainingPlan" asp-action="Show" class="btn btn-primary">
+			Dodaj nowy plan <i class="bi bi-plus"></i>
+		</a>
+	</div>
+
+	<div>
+		<h2 class="my-3">Przykładowe plany treningowe: </h2>
+		<ul>
+			<li>
+				<a asp-controller="TrainingPlan" asp-action="Show" >
+					Plan A
+				</a>
+			</li>
+			<li>
+				<a asp-controller="TrainingPlan" asp-action="Show">
+					Plan B
+				</a>
+			</li>
+			<li>
+				<a asp-controller="TrainingPlan" asp-action="Show">
+					Plan C
+				</a>
+			</li>
+			<li>
+				<a asp-controller="TrainingPlan" asp-action="Show" >
+					Plan D
+				</a>
+			</li>
+
+		</ul>
+	</div>
+	
+	
+	@* <form method="post" class="row my-5">
+		<div class="form-floating col-12">
+			<input asp-for="Title" class="form-control border-0 shadow" />
+			<label asp-for="Title" class="ms-2 text-black" />
+			<span asp-validation-for="Title" class="text-danger" />
+		</div>
+		<div class="form-floating col-12">
+			<input asp-for="Days" class="form-control border-0 shadow" />
+			<label asp-for="Days" class="ms-2" />
+			<span asp-validation-for="Days" class="text-danger" />
+		</div>
+	</form> *@
+</div>
