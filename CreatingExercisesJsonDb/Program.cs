@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.FileIO;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -7,10 +9,45 @@ class Program
 {
 	static void Main()
 	{
-		CreateExerList.CreateJsonFile();
+		//CreateExerList.CreateJsonFile();
 
-		GetExerList.GetDataFromJson();
+		//GetExerList.GetDataFromJson();
+
+		MakeJpgList.DeleteJsonFiles();
+
+		//MakeJpgList.RemoveJpgFromInternalFolder();
 	}
+}
+
+class MakeJpgList
+{
+	protected internal static void DeleteJsonFiles()
+	{
+		string directoryPath = @"C:\Users\pawel\OneDrive\Pulpit\IT\exercises";
+		string[] dirs = Directory.GetDirectories(directoryPath);
+
+		foreach (string dir in dirs)
+		{
+			//File.Delete(dir + @"\exercise.json");
+			
+			Directory.Delete(dir + @"\images", true);
+
+		}
+	}
+
+	protected internal static void RemoveJpgFromInternalFolder()
+	{
+		string directoryPath = @"C:\Users\pawel\OneDrive\Pulpit\IT\exercises";
+		string[] dirs = Directory.GetDirectories(directoryPath);
+
+		foreach(string dir in dirs)
+		{
+			File.Copy(dir + @"\images\0.jpg", Path.Combine(dir, "0.jpg"), true);
+			File.Copy(dir + @"\images\1.jpg", Path.Combine(dir, "1.jpg"), true);
+
+		}
+	}
+
 }
 
 class GetExerList
@@ -25,7 +62,7 @@ class GetExerList
 			// Pobieranie korzenia(całego obiektu) dokumentu
 			JsonElement root = document.RootElement;
 
-			// Iterowanie po właściwościach i wyświetlanie wartości
+			// Iterowanie po obiektach i wyświetlanie wartości
 			foreach (JsonProperty property in root.EnumerateObject())
 			{
 				Console.WriteLine($"{property.Value}");
@@ -64,6 +101,7 @@ class CreateExerList
 	{
 		// Console.WriteLine(File.ReadAllText(directoryPath + @"\exercise.json"));
 		string jsonString = File.ReadAllText(directoryPath + @"\exercise.json");
+		string pathToJpg = "";
 
 		Exercise? exer = JsonSerializer.Deserialize<Exercise>(jsonString);
 		// Console.WriteLine(exer.name);
@@ -75,6 +113,8 @@ class CreateExerList
 
 class Exercise
 {
+	[Key]
+	public string Id { get; set; }
 	public string? name { get; set; }
 	public string? force { get; set; }
 	public string? level { get; set; }
