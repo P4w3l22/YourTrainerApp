@@ -2,7 +2,7 @@
 
 namespace YourTrainerApp2.Models
 {
-    public class ExerciseViewModel
+    public class Exercise
     {
         public string Response {  get; set; }
     }

@@ -1,6 +1,6 @@
 ﻿namespace YourTrainerApp2.Models
 {
-    public class TrainingPlanViewModel
+    public class TrainingPlan
     {
         public string Title { get; set; }
         public List<string> Days { get; set; }

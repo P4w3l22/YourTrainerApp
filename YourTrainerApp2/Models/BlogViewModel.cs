@@ -1,6 +1,6 @@
 ﻿namespace YourTrainerApp2.Models
 {
-    public class BlogViewModel
+    public class Blog
     {
         public string Category { get; set; }
         public string Title { get; set; }

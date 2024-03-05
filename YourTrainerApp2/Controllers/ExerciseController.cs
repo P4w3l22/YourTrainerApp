@@ -6,7 +6,7 @@ namespace YourTrainerApp2.Controllers
     {
         public IActionResult Index()
         {
-            var Model = new Models.ExerciseViewModel
+            var Model = new Models.Exercise
             {
                 Response = "Podpiąć api z ćwiczeniami"
             };

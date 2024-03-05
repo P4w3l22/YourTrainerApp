@@ -7,7 +7,7 @@ namespace YourTrainerApp2.Controllers
     {
         public IActionResult Index()
         {
-            var Post1 = new BlogViewModel();
+            var Post1 = new Blog();
             Post1.Category = "Kategoria wpisu";
             Post1.Title = "Tytuł posta";
             Post1.Users = new List<string> { "użytkownik1", "użytkownik2", "użytkownik3", "użytkownik4" };

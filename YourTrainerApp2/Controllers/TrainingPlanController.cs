@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using YourTrainerApp2.Models;
 
 namespace YourTrainerApp2.Controllers
 {
@@ -11,7 +12,15 @@ namespace YourTrainerApp2.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            return View(new List<string> { "1", "2" });
+        }
+
+        [HttpPost]
+        public IActionResult Create(List<string> trDays)
+        {
+            TrainingPlan newPlan = new();
+            newPlan.Days = trDays;
+            return View(trDays);
         }
 
         public IActionResult Show()

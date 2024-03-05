@@ -1,0 +1,65 @@
+﻿@model List<string>
+
+@* @foreach (string el in Model)
+{
+	<p>@el</p>
+} *@
+
+<div class="container m-2">
+	<form method="post">
+		<div style="text-align: center">
+			<label for="Title" class="form-label mt-4">Nazwa planu</label>
+			<input name="Title" id="Title" type="text" class="form-control" />
+		</div>
+		<br><br>
+		<div class="btn-group-toggle my-4 d-flex justify-content-center" data-toggle="buttons">
+			<label class="btn btn-secondary mx-1">
+				<input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
+					   name="trDays" value="monday"> Poniedziałek
+			</label>
+			<label class="btn btn-secondary mx-1">
+				<input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
+					   name="trDays" value="tuesday"> Wtorek
+			</label>
+			<label class="btn btn-secondary mx-1">
+				<input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
+					   name="trDays" value="wednesday"> Środa
+			</label>
+			<label class="btn btn-secondary mx-1">
+				<input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
+					   name="trDays" value="thursday"> Czwartek
+			</label>
+			<label class="btn btn-secondary mx-1">
+				<input type="checkbox" onclick="changeCheckboxColor(this)" style="display:none"
+					   name="trDays" value="friday"> Piątek
+			</label>
+			<label class="btn btn-secondary mx-1">
+				<input type="checkbox" onclick="changeCheckboxColor(this)" style="display:none"
+					   name="trDays" value="saturday"> Sobota
+			</label>
+			<label class="btn btn-secondary mx-1">
+				<input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
+					   name="trDays" value="sunday"> Niedziela
+			</label>
+		</div>
+		<div>
+			<button type="submit" class="btn btn-outline-primary form-control">Zatwierdź</button>
+
+		</div>
+	</form>
+</div>
+
+@section Scripts
+{
+	<script>
+		function changeCheckboxColor(checkbox) {
+			if (checkbox.checked) {
+				checkbox.parentElement.style.color = '#22CE00';
+				// checkbox.parentElement.style.color = '#212020';
+
+			} else {
+				checkbox.parentElement.style.color = '';
+			}
+		}
+	</script>
+}
