@@ -1,9 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace YourTrainerApp2.Models
 {
     public class Exercise
     {
-        public string Response {  get; set; }
-    }
+		[Key]
+		[Required]
+		public int Id { get; set; }
+
+		public string? Name { get; set; }
+		public string? Force { get; set; }
+		public string? Level { get; set; }
+		public string? Mechanic { get; set; }
+		public string? Equipment { get; set; }
+		//public string[]? PrimaryMuscles { get; set; }
+		public string? PrimaryMuscles { get; set; }
+		//public string[]? SecondaryMuscles { get; set; }
+		public string? SecondaryMuscles { get; set; }
+		//public string[]? Instructions { get; set; }
+		public string? Instructions { get; set; }
+		public string? Category { get; set; }
+		public string? ImgPath1 { get; set; }
+		public string? ImgPath2 { get; set; }
+	}
 }

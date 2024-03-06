@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+
 
 class Program
 {
@@ -13,13 +16,18 @@ class Program
 
 		//GetExerList.GetDataFromJson();
 
-		MakeJpgList.DeleteJsonFiles();
+		//JpgList.DeleteJsonFiles();
 
-		//MakeJpgList.RemoveJpgFromInternalFolder();
+		//JpgList.RemoveJpgFromInternalFolder();
+
+		//TestExerList.GetObjValues();
+
+		JpgList.GetJpgsPaths();
+
 	}
 }
 
-class MakeJpgList
+class JpgList
 {
 	protected internal static void DeleteJsonFiles()
 	{
@@ -48,6 +56,17 @@ class MakeJpgList
 		}
 	}
 
+	protected internal static void GetJpgsPaths()
+	{
+		string directoryPath = @"C:\Users\pawel\source\repos\YourTrainerApp2\YourTrainerApp2\wwwroot\exercises_img\";
+		string[] dirs = Directory.GetDirectories(directoryPath);
+		foreach (string dir in dirs)
+		{
+			string name = Path.GetFileName(dir);
+			Console.WriteLine(name);
+		}
+	}
+
 }
 
 class GetExerList
@@ -56,6 +75,7 @@ class GetExerList
 	{
 		string directoryPath = @"C:\Users\pawel\source\repos\YourTrainerApp2\CreatingExercisesJsonDb\exercises.json";
 		string jsonContent = File.ReadAllText(directoryPath);
+		int id = 1;
 
 		using (JsonDocument document = JsonDocument.Parse(jsonContent))
 		{
@@ -65,13 +85,134 @@ class GetExerList
 			// Iterowanie po obiektach i wyświetlanie wartości
 			foreach (JsonProperty property in root.EnumerateObject())
 			{
-				Console.WriteLine($"{property.Value}");
+				//Console.WriteLine($"{property.Value}");
 
-				Exercise? exer = JsonSerializer.Deserialize<Exercise>(property.Value);
+				dynamic exer = JsonConvert.DeserializeObject(property.Value.ToString());
+				Exercise exercise = new();
+
+				foreach (var item in exer)
+				{
+					switch (item.Name)
+					{
+						case "name":
+							exercise.Name = item.Value.ToString();
+							break;
+						case "force":
+							exercise.Force = item.Value.ToString();
+							break;
+						case "level":
+							exercise.Level = item.Value.ToString();
+							break;
+						case "mechanic":
+							exercise.Mechanic = item.Value.ToString();
+							break;
+						case "equipment":
+							exercise.Equipment = item.Value.ToString();
+							break;
+						case "primaryMuscles":
+							exercise.PrimaryMuscles = item.Value;
+							break;
+						case "secondaryMuscles":
+							exercise.SecondaryMuscles = item.Value;
+							break;
+						case "instructions":
+							exercise.Instructions = item.Value;
+							break;
+						case "category":
+							exercise.Category = item.Value.ToString();
+							break;
+					}
+
+				}
+
+				//Exercise exercise = new Exercise
+				//{
+				//	Id = id,
+				//	Name = exer[0].Value,
+				//	Force = exer[1].Value,
+				//	Level = exer[2].Value,
+				//	Mechanic = exer[3].Value,
+				//	Equipment = exer[4].Value,
+				//	PrimaryMuscles = exer[5].Value,
+				//	SecondaryMuscles = exer[6].Value,
+				//	Instructions = exer[7].Value,
+				//	Category = exer[8].Value
+				//	//ImgPath = exer[9]
+				//};
+				id++;
+
+				Console.WriteLine(exercise.Name);
+
+
+				//Exercise? exer = JsonSerializer.Deserialize<Exercise>(property.Value);
 
 			}
 		}
 	}
+}
+
+class TestExerList
+{
+	protected internal static void GetObjValues()
+	{
+		//string directoryPath = @"C:\Users\pawel\source\repos\YourTrainerApp2\CreatingExercisesJsonDb\exercises.json";
+		//string jsonContent = File.ReadAllText(directoryPath);
+
+		//using (JsonDocument document = JsonDocument.Parse(jsonContent))
+		//{
+		//	// Pobieranie korzenia(całego obiektu) dokumentu
+		//	JsonElement root = document.RootElement;
+
+		//	// Iterowanie po obiektach i wyświetlanie wartości
+		//	foreach (JsonProperty property in root.EnumerateObject())
+		//	{
+		//		//Console.WriteLine($"{property.Value}");
+
+		//		Exercise? exer = JsonSerializer.Deserialize<Exercise>(property.Value);
+		//		Console.WriteLine(exer.name);
+		//		Console.WriteLine(exer.force);
+		//		Console.WriteLine(exer.level);
+		//		Console.WriteLine(exer.mechanic);
+		//		Console.WriteLine(exer.equipment);
+
+		//	}
+		//}
+
+		string directoryPath = @"C:\Users\pawel\source\repos\YourTrainerApp2\CreatingExercisesJsonDb\exercises.json";
+		string jsonContent = File.ReadAllText(directoryPath);
+		List<Exercise> exerList = new();
+		int id = 1;
+
+		JArray jsonArray = JArray.Parse(jsonContent);
+
+		foreach (JObject jsonObject in jsonArray)
+		{
+			foreach (JProperty item in jsonObject.Properties())
+			{
+				string key = item.Name;
+				JToken value = item.Value;
+
+				Console.WriteLine($"Klucz: {key}, \nWartość: {value}");
+			}
+		}
+
+
+
+	}
+
+	//protected static void GetValues(string directoryPath)
+	//{
+	//	// Console.WriteLine(File.ReadAllText(directoryPath + @"\exercise.json"));
+	//	string jsonString = File.ReadAllText(directoryPath);
+
+	//	Exercise? exer = JsonSerializer.Deserialize<Exercise>(jsonString);
+	//	Console.WriteLine(exer.name);
+	//	Console.WriteLine(exer.force);
+	//	Console.WriteLine(exer.level);
+	//	Console.WriteLine(exer.mechanic);
+	//	Console.WriteLine(exer.equipment);
+
+	//}
 }
 
 class CreateExerList
@@ -103,7 +244,7 @@ class CreateExerList
 		string jsonString = File.ReadAllText(directoryPath + @"\exercise.json");
 		string pathToJpg = "";
 
-		Exercise? exer = JsonSerializer.Deserialize<Exercise>(jsonString);
+		//Exercise? exer = Newtonsoft.Json.JsonSerializer.Deserialize<Exercise>(jsonString);
 		// Console.WriteLine(exer.name);
 
 		string jsonPartToFile = $"\"{id}\" : {jsonString}";
@@ -114,15 +255,15 @@ class CreateExerList
 class Exercise
 {
 	[Key]
-	public string Id { get; set; }
-	public string? name { get; set; }
-	public string? force { get; set; }
-	public string? level { get; set; }
-	public string? mechanic { get; set; }
-	public string? equipment { get; set; }
-	public string[]? primaryMuscles { get; set; }
-	public string[]? secondaryMuscles { get; set; }
-	public string[]? instructions { get; set; }
-	public string? category { get; set; }
+	public int Id { get; set; }
+	public string? Name { get; set; }
+	public string? Force { get; set; }
+	public string? Level { get; set; }
+	public string? Mechanic { get; set; }
+	public string? Equipment { get; set; }
+	public string[]? PrimaryMuscles { get; set; }
+	public string[]? SecondaryMuscles { get; set; }
+	public string[]? Instructions { get; set; }
+	public string? Category { get; set; }
 
 }
