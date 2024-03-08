@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Elfie.Serialization;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -38,7 +39,7 @@ namespace YourTrainerApp2.Migrations
             migrationBuilder.InsertData(
                 table: "Exercises",
                 columns: new[] { "Id", "Category", "Equipment", "Force", "ImgPath1", "ImgPath2", "Instructions", "Level", "Mechanic", "Name", "PrimaryMuscles", "SecondaryMuscles" },
-                values: new object[,]
+				values: new object[,]
                 {
                     { 1, "strength", "body only", "pull", "exercises_img\\3_4_Sit-Up\\0.jpg", "exercises_img\\3_4_Sit-Up\\1.jpg", "[\r\n  \"Lie down on the floor and secure your feet. Your legs should be bent at the knees.\",\r\n  \"Place your hands behind or to the side of your head. You will begin with your back on the ground. This will be your starting position.\",\r\n  \"Flex your hips and spine to raise your torso toward your knees.\",\r\n  \"At the top of the contraction your torso should be perpendicular to the ground. Reverse the motion, going only Â¾ of the way down.\",\r\n  \"Repeat for the recommended amount of repetitions.\"\r\n]", "beginner", "compound", "3/4 Sit-Up", "[\r\n  \"abdominals\"\r\n]", "[]" },
                     { 2, "stretching", "body only", "push", "exercises_img\\90_90_Hamstring\\0.jpg", "exercises_img\\90_90_Hamstring\\1.jpg", "[\r\n  \"Lie on your back, with one leg extended straight out.\",\r\n  \"With the other leg, bend the hip and knee to 90 degrees. You may brace your leg with your hands if necessary. This will be your starting position.\",\r\n  \"Extend your leg straight into the air, pausing briefly at the top. Return the leg to the starting position.\",\r\n  \"Repeat for 10-20 repetitions, and then switch to the other leg.\"\r\n]", "beginner", "", "90/90 Hamstring", "[\r\n  \"hamstrings\"\r\n]", "[\r\n  \"calves\"\r\n]" },
