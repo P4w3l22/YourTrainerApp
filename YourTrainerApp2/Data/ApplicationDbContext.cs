@@ -62,13 +62,13 @@ namespace YourTrainerApp2.Data
 								exercise.Equipment = item.Value.ToString();
 								break;
 							case "primaryMuscles":
-								exercise.PrimaryMuscles = item.Value.ToString();
+								exercise.PrimaryMuscles = ValidateList(item.Value.ToString());
 								break;
 							case "secondaryMuscles":
-								exercise.SecondaryMuscles = item.Value.ToString();
+								exercise.SecondaryMuscles = ValidateList(item.Value.ToString());
 								break;
 							case "instructions":
-								exercise.Instructions = item.Value.ToString();
+								exercise.Instructions = ValidateList(item.Value.ToString());
 								break;
 							case "category":
 								exercise.Category = item.Value.ToString();
@@ -83,27 +83,22 @@ namespace YourTrainerApp2.Data
 					exerList.Add(exercise);
 
 				}
-			}
+			};
 
 			modelBuilder.Entity<Exercise>().HasData(exerList);
 		}
 
-		private string[] ValidateList(string value)
+		private string ValidateList(string value)
 		{
+			string output = string.Empty;
+
 			if (value.Length > 2)
 			{
-				string subString = value.Substring(1, value.Length - 2);
-				string[] subString1 = subString.Split(", ");
-				string[] result = new string[subString1.Length];
-
-				for (int i = 0; i < subString1.Length; i++)
-				{
-					result[i] = subString1[i].Substring(1, subString1[i].Length - 2);
-				}
-
-				return result;
+				string subString = value.Replace("\r\n", "").Replace(",  ", ";").Replace("\"", "");
+				output = subString.Substring(3, subString.Length - 4);
 			}
-			return new string[0];
+
+			return output;
 		}
 
 		private List<string> GetImgUrlLink(string pointer)

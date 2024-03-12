@@ -15,7 +15,7 @@ namespace YourTrainerApp2.Controllers
 
         public IActionResult Index1()
         {
-            List<Exercise> exerciseList = _db.Exercises.Take(5).ToList();
+            List<Exercise> exerciseList = _db.Exercises.ToList();
 
             return View(exerciseList);
         }
@@ -58,9 +58,9 @@ namespace YourTrainerApp2.Controllers
         }
 
         [HttpPost, ActionName("Update1")]
-        public IActionResult Update1POST(int? id)
+        public IActionResult Update1POST(Exercise? exerFromDb)
         {
-            Exercise? exerFromDb = _db.Exercises.FirstOrDefault(u => u.Id == id);
+            //Exercise? exerFromDb = _db.Exercises.FirstOrDefault(u => u.Id == id);
 
             if (exerFromDb is null)
             {
@@ -103,6 +103,105 @@ namespace YourTrainerApp2.Controllers
 
             return RedirectToAction("Index1");
 
+        }
+
+        public ActionResult GetDynamicContent(string exerType)
+        {
+            // abdominals - mięśnie brzucha
+            // abductor - odwodziciel ud
+            // adductor - przywodziciel ud
+            // biceps - biceps
+            // calves - łydki
+            // chest - klatka
+            // forearms - przedramiona
+            // glutes - mięśnie pośladków
+            // hamstrings - ścięgno podkolanowe
+            // lats - mięśnie najszersze grzbietu
+            // lower back - dolna część pleców
+            // middle back - środkowa część pleców
+            // neck - szyja
+            // quadriceps - mięśnie czworogłowe (uda)
+            // shoulders - barki
+            // traps - czworoboczne (plecy)
+            // triceps - triceps
+
+            string content = "";
+            List<string> pms = new();
+
+            switch (exerType)
+            {
+                case "chest":
+                    pms.Add("chest");
+                    break;
+                case "back":
+                    pms.Add("lats");
+                    pms.Add("lower back");
+                    pms.Add("middle back");
+                    pms.Add("traps");
+                    pms.Add("neck");
+                    break;
+                case "shoulders":
+                    pms.Add("shoulders");
+                    break;
+                case "triceps":
+                    pms.Add("triceps");
+                    break;
+                case "biceps":
+                    pms.Add("biceps");
+                    break;
+                case "forearms":
+                    pms.Add("forearms");
+                    break;
+                case "legs":
+                    pms.Add("abductor");
+                    pms.Add("adductor");
+                    pms.Add("glutes");
+                    pms.Add("hamstrings");
+                    pms.Add("quadriceps");
+                    break;
+                case "abdominals":
+                    pms.Add("abdominals");
+                    break;
+                case "calves":
+                    pms.Add("calves");
+                    break;
+                default:
+                    break;
+            }
+
+            List<Exercise> exerList = new();
+            List<string> exerNames = new();
+
+            foreach (string p in pms)
+            {
+                List<Exercise> exercises = _db.Exercises.Where(u => u.PrimaryMuscles == p).ToList();
+                foreach (Exercise exercise in exercises)
+                {
+                    exerList.Add(exercise);
+                    exerNames.Add(exercise.Name + "&" + exercise.ImgPath1 + "&" + exercise.Id);
+                }
+            }
+            
+            content = string.Join(",", exerNames);
+
+            return Content(content);
+        }
+
+        public IActionResult Exercise(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            Exercise exerFromDb = _db.Exercises.FirstOrDefault(u => u.Id == id);
+
+            if (exerFromDb == null)
+            {
+                return NotFound();
+            }
+            Console.WriteLine(exerFromDb.Instructions);
+
+            return View(exerFromDb);
         }
 
     }
