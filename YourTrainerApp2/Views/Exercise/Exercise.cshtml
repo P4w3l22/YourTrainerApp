@@ -20,7 +20,7 @@
 							 style="" />
 					</div>
 					<div class="my-3">
-						<ul>
+						<ol>
 						@{
 							string[]? instrList = Model.Instructions.Split(";");
 						}
@@ -28,7 +28,7 @@
 						{
 							<li>@instr</li>
 						}
-						</ul>
+						</ol>
 					</div>
 				</div>
 			</div>
@@ -45,7 +45,14 @@
 						<li>Mechanika: @Model.Mechanic</li>
 						<li>Wyposażenie: @Model.Equipment</li>
 						<li>Główne mięśnie: @Model.PrimaryMuscles</li>
-						<li>Inne mięśnie: @Model.SecondaryMuscles</li>
+						<li>Mięśnie pomocnicze:
+							<ul>
+							@foreach (string musc in Model.SecondaryMuscles.Split(";"))
+							{
+								<li>@musc</li>
+							}
+							</ul>
+						</li>
 						<li>Kategoria: @Model.Category</li>
 
 					</ul>

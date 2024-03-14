@@ -81,7 +81,6 @@ namespace YourTrainerApp2.Data
 					id++;
 
 					exerList.Add(exercise);
-
 				}
 			};
 

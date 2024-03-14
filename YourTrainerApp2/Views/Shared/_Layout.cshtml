@@ -9,28 +9,35 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/YourTrainerApp2.styles.css" asp-append-version="true" />
 </head>
-<body style="background-color: #3F3F3F">
+<body style="background-image: url(https://img.freepik.com/free-photo/dumbbells-floor-gym-ai-generative_123827-23743.jpg);
+             background-size: cover;">
     <header>
-        <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+        <nav class="navbar navbar-expand-lg bg-light m-4 p-3" data-bs-theme="dark" 
+             style="border-radius: 8px;">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Ikonka hantli</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/dumbell.png" style="color: white"/>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse ">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Exercise" asp-action="Index">Atlas ćwiczeń</a>
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Exercise" asp-action="Index"><p style="color: black">Atlas ćwiczeń</p></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TrainingPlan" asp-action="Index">Plan treningowy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="TrainingPlan" asp-action="Index"><p style="color: black">Plan treningowy</p></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Blog" asp-action="Index">Blog</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Blog" asp-action="Index"><p style="color: black">Blog</p></a>
                         </li>
+                        @* <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Exercise" asp-action="Index1"><p style="color: black">Ćwiczenia</p></a>
+                        </li> *@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Exercise" asp-action="Index1">Ćwiczenia</a>
+                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Exercises" asp-action="Index"><p style="color: black">Ćwiczenia</p></a>
                         </li>
                     </ul>
                     @* <button class="btn btn-primary">Zaloguj się</button> *@

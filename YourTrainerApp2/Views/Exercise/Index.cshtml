@@ -20,39 +20,41 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav flex-column me-auto">
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('chest')">
-                            <a class="nav-link dropdown-item" style="color: #22CE00" href="#">Klatka piersiowa</a>
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Klatka piersiowa</a>
                         </li>
 
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('back')">
-                            <a class="nav-link dropdown-item" style="color: #22CE00" href="#">Plecy</a>
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Plecy</a>
                         </li>                                                  
                                                                                
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('shoulders')">
-                            <a class="nav-link dropdown-item" style="color: #22CE00" href="#">Barki</a>
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Barki</a>
                         </li>                                                  
                                                                                
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('triceps')">
-                            <a class="nav-link dropdown-item" style="color: #22CE00" href="#">Triceps</a>
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Triceps</a>
                         </li>                                                  
                                                                                
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('biceps')">
-                            <a class="nav-link dropdown-item" style="color: #22CE00" href="#">Biceps</a>
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Biceps</a>
                         </li>                                                  
                                                                                
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('forearms')">
-                            <a class="nav-link dropdown-item" style="color: #22CE00" href="#">Przedramiona</a>
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Przedramiona</a>
                         </li>                                                  
                                                                                
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('legs')">
-                            <a class="nav-link dropdown-item" style="color: #28D770" href="#">Nogi</a>
+                            @* <a class="nav-link dropdown-item" style="color: #22CE00" href="#">Nogi</a> *@
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Nogi</a>
                         </li>                                                  
                                                                                
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('abdominals')">
-                            <a class="nav-link dropdown-item" style="color: #28D770" href="#">Brzuch</a>
+                            @* <a class="nav-link dropdown-item" style="color: #28D770" href="#">Brzuch</a> *@
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Brzuch</a>
                         </li>                                                  
                                                                                
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('calves')">
-                            <a class="nav-link dropdown-item" style="color: #28D770" href="#">Łydki</a>
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Łydki</a>
                         </li>
 
                     </ul>
@@ -60,71 +62,35 @@
             </div>
         </nav>
     </div>
-	@*<div class="dis col-9" style="display: none">
-        Klatka piersiowa
-        <div class="card my-2" style="width:fit-content">
-            <div class="card-header">
-				<img class="img-fluid"
-                     id="imgExer"
-					 src="..\exercises_img\Ab_Crunch_Machine\0.jpg"
-					 alt=".."
-					 style="max-width: 300px;" />
-            </div>
-            
-            <div class="card-body" style="height: 95%">
-                <h5 class="card-title">Ab Crunch Machine</h5>
-            </div>
-        </div>
-    </div>
-     <div class="dis col-9" style="display: none">
-        Plecy
-    </div>
-    <div class="dis col-9" style="display: none">
-        Barki
-    </div>
-    <div class="dis col-9" style="display: none">
-        Triceps
-    </div>
-    <div class="dis col-9" style="display: none">
-        Biceps
-    </div>
-    <div class="dis col-9" style="display: none">
-        Przedramiona
-    </div>
-    <div class="dis col-9" style="display: none">
-        Nogi
-    </div>
-    <div class="dis col-9" style="display: none">
-        Brzuch
-    </div>
-    <div class="dis col-9" style="display: none">
-        Łydki
-    </div> *@
 
     <div class="col-10" id="testDiv" style="text-align: center; display: flex;">
-        
+        <div id="loader" style="display: none;">
+            <iframe src="https://gifer.com/embed/ZKZx" width=180 height=180.000 frameBorder="0" allowFullScreen></iframe><p></p>
+        </div>
     </div>
 </div>
 
 @section Scripts {
-    @* <script> // content changes
+    <script> // content changes
         var elements = document.querySelectorAll('ul.navbar-nav li.cat_choice');
-        var contents = document.querySelectorAll('.dis');
+        // var contents = document.querySelectorAll('.dis');
 
         elements.forEach(function (element, id) {
             element.addEventListener('click', function () {
-                contents.forEach(function (content) {
-                    content.style.display = 'none';
-                });
+                // contents.forEach(function (content) {
+                //     content.style.display = 'none';
+                // });
                 elements.forEach(function (el) {
                     el.style.borderBottom = 'none';
+                    el.style.color = 'white'
                 })
-                contents[id].style.display = 'block';
                 elements[id].style.borderBottom = '2px solid green';
+                elements[id].style.color = 'green';
+                
 
             });
         });
-    </script> *@
+    </script>
 
     <script>
         var images = ["..\\exercises_img\\Ab_Crunch_Machine\\0.jpg", "..\\exercises_img\\Ab_Crunch_Machine\\1.jpg"];
@@ -141,61 +107,69 @@
     </script>
 
     <script>
+        
         function loadContent(type) {
+            $("#loader").show();
             $.ajax({
                 url: '/Exercise/GetDynamicContent',
                 type: 'GET',
                 data: { exerType: type },
                 success: function (response) {
-                    var array = response.split(",");
-                    var result = document.createElement("div");
-                    result.classList.add("row");
-                    for (const el of array) { 
+                    if (response.length > 0) {
+                        var array = response.split(",");
+                        var result = document.createElement("div");
+                        result.classList.add("row");
+                        for (const el of array) {
 
-                        var subArray = el.split("&");
+                            var subArray = el.split("&");
 
-                        var card = document.createElement("div");
-                        card.classList.add("card", "my-2");
-                        card.style.width = "fit-content";
+                            var card = document.createElement("div");
+                            card.classList.add("card", "my-2");
+                            card.style.width = "fit-content";
 
-                        var cardHeader = document.createElement("div");
-                        cardHeader.classList.add("card-header");
+                            var cardHeader = document.createElement("div");
+                            cardHeader.classList.add("card-header");
 
-                        var cardImg = document.createElement("img");
-                        cardImg.src = subArray[1];
-                        cardImg.alt = "Zdjęcie ćwiczenia";
-                        cardImg.style.maxWidth = "300px";
+                            var cardImg = document.createElement("img");
+                            cardImg.src = subArray[1];
+                            cardImg.alt = "Zdjęcie ćwiczenia";
+                            cardImg.style.maxWidth = "300px";
 
-                        cardHeader.appendChild(cardImg);
-
-
-                        var cardBody = document.createElement("div");
-                        cardBody.classList.add("card-body");
-                        cardBody.style.height = "95%";
-
-                        var cardTitle = document.createElement("h5");
-                        cardTitle.classList.add("card-title");
-
-                        var title = document.createElement("a");
-                        title.href = "../Exercise/Exercise/" + subArray[2];
-                        // title.setAttribute("asp-controller", "Exercise")
-                        // title.setAttribute("asp-action", "Exercise")
-                        // title.setAttribute("asp-route-id", subArray[2])
-                        title.text = subArray[0];
-                        title.style.textDecoration = "none";
-
-                        cardTitle.appendChild(title);
-
-                        cardBody.appendChild(cardTitle);
+                            cardHeader.appendChild(cardImg);
 
 
-                        card.appendChild(cardHeader);
-                        card.appendChild(cardBody);
+                            var cardBody = document.createElement("div");
+                            cardBody.classList.add("card-body");
+                            cardBody.style.height = "95%";
+
+                            var cardTitle = document.createElement("h5");
+                            cardTitle.color = "green";
+                            cardTitle.classList.add("card-title");
+
+                            var title = document.createElement("a");
+                            title.href = "../Exercise/Exercise/" + subArray[2];
+                            title.text = subArray[0];
+                            title.style.textDecoration = "none";
+                            title.color = "green";
+
+                            cardTitle.appendChild(title);
+
+                            cardBody.appendChild(cardTitle);
 
 
-                        result.appendChild(card);
+                            card.appendChild(cardHeader);
+                            card.appendChild(cardBody);
+
+
+                            result.appendChild(card);
+                        }
+                        $('#loader').hide();
+                        $('#testDiv').html(result);
                     }
-                    $('#testDiv').html(result);
+                    else {
+                        $('#loader').hide();
+                        $('#testDiv').html('Brak danych');
+                    }
 
                 },
                 error: function () {

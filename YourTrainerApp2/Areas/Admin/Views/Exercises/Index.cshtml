@@ -1,48 +1,182 @@
-﻿@* @model List<Exercise> *@
+﻿@model Exercise
 
-<div class="card shadow border-0 my-4">
-	<div class="card-header bg-secondary bg-gradient py-3">
-		<div class="row">
-			<div class="col-12 text-center">
-				<h2 class="text-white py-2">Lista ćwiczeń</h2>
-			</div>
-		</div>
-	</div>
-	<div class="card-body p-4">
-		<div class="row pb-3">
-			<div class="col-8"></div>
-			<div class="col-4 text-end">
-				<a asp-controller="Exercises" asp-action="Upsert" class="btn btn-primary">
-					Dodaj nowe ćwiczenie <i class="bi bi-plus"></i>
-				</a>
-			</div>
-		</div>
+<div class="container row">
+    <div class="col-2">
+        <nav class="navbar-expand-lg">
+            <div class="container p-2">
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+                        </svg>
+                    </span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav flex-column me-auto">
+                        <li class="nav-item dropdown cat_choice" onclick="loadContent('chest')">
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Klatka piersiowa</a>
+                        </li>
 
-		<table>
-			<tr>
-				<thead>
-					<th>Nazwa</th>
-					<th>Push/Pull</th>
-					<th>Poziom</th>
-					<th>Izolowane/Całe ciało</th>
-					<th>Sprzęt</th>
-					<th>Główne mięśnie</th>
-					<th>Poboczne mięśnie</th>
-					<th>Instrukcje</th>
-					<th>Kategoria</th>
-					<th>Zdjęcie 1</th>
-					<th>Zdjęcie 2</th>
-				</thead>
-				<tbody>
-					@* @foreach (var obj in Model)
-					{
-						<tr>
-							<td>@obj.Name</td>
-						</tr>
-					} *@
-				</tbody>
-			</tr>
-		</table>
+                        <li class="nav-item dropdown cat_choice" onclick="loadContent('back')">
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Plecy</a>
+                        </li>
 
-	</div>
+                        <li class="nav-item dropdown cat_choice" onclick="loadContent('shoulders')">
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Barki</a>
+                        </li>
+
+                        <li class="nav-item dropdown cat_choice" onclick="loadContent('triceps')">
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Triceps</a>
+                        </li>
+
+                        <li class="nav-item dropdown cat_choice" onclick="loadContent('biceps')">
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Biceps</a>
+                        </li>
+
+                        <li class="nav-item dropdown cat_choice" onclick="loadContent('forearms')">
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Przedramiona</a>
+                        </li>
+
+                        <li class="nav-item dropdown cat_choice" onclick="loadContent('legs')">
+                            @* <a class="nav-link dropdown-item" style="color: #22CE00" href="#">Nogi</a> *@
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Nogi</a>
+                        </li>
+
+                        <li class="nav-item dropdown cat_choice" onclick="loadContent('abdominals')">
+                            @* <a class="nav-link dropdown-item" style="color: #28D770" href="#">Brzuch</a> *@
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Brzuch</a>
+                        </li>
+
+                        <li class="nav-item dropdown cat_choice" onclick="loadContent('calves')">
+                            <a class="nav-link dropdown-item" style="color: white" href="#">Łydki</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="col-10" id="testDiv" style="text-align: center; display: flex;">
+        <div id="loader" style="display: none;">
+            <iframe src="https://gifer.com/embed/ZKZx" width=180 height=180.000 frameBorder="0" allowFullScreen></iframe><p></p>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // content changes
+        var elements = document.querySelectorAll('ul.navbar-nav li.cat_choice');
+        // var contents = document.querySelectorAll('.dis');
+
+        elements.forEach(function (element, id) {
+            element.addEventListener('click', function () {
+                // contents.forEach(function (content) {
+                //     content.style.display = 'none';
+                // });
+                elements.forEach(function (el) {
+                    el.style.borderBottom = 'none';
+                    el.style.color = 'white'
+                })
+                elements[id].style.borderBottom = '2px solid green';
+                elements[id].style.color = 'green';
+
+
+            });
+        });
+    </script>
+
+    <script>
+        var images = ["..\\exercises_img\\Ab_Crunch_Machine\\0.jpg", "..\\exercises_img\\Ab_Crunch_Machine\\1.jpg"];
+        var currentIndex = 0;
+
+        function changeImage() {
+            var img = document.getElementById("imgExer");
+            currentIndex = (currentIndex + 1) % images.length;
+            // currentIndex = 1;
+            img.src = images[currentIndex];
+        }
+
+        setInterval(changeImage, 2500);
+    </script>
+
+    <script>
+
+        function loadContent(type) {
+            $("#loader").show();
+            $.ajax({
+                url: '/Exercise/GetDynamicContent',
+                type: 'GET',
+                data: { exerType: type },
+                success: function (response) {
+                    if (response.length > 0) {
+                        var array = response.split(",");
+                        var result = document.createElement("div");
+                        result.classList.add("row");
+                        for (const el of array) {
+
+                            var subArray = el.split("&");
+
+                            var card = document.createElement("div");
+                            card.classList.add("card", "my-2");
+                            card.style.width = "fit-content";
+
+                            var cardHeader = document.createElement("div");
+                            cardHeader.classList.add("card-header");
+
+                            var cardImg = document.createElement("img");
+                            cardImg.src = subArray[1];
+                            cardImg.alt = "Zdjęcie ćwiczenia";
+                            cardImg.style.maxWidth = "300px";
+
+                            cardHeader.appendChild(cardImg);
+
+
+                            var cardBody = document.createElement("div");
+                            cardBody.classList.add("card-body");
+                            cardBody.style.height = "95%";
+
+                            var cardTitle = document.createElement("h5");
+                            cardTitle.color = "green";
+                            cardTitle.classList.add("card-title");
+
+                            var title = document.createElement("a");
+                            title.href = "../Exercise/Exercise/" + subArray[2];
+                            title.text = subArray[0];
+                            title.style.textDecoration = "none";
+                            title.color = "green";
+
+                            cardTitle.appendChild(title);
+
+                            cardBody.appendChild(cardTitle);
+
+
+                            card.appendChild(cardHeader);
+                            card.appendChild(cardBody);
+
+
+                            result.appendChild(card);
+                        }
+                        $('#loader').hide();
+                        $('#testDiv').html(result);
+                    }
+                    else {
+                        $('#loader').hide();
+                        $('#testDiv').html('Brak danych');
+                    }
+
+                },
+                error: function () {
+                    alert('Wystąpił błąd pobierania zawartości z bazy danych.');
+                }
+            })
+        }
+    </script>
+}
