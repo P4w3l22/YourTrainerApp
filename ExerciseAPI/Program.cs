@@ -1,5 +1,7 @@
 using ExerciseAPI.Data;
 using ExerciseAPI.Models;
+using ExerciseAPI.Repository;
+using ExerciseAPI.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
+
+builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
 
 builder.Services.AddControllers();
 //builder.Services.AddDbContext<ExerciseContext>(opt =>
