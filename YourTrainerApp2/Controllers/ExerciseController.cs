@@ -1,30 +1,37 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using YourTrainerApp2.Data;
+﻿using Azure;
+using ExerciseAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using YourTrainerApp2.Models;
+using YourTrainerApp2.Services.IServices;
+using Exercise = YourTrainerApp2.Models.Exercise;
 
 namespace YourTrainerApp2.Controllers
 {
     public class ExerciseController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        //private readonly ApplicationDbContext _db;
+        private readonly IExerciseService _exerciseService;
 
-        public ExerciseController(ApplicationDbContext db)
+        public ExerciseController(IExerciseService exerciseService)
         {
-            _db = db;
+            _exerciseService = exerciseService;
         }
 
-        public IActionResult Index1()
+        public async Task<IActionResult> Index1()
         {
-            List<Exercise> exerciseList = _db.Exercises.ToList();
+            List<Exercise> exerciseList = new();
+                
+            var response = await _exerciseService.GetAllAsync<APIResponse>();
+            if (response is not null && response.IsSuccess)
+            {
+                exerciseList = JsonConvert.DeserializeObject<List<Exercise>>(Convert.ToString(response.Result));
+            }
 
             return View(exerciseList);
         }
         public IActionResult Index()
         {
-            //var Model = new Models.Exercise
-            //{
-            //    Response = "Podpiąć api z ćwiczeniami"
-            //};
             return View(); 
         }
 
@@ -34,27 +41,26 @@ namespace YourTrainerApp2.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create1(Exercise obj)
+        public async Task<IActionResult> Create1(Exercise obj)
         {
-            _db.Exercises.Add(obj);
-            _db.SaveChanges();
+            await _exerciseService.CreateAsync<Exercise>(obj);
             return RedirectToAction("Index1");
         }
 
-        public IActionResult Update1(int? id)
-        { 
-            if (id is null || id == 0)
+        public async Task<IActionResult> Update1(int id)
+        {
+            if (id == 0)
             {
                 return NotFound();
             }
-            Exercise? exerFromDb = _db.Exercises.FirstOrDefault(u => u.Id == id);
+            Exercise? exerFromDb = await _exerciseService.GetAsync<Exercise>(id);
 
             if (exerFromDb is null)
             {
                 return NotFound();
             }
 
-            return View(exerFromDb); 
+            return View(exerFromDb);
         }
 
         [HttpPost, ActionName("Update1")]
@@ -67,18 +73,17 @@ namespace YourTrainerApp2.Controllers
                 return NotFound();
             }
 
-            _db.Exercises.Update(exerFromDb);
-            _db.SaveChanges();
+            _exerciseService.UpdateAsync<Exercise>(exerFromDb);
             return RedirectToAction("Index1");
         }
 
-        public IActionResult Delete1(int? id)
+        public async Task<IActionResult> Delete1(int id)
         {
-            if (id == null || id == 0)
+            if (id == 0)
             {
                 return NotFound();
             }
-            Exercise? exerFromDb = _db.Exercises.FirstOrDefault(u => u.Id == id);
+            Exercise? exerFromDb = await _exerciseService.GetAsync<Exercise>(id);
 
             if (exerFromDb == null)
             {
@@ -89,23 +94,15 @@ namespace YourTrainerApp2.Controllers
         }
 
         [HttpPost, ActionName("Delete1")]
-        public IActionResult Delete1POST(int? id)
+        public async Task<IActionResult> Delete1POST(int id)
         {
-            Exercise? exerFromDb = _db.Exercises.FirstOrDefault(u => u.Id == id);
-
-            if (exerFromDb is null)
-            {
-                return NotFound();
-            }
-
-            _db.Exercises.Remove(exerFromDb);
-            _db.SaveChanges();
+            await _exerciseService.DeleteAsync<Exercise>(id);
 
             return RedirectToAction("Index1");
 
         }
 
-        public ActionResult GetDynamicContent(string exerType)
+        public async Task<ActionResult> GetDynamicContent(string exerType)
         {
             // abdominals - mięśnie brzucha
             // abductor - odwodziciel ud
@@ -174,26 +171,29 @@ namespace YourTrainerApp2.Controllers
 
             foreach (string p in pms)
             {
-                List<Exercise> exercises = _db.Exercises.Where(u => u.PrimaryMuscles == p).ToList();
+                var exers = await _exerciseService.GetAllAsync<APIResponse>();
+
+                List<Exercise> exercises = JsonConvert.DeserializeObject<List<Exercise>>(Convert.ToString(exers.Result))
+                                                      .Where(u => u.PrimaryMuscles == p).ToList();
                 foreach (Exercise exercise in exercises)
                 {
                     exerList.Add(exercise);
                     exerNames.Add(exercise.Name + "&" + exercise.ImgPath1 + "&" + exercise.Id);
                 }
             }
-            
+
             content = string.Join(",", exerNames);
 
             return Content(content);
         }
 
-        public IActionResult Exercise(int? id)
+        public async Task<IActionResult> Exercise(int id)
         {
             if (id == null || id == 0)
             {
                 return NotFound();
             }
-            Exercise exerFromDb = _db.Exercises.FirstOrDefault(u => u.Id == id);
+            Exercise exerFromDb = await _exerciseService.GetAsync<Exercise>(id);
 
             if (exerFromDb == null)
             {

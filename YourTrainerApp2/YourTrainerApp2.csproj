@@ -32,10 +32,15 @@
     <Folder Include="Areas\Trainer\Data\" />
     <Folder Include="Areas\Trainer\Models\" />
     <Folder Include="Areas\Trainer\Views\" />
+    <Folder Include="Data\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="exercises.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\YourTrainer_Utility\YourTrainer_Utility.csproj" />
   </ItemGroup>
 
 </Project>

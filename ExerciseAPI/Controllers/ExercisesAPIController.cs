@@ -11,7 +11,7 @@ using System.Net;
 
 namespace ExerciseAPI.Controllers
 {
-    [Route("api/ExercisesAPI")]
+    [Route("api/ExerciseAPI")]
     [ApiController]
     public class ExercisesAPIController : ControllerBase
     {
@@ -143,20 +143,18 @@ namespace ExerciseAPI.Controllers
             return _response;
         }
 
-        [HttpPut("{id:int}", Name = "UpdateExercise")]
+        [HttpPut(Name = "UpdateExercise")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> UpdateExercise(int id, [FromBody] Exercise exercise)
+        public async Task<ActionResult<APIResponse>> UpdateExercise([FromBody] Exercise exercise)
         {
             try
             {
-                if (id == 0 || exercise == null || id != exercise.Id) 
+                if (exercise == null) 
                 {
                     ModelState.AddModelError("IdError", "Niewłaściwe id!");
                     return BadRequest(ModelState); 
-                
                 }
-
                 await _exerciseDb.UpdateAsync(exercise);
 
                 _response.StatusCode = HttpStatusCode.NoContent;
@@ -172,27 +170,5 @@ namespace ExerciseAPI.Controllers
             
             
         }
-
-        //[HttpPatch("{id:int}", Name = "UpdateExerciseProperty")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public IActionResult UpdatePartialView(int id, JsonPatchDocument<Exercise> patchExer)
-        //{
-        //    if (id == 0 || patchExer == null) { return BadRequest(); }
-
-        //    var exercise = _db.Exercises.AsNoTracking().FirstOrDefault(e => e.Id == id);
-
-        //    if (exercise == null) { return BadRequest(); };
-
-        //    patchExer.ApplyTo(exercise, (Microsoft.AspNetCore.JsonPatch.Adapters.IObjectAdapter)ModelState);
-
-        //    _db.Update(exercise);
-        //    _db.SaveChanges();
-
-        //    if (!ModelState.IsValid) { return BadRequest(); }
-
-        //    return CreatedAtRoute("GetExercise", new { id = exercise.Id }, exercise);
-        //}
     }
 }
