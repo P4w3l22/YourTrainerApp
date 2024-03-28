@@ -21,6 +21,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddSingleton<IExerciseData, ExerciseData>();
+builder.Services.AddSingleton<ITrainingPlanData, TrainingPlanData>();
 
 var app = builder.Build();
 

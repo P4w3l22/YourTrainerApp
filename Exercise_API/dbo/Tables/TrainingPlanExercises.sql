@@ -1,0 +1,11 @@
+﻿CREATE TABLE [dbo].[TrainingPlanExercises]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY,
+	[TPId] INT NOT NULL,
+	[EId] INT NOT NULL,
+	[Series] INT NOT NULL,
+	[Weights] NVARCHAR(200) NOT NULL,
+    CONSTRAINT [TPId] FOREIGN KEY ([Id]) REFERENCES [TrainingPlans]([Id]),
+    CONSTRAINT [EId] FOREIGN KEY ([Id]) REFERENCES [Exercises]([Id]),
+
+)

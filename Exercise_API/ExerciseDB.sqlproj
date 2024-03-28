@@ -67,11 +67,23 @@
     <Build Include="dbo\StoredProcedures\spExercise_Insert.sql" />
     <Build Include="dbo\StoredProcedures\spExercise_Update.sql" />
     <Build Include="dbo\StoredProcedures\spExercise_Delete.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Exercise_API.publish.xml" />
+    <Build Include="dbo\Tables\TrainingPlans.sql" />
+    <Build Include="dbo\Tables\TrainingPlanExercises.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlan_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlan_Get.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlan_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlan_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlan_Update.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlanExercise_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlanExercise_Get.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlanExercise_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlanExercise_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlanExercise_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ExerciseDB.publish.xml" />
   </ItemGroup>
 </Project>
