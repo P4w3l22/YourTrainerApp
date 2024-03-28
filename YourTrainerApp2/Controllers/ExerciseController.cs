@@ -10,7 +10,6 @@ namespace YourTrainerApp2.Controllers
 {
     public class ExerciseController : Controller
     {
-        //private readonly ApplicationDbContext _db;
         private readonly IExerciseService _exerciseService;
 
         public ExerciseController(IExerciseService exerciseService)
@@ -49,18 +48,15 @@ namespace YourTrainerApp2.Controllers
 
         public async Task<IActionResult> Update1(int id)
         {
-            if (id == 0)
-            {
-                return NotFound();
-            }
-            Exercise? exerFromDb = await _exerciseService.GetAsync<Exercise>(id);
+            if (id == 0) return NotFound();
+            
+            var response = await _exerciseService.GetAsync<APIResponse>(id);
 
-            if (exerFromDb is null)
-            {
-                return NotFound();
-            }
+            var exercise = JsonConvert.DeserializeObject<Exercise>(Convert.ToString(response.Result));
 
-            return View(exerFromDb);
+            if (exercise is null) return NotFound();
+
+            return View(exercise);
         }
 
         [HttpPost, ActionName("Update1")]
@@ -68,10 +64,7 @@ namespace YourTrainerApp2.Controllers
         {
             //Exercise? exerFromDb = _db.Exercises.FirstOrDefault(u => u.Id == id);
 
-            if (exerFromDb is null)
-            {
-                return NotFound();
-            }
+            if (exerFromDb is null) return NotFound();
 
             _exerciseService.UpdateAsync<Exercise>(exerFromDb);
             return RedirectToAction("Index1");
@@ -83,14 +76,16 @@ namespace YourTrainerApp2.Controllers
             {
                 return NotFound();
             }
-            Exercise? exerFromDb = await _exerciseService.GetAsync<Exercise>(id);
+			var response = await _exerciseService.GetAsync<APIResponse>(id);
 
-            if (exerFromDb == null)
+			var exercise = JsonConvert.DeserializeObject<Exercise>(Convert.ToString(response.Result));
+
+			if (exercise == null)
             {
                 return NotFound();
             }
 
-            return View(exerFromDb);
+            return View(exercise);
         }
 
         [HttpPost, ActionName("Delete1")]
@@ -193,15 +188,17 @@ namespace YourTrainerApp2.Controllers
             {
                 return NotFound();
             }
-            Exercise exerFromDb = await _exerciseService.GetAsync<Exercise>(id);
+            var response = await _exerciseService.GetAsync<APIResponse>(id);
 
-            if (exerFromDb == null)
+            Exercise exercise = JsonConvert.DeserializeObject<Exercise>(Convert.ToString(response.Result));
+
+            if (exercise == null)
             {
                 return NotFound();
             }
-            Console.WriteLine(exerFromDb.Instructions);
+            Console.WriteLine(exercise.Instructions);
 
-            return View(exerFromDb);
+            return View(exercise);
         }
 
     }

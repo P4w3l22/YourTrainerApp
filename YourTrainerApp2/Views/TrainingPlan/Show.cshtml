@@ -18,40 +18,137 @@
 				 </span>
 			</div>
 			<div class="m-2">
-				<div>
-					<div class="card border-success m-2">
-						<div class="row">
-							<div class="card-header col-3 p-3">Zdjęcie</div>
-							<div class="card-body col-9">
-								<div class="card-title">Ćwiczenie 1</div>
-								<div class="card-text">Opis ćwiczenia 1</div>
+				<div class="row d-flex justify-content-center">
+					<div class="card my-2" style="width: fit-content">
+						<div class="card-header">
+							<img src="..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
+						</div>
+						<div class="card-body" style="height: 85%">
+							<h5 class="card-title text-center">3/4 Sit-Up</h5>
+							<hr />
+							<ol>
+								<li>seria: <input type="number" value="4" max="10" style="width: 50px"/> x <input type="number" value="80" max="500" style="width: 50px"/>kg</li>
+								<li>seria: 4 x 80kg</li>
+								<li>seria: 4 x 80kg</li>
+
+							</ol>
+							<div class="row">
+								<div class="col-4">
+									<button class="btn btn-danger">-</button>
+									<button class="btn btn-success">+</button>
+								</div>
+								<div class="col-4">
+										
+								</div>
+								<div class="col-4">
+									<button class="btn btn-primary">Edytuj</button>
+								</div>
 							</div>
 						</div>
-						
 					</div>
-					<div class="card border-success m-2">
-						<div class="card-header">Ćwiczenie 2</div>
-						<div class="card-body">
-							@* <div class="card-title">zdjęcie chyba</div> *@
-							<div class="card-text">Opis ćwiczenia 2</div>
+
+					<div class="card my-2" style="width: fit-content">
+						<div class="card-header">
+							<img src="..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
+						</div>
+						<div class="card-body" style="height: 85%">
+							<h5 class="card-title text-center">3/4 Sit-Up</h5>
+							<hr />
+							<ol>
+								<li>seria: <input id="input2_1" type="number" value="4" max="10" style="width: 50px"/><p id="value2_1">4</p> x <input type="number" value="80" max="500" style="width: 50px"/>kg</li>
+								<li>seria: <input id="input2_2" type="number" value="4" max="10" style="width: 50px"/><p id="value2_2">4</p> x <input type="number" value="80" max="500" style="width: 50px"/>kg</li>
+								<li>seria: <input id="input2_3" type="number" value="4" max="10" style="width: 50px"/><p id="value2_3">4</p> x <input type="number" value="80" max="500" style="width: 50px"/>kg</li>
+
+							</ol>
+							<div class="row">
+								<div class="col-4">
+									<button class="btn btn-danger">-</button>
+									<button class="btn btn-success">+</button>
+								</div>
+								<div class="col-4">
+
+								</div>
+								<div class="col-4">
+									<button class="btn btn-primary" onclick="displayInputs(2)">Edytuj</button>
+									<button class="btn btn-primary" onclick="hideInputs(2)">Zatwierdź</button>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div class="card border-success m-2">
-						<div class="card-header">Ćwiczenie 3</div>
-						<div class="card-body">
-							@* <div class="card-title">zdjęcie chyba</div> *@
-							<div class="card-text">Opis ćwiczenia 3</div>
+					<div class="card my-2" style="width: fit-content">
+						<div class="card-header">
+							<img src="..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
 						</div>
-					</div>
-					<div class="card border-success m-2">
-						<div class="card-header">Ćwiczenie 4</div>
-						<div class="card-body">
-							@* <div class="card-title">zdjęcie chyba</div> *@
-							<div class="card-text">Opis ćwiczenia 4</div>
+						<div class="card-body" style="height: 85%">
+							<h5 class="card-title text-center">3/4 Sit-Up</h5>
+							<hr />
+							<ol>
+								<li>seria: <input type="number" value="4" max="10" style="width: 50px"/> x <input type="number" value="80" max="500" style="width: 50px"/>kg</li>
+								<li>seria: 4 x 80kg</li>
+								<li>seria: 4 x 80kg</li>
+
+							</ol>
+							<div class="row">
+								<div class="col-4">
+									<button class="btn btn-danger">-</button>
+									<button class="btn btn-success">+</button>
+								</div>
+								<div class="col-4">
+
+								</div>
+								<div class="col-4">
+									<button class="btn btn-primary">Edytuj</button>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
+			
+				<div class="m-4 p-2" style="border: 1px solid white; border-radius: 10px; min-height: 100px;">
+					<h6>Notatki do planu: </h6>
+				</div>
+			
 			</div>
 		</div>
 	</div>
 </div>
+
+@section Scripts {
+	<script>
+		function displayInputs(id) {
+			var input1 = document.getElementById("input" + id + "_1");
+			var input2 = document.getElementById("input" + id + "_2");
+			var input3 = document.getElementById("input" + id + "_3");
+			
+			var value1 = document.getElementById("value" + id + "_1");
+			var value2 = document.getElementById("value" + id + "_2");
+			var value3 = document.getElementById("value" + id + "_3");
+			
+			input1.style.display = "inline-block";
+			input2.style.display = "inline-block";
+			input3.style.display = "inline-block";
+
+			value1.style.display = "none";
+			value2.style.display = "none";
+			value3.style.display = "none";
+		}
+
+		function hideInputs(id) {
+			var input1 = document.getElementById("input" + id + "_1");
+			var input2 = document.getElementById("input" + id + "_2");
+			var input3 = document.getElementById("input" + id + "_3");
+
+			var value1 = document.getElementById("value" + id + "_1");
+			var value2 = document.getElementById("value" + id + "_2");
+			var value3 = document.getElementById("value" + id + "_3");
+
+			input1.style.display = "none";
+			input2.style.display = "none";
+			input3.style.display = "none";
+
+			value1.style.display = "inline-block";
+			value2.style.display = "inline-block";
+			value3.style.display = "inline-block";
+		}
+	</script>
+}
