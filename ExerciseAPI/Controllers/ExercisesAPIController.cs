@@ -1,25 +1,24 @@
-﻿using Azure;
-using ExerciseAPI.Data;
+﻿using AutoMapper;
+using DbDataAccess.Data;
+using DbDataAccess.Models;
 using ExerciseAPI.Models;
-using ExerciseAPI.Repository;
-using ExerciseAPI.Repository.IRepository;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
+using ExerciseAPI.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace ExerciseAPI.Controllers
 {
-    [Route("api/ExerciseAPI")]
+	[Route("api/ExerciseAPI")]
     [ApiController]
     public class ExercisesAPIController : ControllerBase
     {
-        private readonly IExerciseRepository _exerciseDb;
+        private readonly IMapper _mapper;
+        private readonly IExerciseData _data;
         protected APIResponse _response;
-        public ExercisesAPIController(IExerciseRepository exerciseDb)
+        public ExercisesAPIController(IMapper mapper, IExerciseData data)
         {
-			_exerciseDb = exerciseDb;
+            _mapper = mapper;
+            _data = data;
             this._response = new();
         }
 
@@ -29,8 +28,8 @@ namespace ExerciseAPI.Controllers
         {
             try
             {
-                IEnumerable<Exercise> exerList = await _exerciseDb.GetAllAsync();
-                _response.Result = exerList;
+                IEnumerable<ExerciseModel> exerList = await _data.GetExercises();
+                _response.Result = _mapper.Map<List<ExerciseDTO>>(exerList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
@@ -56,15 +55,16 @@ namespace ExerciseAPI.Controllers
                     return BadRequest(_response);
                 }
 
-                var exercise = await _exerciseDb.GetAsync(e => e.Id == id);
+                var exercise = await _data.GetExercise(id);
 
                 if (exercise == null)
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound();
                 }
-
-                return Ok(exercise);
+                _response.Result = _mapper.Map<ExerciseDTO>(exercise);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
             }
             catch (Exception ex)
             {
@@ -79,29 +79,29 @@ namespace ExerciseAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<APIResponse>> CreateExercise([FromBody]Exercise exercise)
+        public async Task<ActionResult<APIResponse>> CreateExercise([FromBody]ExerciseCreateDTO exerciseCreate)
         {
             try
             {
-                if (await _exerciseDb.GetAsync(u => u.Name.ToLower() == exercise.Name.ToLower()) != null)
-                {
-                    ModelState.AddModelError("ErrorMessages", "Ćwiczenie już istnieje!");
-                    return BadRequest(ModelState);
-                }
+                //var exercises = await _data.GetExercises();
+                //if (exercises.Where(e => e.Name.ToLower() == exerciseCreate.Name.ToLower()) != null)
+                //{
+                //    ModelState.AddModelError("ErrorMessages", "Ćwiczenie już istnieje!");
+                //    return BadRequest(ModelState);
+                //}
 
-                if (exercise == null)
+                if (exerciseCreate == null)
                 {
                     _response.StatusCode = HttpStatusCode.BadRequest;
-                    return BadRequest(exercise);
+                    return BadRequest(exerciseCreate);
                 }
 
-                if (exercise.Id > 0)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError);
-                }
+                var exercise = _mapper.Map<ExerciseModel>(exerciseCreate);
+                await _data.InsertExercise(exercise);
 
-                _exerciseDb.CreateAsync(exercise);
-                return CreatedAtRoute("GetExercise", new { id = exercise.Id }, exercise);
+                _response.Result = exercise;
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
             }
             catch (Exception ex)
             {
@@ -113,49 +113,21 @@ namespace ExerciseAPI.Controllers
 
         }
 
-        [HttpDelete("{id:int}", Name = "DeleteExercise")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> DeleteExercise(int id)
-        {
-            try
-            {
-                if (id == 0) { return BadRequest(); }
-
-                var exercise = await _exerciseDb.GetAsync(e => e.Id == id);
-
-                if (exercise == null) { return NotFound(); }
-
-                await _exerciseDb.RemoveAsync(exercise);
-                _response.StatusCode = HttpStatusCode.NoContent;
-                _response.IsSuccess = true;
-
-                return Ok(_response);
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.Errors = new List<string>() { ex.ToString() };
-            }
-
-            return _response;
-        }
-
         [HttpPut(Name = "UpdateExercise")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> UpdateExercise([FromBody] Exercise exercise)
+        public async Task<ActionResult<APIResponse>> UpdateExercise([FromBody] ExerciseUpdateDTO exerciseUpdate)
         {
             try
             {
-                if (exercise == null) 
+                var exerciseId = await _data.GetExercise(exerciseUpdate.Id);
+                if (exerciseId == null) 
                 {
-                    ModelState.AddModelError("IdError", "Niewłaściwe id!");
-                    return BadRequest(ModelState); 
+                    return NotFound(); 
                 }
-                await _exerciseDb.UpdateAsync(exercise);
+
+                var exercise = _mapper.Map<ExerciseModel>(exerciseUpdate);
+                await _data.UpdateExercise(exercise);
 
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
@@ -170,5 +142,35 @@ namespace ExerciseAPI.Controllers
             
             
         }
-    }
+
+		[HttpDelete("{id:int}", Name = "DeleteExercise")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<ActionResult<APIResponse>> DeleteExercise(int id)
+		{
+			try
+			{
+				if (id == 0) { return BadRequest(); }
+
+				var exercise = await _data.GetExercise(id);
+
+				if (exercise == null) { return NotFound(); }
+
+				await _data.DeleteExercise(id);
+				_response.StatusCode = HttpStatusCode.NoContent;
+				_response.IsSuccess = true;
+
+				return Ok(_response);
+			}
+			catch (Exception ex)
+			{
+				_response.IsSuccess = false;
+				_response.Errors = new List<string>() { ex.ToString() };
+			}
+
+			return _response;
+		}
+	}
 }

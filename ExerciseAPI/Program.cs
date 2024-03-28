@@ -1,24 +1,26 @@
-using ExerciseAPI.Data;
+using DbDataAccess.Data;
+using DbDataAccess.DbAccess;
+using ExerciseAPI;
 using ExerciseAPI.Models;
-using ExerciseAPI.Repository;
-using ExerciseAPI.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
-});
-
-builder.Services.AddScoped<IExerciseRepository, ExerciseRepository>();
+//builder.Services.AddDbContext<ApplicationDbContext>(options => {
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
+//});
 
 builder.Services.AddControllers();
 //builder.Services.AddDbContext<ExerciseContext>(opt =>
 //    opt.UseInMemoryDatabase("ExerciseList"));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAutoMapper(typeof(MappingConfig));
+builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddSingleton<IExerciseData, ExerciseData>();
 
 var app = builder.Build();
 
