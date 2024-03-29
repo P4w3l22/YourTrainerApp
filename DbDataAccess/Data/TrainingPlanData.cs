@@ -21,7 +21,7 @@ public class TrainingPlanData : ITrainingPlanData
 		var plans = await _db.GetData<TrainingPlanModel, dynamic>("spTrainingPlan_Get", new { Id = id });
 		var plan = plans.FirstOrDefault();
 
-		var exercises = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercise_GetAll", new { Id = id });
+		var exercises = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
 
 		TrainingPlanWithExercisesModel planWithExercises = new()
 		{
@@ -47,12 +47,15 @@ public class TrainingPlanData : ITrainingPlanData
 		await _db.SaveData("spTrainingPlan_Delete", new { Id = id });
 
 
+	public async Task<IEnumerable<TrainingPlanExerciseModel>> GetPlanExercises(int id) =>
+		await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
 
-	public async Task<TrainingPlanExerciseModel> GetPlanExercise(int id)
-	{
-		var exercises = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercise_Get", new { Id = id });
-		return exercises.FirstOrDefault();
-	}
+
+	//public async Task<TrainingPlanExerciseModel> GetPlanExercises(int id)
+	//{
+	//	var exercises = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
+	//	return exercises.FirstOrDefault();
+	//}
 
 	public async Task InsertPlanExercise(TrainingPlanExerciseModel model) =>
 		await _db.SaveData("spTrainingPlanExercise_Insert", new

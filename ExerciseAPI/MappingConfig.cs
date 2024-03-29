@@ -13,5 +13,19 @@ public class MappingConfig : Profile
         CreateMap<ExerciseModel, ExerciseDTO>().ReverseMap();
         CreateMap<ExerciseModel, ExerciseCreateDTO>().ReverseMap();
         CreateMap<ExerciseModel, ExerciseUpdateDTO>().ReverseMap();
-    }
+
+
+        CreateMap<TrainingPlanModel, TrainingPlanCreateDTO>().ReverseMap();
+        CreateMap<TrainingPlanModel, TrainingPlanUpdateDTO>().ReverseMap();
+
+        CreateMap<TrainingPlanDTO, TrainingPlanCreateDTO>().ReverseMap();
+        CreateMap<TrainingPlanDTO, TrainingPlanUpdateDTO>().ReverseMap();
+
+
+		CreateMap<TrainingPlanExerciseModel, TrainingPlanExerciseCreateDTO>().ReverseMap();
+		CreateMap<TrainingPlanExerciseModel, TrainingPlanExerciseUpdateDTO>().ReverseMap();
+
+		CreateMap<TrainingPlanExerciseDTO, TrainingPlanExerciseCreateDTO>().ReverseMap();
+		CreateMap<TrainingPlanExerciseDTO, TrainingPlanExerciseUpdateDTO>().ReverseMap();
+	}
 }

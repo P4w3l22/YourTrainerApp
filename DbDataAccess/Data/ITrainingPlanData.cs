@@ -8,7 +8,7 @@ namespace DbDataAccess.Data
 		Task DeletePlanExercise(int id);
 		Task<IEnumerable<TrainingPlanModel>> GetAllPlans();
 		Task<TrainingPlanWithExercisesModel> GetPlan(int id);
-		Task<TrainingPlanExerciseModel> GetPlanExercise(int id);
+		Task<IEnumerable<TrainingPlanExerciseModel>> GetPlanExercises(int id);
 		Task InsertPlan(TrainingPlanModel model);
 		Task InsertPlanExercise(TrainingPlanExerciseModel model);
 		Task UpdatePlan(TrainingPlanModel model);
