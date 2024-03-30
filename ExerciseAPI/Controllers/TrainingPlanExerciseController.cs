@@ -66,5 +66,49 @@ namespace ExerciseAPI.Controllers
 			}
 			return _response;
 		}
+
+		[HttpPut]
+		public async Task<ActionResult<APIResponse>> InsertPlanExercise([FromBody] TrainingPlanExerciseUpdateDTO trainingPlanExerciseUpdate)
+		{
+			try
+			{
+				var plan = await _data.GetPlan(trainingPlanExerciseUpdate.TPId);
+				if (plan == null) return NotFound();
+
+				var trainingPlanExercise = _mapper.Map<TrainingPlanExerciseModel>(trainingPlanExerciseUpdate);
+				await _data.UpdatePlanExercise(trainingPlanExercise);
+
+				_response.Result = trainingPlanExercise;
+				_response.StatusCode = HttpStatusCode.OK;
+				return Ok(_response);
+			}
+			catch (Exception ex)
+			{
+				_response.IsSuccess = false;
+				_response.Errors = new List<string> { ex.ToString() };
+			}
+			return _response;
+		}
+
+		[HttpDelete]
+		public async Task<ActionResult<APIResponse>> DeletePlanExercise(int id)
+		{
+			try
+			{
+				var plan = await _data.GetPlan(id);
+				if (plan == null) return NotFound();
+
+				await _data.DeletePlanExercise(id);
+
+				_response.StatusCode = HttpStatusCode.NoContent;
+				return Ok(_response);
+			}
+			catch (Exception ex)
+			{
+				_response.IsSuccess = false;
+				_response.Errors = new List<string> { ex.ToString() };
+			}
+			return _response;
+		}
 	}
 }

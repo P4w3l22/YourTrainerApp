@@ -1,53 +1,79 @@
 ﻿
 
 <div>
-	<div class="card border-light m-3">
+	<div class="card border-light m-3" style="min-height: 900px;">
 		<div class="card-header" style="text-align: center">
 			<h2>Nazwa planu</h2>
 		</div>
 		<div class="card-body"
 			<div class="card-title">
 				<span class="d-flex justify-content-md-center ">
-					<button class="btn btn-secondary m-1">Poniedziałek</button>
-					<button class="btn btn-secondary m-1">Wtorek</button>
-					<button class="btn btn-secondary m-1">Środa</button>
-					<button class="btn btn-secondary m-1">Czwartek</button>
-					<button class="btn btn-secondary m-1">Piątek</button>
-					<button class="btn btn-secondary m-1">Sobota</button>
-					<button class="btn btn-secondary m-1">Niedziela</button>
+					<input class="week" id="monday" type="checkbox" value="monday" hidden/>
+					<label class="weekL btn btn-secondary m-1" for="monday">Poniedziałek</label>
+
+					<input class="week" id="tuesday" type="checkbox" value="tuesday" hidden/>
+					<label class="weekL btn btn-secondary m-1" for="tuesday">Wtorek</label>
+
+					<input class="week" id="wednesday" type="checkbox" value="wednesday" hidden/>
+					<label class="weekL btn btn-secondary m-1" for="wednesday">Środa</label>
+
+					<input class="week" id="thursday" type="checkbox" value="thursday" hidden/>
+					<label class="weekL btn btn-secondary m-1" for="thursday">Czwartek</label>
+
+					<input class="week" id="friday" type="checkbox" value="friday" hidden/>
+					<label class="weekL btn btn-secondary m-1" for="friday">Piątek</label>
+
+					<input class="week" id="saturday" type="checkbox" value="saturday" hidden/>
+					<label class="weekL btn btn-secondary m-1" for="saturday">Sobota</label>
+
+					<input class="week" id="sunday" type="checkbox" value="sunday" hidden/>
+					<label class="weekL btn btn-secondary m-1" for="sunday">Niedziela</label>
 				 </span>
 			</div>
 			<div class="m-2">
-				<div class="row d-flex justify-content-center">
-					<div class="card my-2" style="width: fit-content">
+				<div class="row d-flex justify-content-center mb-5">
+					<div class="card m-2" style="width: fit-content">
 						<div class="card-header">
 							<img src="..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
 						</div>
 						<div class="card-body" style="height: 85%">
 							<h5 class="card-title text-center">3/4 Sit-Up</h5>
 							<hr />
-							<ol>
-								<li>seria: <input type="number" value="4" max="10" style="width: 50px"/> x <input type="number" value="80" max="500" style="width: 50px"/>kg</li>
-								<li>seria: 4 x 80kg</li>
-								<li>seria: 4 x 80kg</li>
+							<ol id="test">
+								<li>seria:
+									<input class="input1" type="number" value="4" max="10" style="width: 50px; display:none"/>
+									<p class="value1" style="display: inline-block">4</p> x
+									<input class="input1" type="number" value="80" max="500" style="width: 50px; display:none"/>
+									<p class="value1" style="display: inline-block">80</p>kg
+								</li>
+								<li>seria:
+									<input class="input1" type="number" value="4" max="10" style="width: 50px; display:none"/>
+									<p class="value1" style="display: inline-block">4</p> x
+									<input class="input1" type="number" value="80" max="500" style="width: 50px; display:none"/>
+									<p class="value1" style="display: inline-block">80</p>kg
+								</li>
+								<li>seria:
+									<input class="input1" type="number" value="4" max="10" style="width: 50px; display:none"/>
+									<p class="value1" style="display: inline-block">4</p> x
+									<input class="input1" type="number" value="80" max="500" style="width: 50px; display:none"/>
+									<p class="value1" style="display: inline-block">80</p>kg
+								</li>
 
 							</ol>
 							<div class="row">
 								<div class="col-4">
 									<button class="btn btn-danger">-</button>
-									<button class="btn btn-success">+</button>
+									<button class="btn btn-success" onclick="addSeries(1)">+</button>
 								</div>
-								<div class="col-4">
-										
-								</div>
-								<div class="col-4">
-									<button class="btn btn-primary">Edytuj</button>
+								<div class="col-8">
+									<button class="btn btn-primary" onclick="displayInputs(1)">Edytuj</button>
+									<button class="btn btn-primary" onclick="hideInputs(1)">Zatwierdź</button>
 								</div>
 							</div>
 						</div>
 					</div>
 
-					<div class="card my-2" style="width: fit-content">
+					<div class="card m-2" style="width: fit-content">
 						<div class="card-header">
 							<img src="..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
 						</div>
@@ -55,9 +81,24 @@
 							<h5 class="card-title text-center">3/4 Sit-Up</h5>
 							<hr />
 							<ol>
-								<li>seria: <input id="input2_1" type="number" value="4" max="10" style="width: 50px"/><p id="value2_1">4</p> x <input type="number" value="80" max="500" style="width: 50px"/>kg</li>
-								<li>seria: <input id="input2_2" type="number" value="4" max="10" style="width: 50px"/><p id="value2_2">4</p> x <input type="number" value="80" max="500" style="width: 50px"/>kg</li>
-								<li>seria: <input id="input2_3" type="number" value="4" max="10" style="width: 50px"/><p id="value2_3">4</p> x <input type="number" value="80" max="500" style="width: 50px"/>kg</li>
+								<li>seria: 
+									<input class="input2" type="number" value="4" max="10" style="width: 50px; display:none"/>
+									<p class="value2" style="display: inline-block">4</p> x
+									<input class="input2" type="number" value="80" max="500" style="width: 50px; display:none"/>
+									<p class="value2" style="display: inline-block">80</p>kg
+								</li>
+								<li>seria: 
+									<input class="input2" type="number" value="4" max="10" style="width: 50px; display:none"/>
+									<p class="value2" style="display: inline-block">4</p> x
+									<input class="input2" type="number" value="80" max="500" style="width: 50px; display:none"/>
+									<p class="value2" style="display: inline-block">80</p>kg
+								</li>
+								<li>seria:
+									<input class="input2" type="number" value="4" max="10" style="width: 50px; display:none"/>
+									<p class="value2" style="display: inline-block">4</p> x
+									<input class="input2" type="number" value="80" max="500" style="width: 50px; display:none"/>
+									<p class="value2" style="display: inline-block">80</p>kg
+								</li>
 
 							</ol>
 							<div class="row">
@@ -65,17 +106,14 @@
 									<button class="btn btn-danger">-</button>
 									<button class="btn btn-success">+</button>
 								</div>
-								<div class="col-4">
-
-								</div>
-								<div class="col-4">
+								<div class="col-8">
 									<button class="btn btn-primary" onclick="displayInputs(2)">Edytuj</button>
 									<button class="btn btn-primary" onclick="hideInputs(2)">Zatwierdź</button>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="card my-2" style="width: fit-content">
+					<div class="card m-2" style="width: fit-content">
 						<div class="card-header">
 							<img src="..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
 						</div>
@@ -83,9 +121,24 @@
 							<h5 class="card-title text-center">3/4 Sit-Up</h5>
 							<hr />
 							<ol>
-								<li>seria: <input type="number" value="4" max="10" style="width: 50px"/> x <input type="number" value="80" max="500" style="width: 50px"/>kg</li>
-								<li>seria: 4 x 80kg</li>
-								<li>seria: 4 x 80kg</li>
+								<li>seria:
+									<input class="input3" type="number" value="4" max="10" style="width: 50px; display:none"/>
+									<p class="value3" style="display: inline-block">4</p> x
+									<input class="input3" type="number" value="80" max="500" style="width: 50px; display:none"/>
+									<p class="value3" style="display: inline-block">80</p>kg
+								</li>
+								<li>seria:
+									<input class="input3" type="number" value="4" max="10" style="width: 50px; display:none"/>
+									<p class="value3" style="display: inline-block">4</p> x
+									<input class="input3" type="number" value="80" max="500" style="width: 50px; display:none"/>
+									<p class="value3" style="display: inline-block">80</p>kg
+								</li>
+								<li>seria:
+									<input class="input3" type="number" value="4" max="10" style="width: 50px; display:none"/>
+									<p class="value3" style="display: inline-block">4</p> x
+									<input class="input3" type="number" value="80" max="500" style="width: 50px; display:none"/>
+									<p class="value3" style="display: inline-block">80</p>kg
+								</li>
 
 							</ol>
 							<div class="row">
@@ -93,11 +146,9 @@
 									<button class="btn btn-danger">-</button>
 									<button class="btn btn-success">+</button>
 								</div>
-								<div class="col-4">
-
-								</div>
-								<div class="col-4">
-									<button class="btn btn-primary">Edytuj</button>
+								<div class="col-8">
+									<button class="btn btn-primary" onclick="displayInputs(3)">Edytuj</button>
+									<button class="btn btn-primary" onclick="hideInputs(3)">Zatwierdź</button>
 								</div>
 							</div>
 						</div>
@@ -106,6 +157,7 @@
 			
 				<div class="m-4 p-2" style="border: 1px solid white; border-radius: 10px; min-height: 100px;">
 					<h6>Notatki do planu: </h6>
+					<p class="m-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati delectus quasi aliquam blanditiis veniam et perferendis ut totam quis quam, ducimus dolor sed, in, velit unde nihil! Earum, ut in. Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati delectus quasi aliquam blanditiis veniam et perferendis ut totam quis quam, ducimus dolor sed, in, velit unde nihil! Earum, ut in.</p>
 				</div>
 			
 			</div>
@@ -115,40 +167,55 @@
 
 @section Scripts {
 	<script>
-		function displayInputs(id) {
-			var input1 = document.getElementById("input" + id + "_1");
-			var input2 = document.getElementById("input" + id + "_2");
-			var input3 = document.getElementById("input" + id + "_3");
-			
-			var value1 = document.getElementById("value" + id + "_1");
-			var value2 = document.getElementById("value" + id + "_2");
-			var value3 = document.getElementById("value" + id + "_3");
-			
-			input1.style.display = "inline-block";
-			input2.style.display = "inline-block";
-			input3.style.display = "inline-block";
+		// const checkbox = document.getElementsByClassName("week");
+		// const labels = document.getElementsByClassName("weekL");
+		// console.log(checkbox.length);
+		// labels[0].style.color = "red";
 
-			value1.style.display = "none";
-			value2.style.display = "none";
-			value3.style.display = "none";
+		// function changeLabel(id) {
+		// 	if (checkbox[id].checked) {
+		// 		labels[id].style.color = "white";
+		// 	}
+		// 	else {
+		// 		labels[id].style.color = "green";
+		// 	}
+			
+		// }
+
+		// for (var i = 0; i < checkbox.length; i++) {
+		// 	checkbox[i].addEventListener("click", changeLabel(i))
+		}
+	</script>
+	<script>
+		function displayInputs(id) {
+			var inputs = document.getElementsByClassName("input" + id);
+
+			var values = document.getElementsByClassName("value" + id);
+
+			for (var i = 0; i < inputs.length; i++) {
+				inputs[i].style.display = "inline-block";
+				values[i].style.display = "none";
+			}
 		}
 
 		function hideInputs(id) {
-			var input1 = document.getElementById("input" + id + "_1");
-			var input2 = document.getElementById("input" + id + "_2");
-			var input3 = document.getElementById("input" + id + "_3");
+			var inputs = document.getElementsByClassName("input" + id);
 
-			var value1 = document.getElementById("value" + id + "_1");
-			var value2 = document.getElementById("value" + id + "_2");
-			var value3 = document.getElementById("value" + id + "_3");
+			var values = document.getElementsByClassName("value" + id);
 
-			input1.style.display = "none";
-			input2.style.display = "none";
-			input3.style.display = "none";
+			for (var i = 0; i < inputs.length; i++) {
+				inputs[i].style.display = "none";
+				values[i].style.display = "inline-block";
+			}
+		}
 
-			value1.style.display = "inline-block";
-			value2.style.display = "inline-block";
-			value3.style.display = "inline-block";
+		function addSeries(id) {
+			const htmlCode = '<li>seria: <input class="input2" type="number" value="4" max="10" style="width: 50px; display:none" /><p class="value2" style="display: inline-block" > 4 </p> x <input class="input2" type="number" value="80" max="500" style="width: 50px; display:none" /><p class="value2" style="display: inline-block"> 80 </p>kg</li>'
+		
+			var ol = document.getElementById("test");
+			ol.innerHTML += htmlCode;
+		
 		}
 	</script>
+	
 }
