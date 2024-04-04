@@ -32,14 +32,14 @@
 			</div>
 			<div class="m-2">
 				<div class="row d-flex justify-content-center mb-5">
-					<div class="card m-2" style="width: fit-content">
+					<div class="card m-2" style="width: fit-content; height: fit-content;">
 						<div class="card-header">
 							<img src="..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
 						</div>
 						<div class="card-body" style="height: 85%">
 							<h5 class="card-title text-center">3/4 Sit-Up</h5>
 							<hr />
-							<ol id="test">
+							<ol id="ol_1">
 								<li>seria:
 									<input class="input1" type="number" value="4" max="10" style="width: 50px; display:none"/>
 									<p class="value1" style="display: inline-block">4</p> x
@@ -62,7 +62,7 @@
 							</ol>
 							<div class="row">
 								<div class="col-4">
-									<button class="btn btn-danger">-</button>
+									<button class="btn btn-danger" onclick="removeSeries(1)">-</button>
 									<button class="btn btn-success" onclick="addSeries(1)">+</button>
 								</div>
 								<div class="col-8">
@@ -73,14 +73,14 @@
 						</div>
 					</div>
 
-					<div class="card m-2" style="width: fit-content">
+					<div class="card m-2" style="width: fit-content; height: fit-content;">
 						<div class="card-header">
 							<img src="..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
 						</div>
 						<div class="card-body" style="height: 85%">
 							<h5 class="card-title text-center">3/4 Sit-Up</h5>
 							<hr />
-							<ol>
+							<ol id="ol_2">
 								<li>seria: 
 									<input class="input2" type="number" value="4" max="10" style="width: 50px; display:none"/>
 									<p class="value2" style="display: inline-block">4</p> x
@@ -103,8 +103,8 @@
 							</ol>
 							<div class="row">
 								<div class="col-4">
-									<button class="btn btn-danger">-</button>
-									<button class="btn btn-success">+</button>
+									<button class="btn btn-danger" onclick="removeSeries(2)">-</button>
+									<button class="btn btn-success" onclick="addSeries(2)">+</button>
 								</div>
 								<div class="col-8">
 									<button class="btn btn-primary" onclick="displayInputs(2)">Edytuj</button>
@@ -113,14 +113,14 @@
 							</div>
 						</div>
 					</div>
-					<div class="card m-2" style="width: fit-content">
+					<div class="card m-2" style="width: fit-content; height: fit-content;">
 						<div class="card-header">
 							<img src="..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
 						</div>
 						<div class="card-body" style="height: 85%">
 							<h5 class="card-title text-center">3/4 Sit-Up</h5>
 							<hr />
-							<ol>
+							<ol id="ol_3">
 								<li>seria:
 									<input class="input3" type="number" value="4" max="10" style="width: 50px; display:none"/>
 									<p class="value3" style="display: inline-block">4</p> x
@@ -143,8 +143,8 @@
 							</ol>
 							<div class="row">
 								<div class="col-4">
-									<button class="btn btn-danger">-</button>
-									<button class="btn btn-success">+</button>
+									<button class="btn btn-danger" onclick="removeSeries(3)">-</button>
+									<button class="btn btn-success" onclick="addSeries(3)">+</button>
 								</div>
 								<div class="col-8">
 									<button class="btn btn-primary" onclick="displayInputs(3)">Edytuj</button>
@@ -184,7 +184,7 @@
 
 		// for (var i = 0; i < checkbox.length; i++) {
 		// 	checkbox[i].addEventListener("click", changeLabel(i))
-		}
+		// }
 	</script>
 	<script>
 		function displayInputs(id) {
@@ -210,12 +210,20 @@
 		}
 
 		function addSeries(id) {
-			const htmlCode = '<li>seria: <input class="input2" type="number" value="4" max="10" style="width: 50px; display:none" /><p class="value2" style="display: inline-block" > 4 </p> x <input class="input2" type="number" value="80" max="500" style="width: 50px; display:none" /><p class="value2" style="display: inline-block"> 80 </p>kg</li>'
-		
-			var ol = document.getElementById("test");
+			const htmlCode = '<li>seria: <input class="input' + id + '" type="number" value="4" max="10" style="width: 50px; display:none" /><p class="value' + id + '" style="display: inline-block" > 4 </p> x <input class="input' + id + '" type="number" value="80" max="500" style="width: 50px; display:none" /><p class="value' + id + '" style="display: inline-block"> 80 </p>kg</li>'
+
+			var ol = document.getElementById("ol_" + id);
 			ol.innerHTML += htmlCode;
-		
 		}
+
+		function removeSeries(id) {
+			var ol = document.getElementById("ol_" + id);
+			let lastLi = ol.lastChild;
+
+			ol.removeChild(lastLi);
+
+		}
+
 	</script>
 	
 }
