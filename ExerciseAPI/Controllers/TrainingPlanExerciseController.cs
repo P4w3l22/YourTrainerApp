@@ -68,7 +68,7 @@ namespace ExerciseAPI.Controllers
 		}
 
 		[HttpPut]
-		public async Task<ActionResult<APIResponse>> InsertPlanExercise([FromBody] TrainingPlanExerciseUpdateDTO trainingPlanExerciseUpdate)
+		public async Task<ActionResult<APIResponse>> UpdatePlanExercise([FromBody] TrainingPlanExerciseUpdateDTO trainingPlanExerciseUpdate)
 		{
 			try
 			{

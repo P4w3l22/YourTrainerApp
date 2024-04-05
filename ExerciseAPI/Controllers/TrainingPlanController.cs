@@ -138,7 +138,5 @@ namespace ExerciseAPI.Controllers
 			}
 			return _response;
 		}
-
-
 	}
 }
