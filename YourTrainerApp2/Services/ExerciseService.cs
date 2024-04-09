@@ -6,11 +6,11 @@ namespace YourTrainerApp2.Services
 {
 	public class ExerciseService : BaseService, IExerciseService
 	{
-		private readonly IHttpClientFactory _client;
+		//private readonly IHttpClientFactory _client;
 		private string APIUrl;
         public ExerciseService(IHttpClientFactory client, IConfiguration configuration) : base(client)
         {
-            _client = client;
+            //_client = client;
 			APIUrl = configuration.GetValue<string>("ServiceUrls:ExerciseAPI");
         }
 
