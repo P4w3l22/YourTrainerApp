@@ -84,23 +84,19 @@ namespace YourTrainerApp2.Services
 													Encoding.UTF8, "application/json");
 			}
 
-			switch (request.ApiType)
+			message.Method = request.ApiType switch
 			{
-				case StaticDetails.ApiType.POST:
-					message.Method = HttpMethod.Post;
-					break;
-				case StaticDetails.ApiType.PUT:
-					message.Method = HttpMethod.Put;
-					break;
-				case StaticDetails.ApiType.DELETE:
-					message.Method = HttpMethod.Delete;
-					break;
-				default:
-					message.Method = HttpMethod.Get;
-					break;
-			}
+				StaticDetails.ApiType.POST
+					=> HttpMethod.Post,
+				StaticDetails.ApiType.PUT
+					=> HttpMethod.Put,
+				StaticDetails.ApiType.DELETE
+					=> HttpMethod.Delete,
+				_
+					=> HttpMethod.Get
+			};
 
 			return message;
 		}
-	}
+	} 
 }
