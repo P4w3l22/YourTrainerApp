@@ -3,24 +3,29 @@
 <div>
 	<div class="card border-light m-3" style="min-height: 900px;">
 		<div class="card-header" style="text-align: center">
-			<h2>@Model.Title</h2>
+			<h2>@Model.Title @Model.Id</h2>
 		</div>
 		<div class="card-body"
 			<div class="card-title">
 				<span class="d-flex justify-content-md-center ">
+					@foreach (var exercise in Model.Exercises)
+					{
+						<h4>@exercise.Name</h4>
+					}
 
 					@foreach (KeyValuePair<string, bool> day in Model.TrainingDaysDict)
 					{
 						if (day.Value)
 						{
-							<input class="week" id="monday" type="checkbox" value="monday" hidden checked disabled/>
-							<label class="weekL btn btn-secondary m-1" for="monday">@day.Key</label>
+							<input class="week" id="@day.Key" type="checkbox" value="@day.Key" hidden checked disabled/>
 						}
 						else
 						{
-							<input class="week" id="monday" type="checkbox" value="monday" hidden disabled/>
-							<label class="weekL btn btn-secondary m-1" for="monday">@day.Key</label>	
+							<input class="week" id="@day.Key" type="checkbox" value="@day.Key" hidden disabled/>
 						}
+						
+						<label class="weekL btn btn-secondary m-1" for="monday">@day.Key</label>
+
 					}
 
 				 </span>
@@ -29,7 +34,7 @@
 				<div class="row d-flex justify-content-center mb-5">
 					<div class="card m-2" style="width: fit-content; height: fit-content;">
 						<div class="card-header">
-							<img src="..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
+							<img src="..\..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
 						</div>
 						<div class="card-body" style="height: 85%">
 							<h5 class="card-title text-center">3/4 Sit-Up</h5>
@@ -55,22 +60,12 @@
 								</li>
 
 							</ol>
-							<div class="row">
-								<div class="col-4">
-									<button class="btn btn-danger" onclick="removeSeries(1)">-</button>
-									<button class="btn btn-success" onclick="addSeries(1)">+</button>
-								</div>
-								<div class="col-8">
-									<button class="btn btn-primary" onclick="displayInputs(1)">Edytuj</button>
-									<button class="btn btn-primary" onclick="hideInputs(1)">Zatwierdź</button>
-								</div>
-							</div>
 						</div>
 					</div>
 
 					<div class="card m-2" style="width: fit-content; height: fit-content;">
 						<div class="card-header">
-							<img src="..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
+							<img src="..\..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
 						</div>
 						<div class="card-body" style="height: 85%">
 							<h5 class="card-title text-center">3/4 Sit-Up</h5>
@@ -96,21 +91,11 @@
 								</li>
 
 							</ol>
-							<div class="row">
-								<div class="col-4">
-									<button class="btn btn-danger" onclick="removeSeries(2)">-</button>
-									<button class="btn btn-success" onclick="addSeries(2)">+</button>
-								</div>
-								<div class="col-8">
-									<button class="btn btn-primary" onclick="displayInputs(2)">Edytuj</button>
-									<button class="btn btn-primary" onclick="hideInputs(2)">Zatwierdź</button>
-								</div>
-							</div>
 						</div>
 					</div>
 					<div class="card m-2" style="width: fit-content; height: fit-content;">
 						<div class="card-header">
-							<img src="..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
+							<img src="..\..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
 						</div>
 						<div class="card-body" style="height: 85%">
 							<h5 class="card-title text-center">3/4 Sit-Up</h5>
@@ -136,23 +121,13 @@
 								</li>
 
 							</ol>
-							<div class="row">
-								<div class="col-4">
-									<button class="btn btn-danger" onclick="removeSeries(3)">-</button>
-									<button class="btn btn-success" onclick="addSeries(3)">+</button>
-								</div>
-								<div class="col-8">
-									<button class="btn btn-primary" onclick="displayInputs(3)">Edytuj</button>
-									<button class="btn btn-primary" onclick="hideInputs(3)">Zatwierdź</button>
-								</div>
-							</div>
 						</div>
 					</div>
 				</div>
 			
 				<div class="m-4 p-2" style="border: 1px solid white; border-radius: 10px; min-height: 100px;">
 					<h6>Notatki do planu: </h6>
-					<p class="m-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati delectus quasi aliquam blanditiis veniam et perferendis ut totam quis quam, ducimus dolor sed, in, velit unde nihil! Earum, ut in. Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati delectus quasi aliquam blanditiis veniam et perferendis ut totam quis quam, ducimus dolor sed, in, velit unde nihil! Earum, ut in.</p>
+					<p class="m-3">@Model.Notes</p>
 				</div>
 			
 			</div>
@@ -162,62 +137,10 @@
 
 @section Scripts {
 	<script>
-		// const checkbox = document.getElementsByClassName("week");
-		// const labels = document.getElementsByClassName("weekL");
-		// console.log(checkbox.length);
-		// labels[0].style.color = "red";
 
-		// function changeLabel(id) {
-		// 	if (checkbox[id].checked) {
-		// 		labels[id].style.color = "white";
-		// 	}
-		// 	else {
-		// 		labels[id].style.color = "green";
-		// 	}
-			
-		// }
-
-		// for (var i = 0; i < checkbox.length; i++) {
-		// 	checkbox[i].addEventListener("click", changeLabel(i))
-		// }
 	</script>
 	<script>
-		function displayInputs(id) {
-			var inputs = document.getElementsByClassName("input" + id);
 
-			var values = document.getElementsByClassName("value" + id);
-
-			for (var i = 0; i < inputs.length; i++) {
-				inputs[i].style.display = "inline-block";
-				values[i].style.display = "none";
-			}
-		}
-
-		function hideInputs(id) {
-			var inputs = document.getElementsByClassName("input" + id);
-
-			var values = document.getElementsByClassName("value" + id);
-
-			for (var i = 0; i < inputs.length; i++) {
-				inputs[i].style.display = "none";
-				values[i].style.display = "inline-block";
-			}
-		}
-
-		function addSeries(id) {
-			const htmlCode = '<li>seria: <input class="input' + id + '" type="number" value="4" max="10" style="width: 50px; display:none" /><p class="value' + id + '" style="display: inline-block" > 4 </p> x <input class="input' + id + '" type="number" value="80" max="500" style="width: 50px; display:none" /><p class="value' + id + '" style="display: inline-block"> 80 </p>kg</li>'
-
-			var ol = document.getElementById("ol_" + id);
-			ol.innerHTML += htmlCode;
-		}
-
-		function removeSeries(id) {
-			var ol = document.getElementById("ol_" + id);
-			let lastLi = ol.lastChild;
-
-			ol.removeChild(lastLi);
-
-		}
 
 	</script>
 	

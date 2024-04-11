@@ -7,6 +7,6 @@ public class TrainingPlan
     public string TrainingDays { get; set; }
     public string Notes { get; set; }
     public string Creator { get; set; }
-
     public Dictionary<string, bool> TrainingDaysDict { get; set; }
+    public List<Exercise> Exercises { get; set; }
 }

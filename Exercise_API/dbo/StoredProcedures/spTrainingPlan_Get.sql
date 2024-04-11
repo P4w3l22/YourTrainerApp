@@ -3,7 +3,7 @@
 AS
 BEGIN
 
-	SELECT Title, TrainingDays, Notes, Creator
+	SELECT Id, Title, TrainingDays, Notes, Creator
 	FROM dbo.TrainingPlans
 	WHERE Id = @Id 
 

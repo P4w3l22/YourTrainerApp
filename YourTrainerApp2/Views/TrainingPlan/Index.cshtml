@@ -17,8 +17,8 @@
 				<div class="card m-2" style="max-width: 400px; min-width: 300px;">
 					<div class="card-header" style="text-align: center">
 						<h3>
-							<a asp-controller="TrainingPlan" asp-action="Show" style="text-decoration: none; color: green">
-								@trainingPlan.Title
+							<a asp-controller="TrainingPlan" asp-action="Show" asp-route-id="@trainingPlan.Id" style="text-decoration: none; color: green">
+								@trainingPlan.Title @trainingPlan.Id
 							</a>
 						</h3>
 					</div>
