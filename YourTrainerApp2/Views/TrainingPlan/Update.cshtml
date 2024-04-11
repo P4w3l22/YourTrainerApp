@@ -8,21 +8,26 @@
 		<div class="card-body"
 			<div class="card-title">
 				<span class="d-flex justify-content-md-center ">
+					<input class="week" id="monday" type="checkbox" value="monday" hidden checked disabled/>
+					<label class="weekL btn btn-secondary m-1" for="monday">Poniedziałek</label>
 
-					@foreach (KeyValuePair<string, bool> day in Model.TrainingDaysDict)
-					{
-						if (day.Value)
-						{
-							<input class="week" id="monday" type="checkbox" value="monday" hidden checked disabled/>
-							<label class="weekL btn btn-secondary m-1" for="monday">@day.Key</label>
-						}
-						else
-						{
-							<input class="week" id="monday" type="checkbox" value="monday" hidden disabled/>
-							<label class="weekL btn btn-secondary m-1" for="monday">@day.Key</label>	
-						}
-					}
+					<input class="week" id="tuesday" type="checkbox" value="tuesday" hidden/>
+					<label class="weekL btn btn-secondary m-1" for="tuesday">Wtorek</label>
 
+					<input class="week" id="wednesday" type="checkbox" value="wednesday" hidden/>
+					<label class="weekL btn btn-secondary m-1" for="wednesday">Środa</label>
+
+					<input class="week" id="thursday" type="checkbox" value="thursday" hidden/>
+					<label class="weekL btn btn-secondary m-1" for="thursday">Czwartek</label>
+
+					<input class="week" id="friday" type="checkbox" value="friday" hidden/>
+					<label class="weekL btn btn-secondary m-1" for="friday">Piątek</label>
+
+					<input class="week" id="saturday" type="checkbox" value="saturday" hidden/>
+					<label class="weekL btn btn-secondary m-1" for="saturday">Sobota</label>
+
+					<input class="week" id="sunday" type="checkbox" value="sunday" hidden/>
+					<label class="weekL btn btn-secondary m-1" for="sunday">Niedziela</label>
 				 </span>
 			</div>
 			<div class="m-2">
@@ -76,13 +81,13 @@
 							<h5 class="card-title text-center">3/4 Sit-Up</h5>
 							<hr />
 							<ol id="ol_2">
-								<li>seria: 
+								<li>seria:
 									<input class="input2" type="number" value="4" max="10" style="width: 50px; display:none"/>
 									<p class="value2" style="display: inline-block">4</p> x
 									<input class="input2" type="number" value="80" max="500" style="width: 50px; display:none"/>
 									<p class="value2" style="display: inline-block">80</p>kg
 								</li>
-								<li>seria: 
+								<li>seria:
 									<input class="input2" type="number" value="4" max="10" style="width: 50px; display:none"/>
 									<p class="value2" style="display: inline-block">4</p> x
 									<input class="input2" type="number" value="80" max="500" style="width: 50px; display:none"/>
@@ -149,12 +154,12 @@
 						</div>
 					</div>
 				</div>
-			
+
 				<div class="m-4 p-2" style="border: 1px solid white; border-radius: 10px; min-height: 100px;">
 					<h6>Notatki do planu: </h6>
 					<p class="m-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati delectus quasi aliquam blanditiis veniam et perferendis ut totam quis quam, ducimus dolor sed, in, velit unde nihil! Earum, ut in. Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati delectus quasi aliquam blanditiis veniam et perferendis ut totam quis quam, ducimus dolor sed, in, velit unde nihil! Earum, ut in.</p>
 				</div>
-			
+
 			</div>
 		</div>
 	</div>
@@ -174,7 +179,7 @@
 		// 	else {
 		// 		labels[id].style.color = "green";
 		// 	}
-			
+
 		// }
 
 		// for (var i = 0; i < checkbox.length; i++) {
@@ -220,5 +225,5 @@
 		}
 
 	</script>
-	
+
 }

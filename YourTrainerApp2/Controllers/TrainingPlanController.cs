@@ -22,7 +22,9 @@ namespace YourTrainerApp2.Controllers
         {
             var apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
 
-            var trainingPlans = JsonConvert.DeserializeObject<List<TrainingPlan>>(Convert.ToString(apiResponse.Result));
+            var trainingPlans = JsonConvert.DeserializeObject<List<TrainingPlan>>(Convert.ToString(apiResponse.Result))
+                                           .Where(tp => tp.Creator == "admin")
+                                           .ToList();
 
             return View(trainingPlans);
         }
@@ -34,9 +36,19 @@ namespace YourTrainerApp2.Controllers
 
         public async Task<IActionResult> Show()
         {
-            var apiResponse = await _trainingPlanService.GetAsync<APIResponse>(1);
+            var apiResponse = await _trainingPlanService.GetAsync<APIResponse>(3);
 
             var trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(Convert.ToString(apiResponse.Result));
+
+            Dictionary<string, bool> trainingDays = new();
+            string[] splitedTrainingDaysDb = trainingPlan.TrainingDays.Split(';');
+            foreach (string day in splitedTrainingDaysDb)
+            {
+                List<string> dayKeyValue = day.Split(':').ToList();
+                trainingDays.Add(dayKeyValue[0], dayKeyValue[1] == "0" ? false : true);
+            }
+
+            trainingPlan.TrainingDaysDict = trainingDays;
 
             return View(trainingPlan);
         }

@@ -39,7 +39,8 @@ public class TrainingPlanData : ITrainingPlanData
 		{
 			model.Title,
 			model.TrainingDays,
-			model.Notes
+			model.Notes,
+			model.Creator
 		});
 
 	public async Task UpdatePlan(TrainingPlanModel model) =>
