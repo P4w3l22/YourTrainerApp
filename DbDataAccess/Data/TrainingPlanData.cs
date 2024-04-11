@@ -13,23 +13,25 @@ public class TrainingPlanData : ITrainingPlanData
 		_db = db;
 	}
 
+	//TODO: dodać opcjonalny warunek po którym będzie można wyszukać plan
+	//TODO: dodać do tabeli trainingPlan kolumnę określającą właściciela planu
 	public async Task<IEnumerable<TrainingPlanModel>> GetAllPlans() =>
 		await _db.GetData<TrainingPlanModel, dynamic>("dbo.spTrainingPlan_GetAll", new { });
 
-	public async Task<TrainingPlanWithExercisesModel> GetPlan(int id)
+	public async Task<TrainingPlanModel> GetPlan(int id)
 	{
 		var plans = await _db.GetData<TrainingPlanModel, dynamic>("spTrainingPlan_Get", new { Id = id });
 		var plan = plans.FirstOrDefault();
 
-		var exercises = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
+		//var exercises = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
 
-		TrainingPlanWithExercisesModel planWithExercises = new()
-		{
-			Plan = plan,
-			PlanExercises = exercises.ToList()
-		};
+		//TrainingPlanWithExercisesModel planWithExercises = new()
+		//{
+		//	Plan = plan,
+		//	PlanExercises = exercises.ToList()
+		//};
 
-		return planWithExercises;
+		return plan;
 	}
 
 	public async Task InsertPlan(TrainingPlanModel model) =>

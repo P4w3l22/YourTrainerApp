@@ -40,6 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DbDataAccess\DbDataAccess.csproj" />
     <ProjectReference Include="..\YourTrainer_Utility\YourTrainer_Utility.csproj" />
   </ItemGroup>
 

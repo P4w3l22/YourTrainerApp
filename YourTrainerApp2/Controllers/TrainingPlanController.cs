@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DbDataAccess.Models;
+using ExerciseAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using YourTrainerApp.Services.IServices;
 using YourTrainerApp2.Models;
 
@@ -15,9 +18,13 @@ namespace YourTrainerApp2.Controllers
 			_trainingPlanExerciseService = trainingPlanExerciseService;
 		}
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
+
+            var trainingPlans = JsonConvert.DeserializeObject<List<TrainingPlan>>(Convert.ToString(apiResponse.Result));
+
+            return View(trainingPlans);
         }
 
         public IActionResult Create()
@@ -27,7 +34,10 @@ namespace YourTrainerApp2.Controllers
 
         public async Task<IActionResult> Show()
         {
-            var trainingPlan = await _trainingPlanService.GetAsync<TrainingPlan>(1);
+            var apiResponse = await _trainingPlanService.GetAsync<APIResponse>(1);
+
+            var trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(Convert.ToString(apiResponse.Result));
+
             return View(trainingPlan);
         }
     }
