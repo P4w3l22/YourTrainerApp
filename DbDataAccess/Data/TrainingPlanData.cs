@@ -7,10 +7,12 @@ namespace DbDataAccess.Data;
 public class TrainingPlanData : ITrainingPlanData
 {
 	private readonly ISqlDataAccess _db;
+	private readonly IExerciseData _exerciseData;
 
-	public TrainingPlanData(ISqlDataAccess db)
+	public TrainingPlanData(ISqlDataAccess db, IExerciseData exerciseData)
 	{
 		_db = db;
+		_exerciseData = exerciseData;
 	}
 
 	//TODO: dodać opcjonalny warunek po którym będzie można wyszukać plan
@@ -23,7 +25,24 @@ public class TrainingPlanData : ITrainingPlanData
 		var plans = await _db.GetData<TrainingPlanModel, dynamic>("spTrainingPlan_Get", new { Id = id });
 		var plan = plans.FirstOrDefault();
 
-		//var exercises = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
+		plan.Exercises = new();
+
+		var exercises = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
+
+		foreach ( var exercise in exercises )
+		{
+			var exerciseData = await _exerciseData.GetExercise(exercise.EId);
+
+			ExerciseTrainingPlan exerciseTrainingPlan = new()
+			{
+				Id = exercise.Id,
+				ExerciseData = exerciseData,
+				Series = exercise.Series,
+				Weights = exercise.Weights,
+			};
+
+			plan.Exercises.Add(exerciseTrainingPlan);
+		}
 
 		//TrainingPlanWithExercisesModel planWithExercises = new()
 		//{

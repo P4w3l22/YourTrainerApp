@@ -1,17 +1,19 @@
-﻿@model TrainingPlan
+﻿@using DbDataAccess.Models
+
+@model TrainingPlanModel
 
 <div>
 	<div class="card border-light m-3" style="min-height: 900px;">
 		<div class="card-header" style="text-align: center">
-			<h2>@Model.Title @Model.Id</h2>
+			<h2>@Model.Title</h2>
 		</div>
 		<div class="card-body"
 			<div class="card-title">
 				<span class="d-flex justify-content-md-center ">
-					@foreach (var exercise in Model.Exercises)
+					@* @foreach (var exercise in Model.Exercises)
 					{
-						<h4>@exercise.Name</h4>
-					}
+						<h4>@exercise.ExerciseData.Name</h4>
+					} *@
 
 					@foreach (KeyValuePair<string, bool> day in Model.TrainingDaysDict)
 					{
@@ -32,97 +34,31 @@
 			</div>
 			<div class="m-2">
 				<div class="row d-flex justify-content-center mb-5">
-					<div class="card m-2" style="width: fit-content; height: fit-content;">
-						<div class="card-header">
-							<img src="..\..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
-						</div>
-						<div class="card-body" style="height: 85%">
-							<h5 class="card-title text-center">3/4 Sit-Up</h5>
-							<hr />
-							<ol id="ol_1">
-								<li>seria:
-									<input class="input1" type="number" value="4" max="10" style="width: 50px; display:none"/>
-									<p class="value1" style="display: inline-block">4</p> x
-									<input class="input1" type="number" value="80" max="500" style="width: 50px; display:none"/>
-									<p class="value1" style="display: inline-block">80</p>kg
-								</li>
-								<li>seria:
-									<input class="input1" type="number" value="4" max="10" style="width: 50px; display:none"/>
-									<p class="value1" style="display: inline-block">4</p> x
-									<input class="input1" type="number" value="80" max="500" style="width: 50px; display:none"/>
-									<p class="value1" style="display: inline-block">80</p>kg
-								</li>
-								<li>seria:
-									<input class="input1" type="number" value="4" max="10" style="width: 50px; display:none"/>
-									<p class="value1" style="display: inline-block">4</p> x
-									<input class="input1" type="number" value="80" max="500" style="width: 50px; display:none"/>
-									<p class="value1" style="display: inline-block">80</p>kg
-								</li>
 
-							</ol>
-						</div>
-					</div>
+					@foreach (ExerciseTrainingPlan exercise in Model.Exercises)
+					{
+						<div class="card m-2" style="width: fit-content; height: fit-content;">
+							<div class="card-header">
+								<img src="..\..\@exercise.ExerciseData.ImgPath1" alt="Alternate Text" style="max-width: 400px;"/>
+							</div>
+							<div class="card-body" style="height: 85%">
+								<h5 class="card-title text-center">@exercise.ExerciseData.Name</h5>
+								<hr />
+								<ol id="ol_1">
+									@for (int i = 0; i < exercise.Weights.Length; i++)
+									{
+										<li>seria:
+											<input class="input1" type="number" value="4" max="10" style="width: 50px; display:none"/>
+											<p class="value1" style="display: inline-block">4</p> x
+											<input class="input1" type="number" value="80" max="500" style="width: 50px; display:none"/>
+											<p class="value1" style="display: inline-block">@exercise.Weights[i]</p>kg
+										</li>
+									}
 
-					<div class="card m-2" style="width: fit-content; height: fit-content;">
-						<div class="card-header">
-							<img src="..\..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
+								</ol>
+							</div>
 						</div>
-						<div class="card-body" style="height: 85%">
-							<h5 class="card-title text-center">3/4 Sit-Up</h5>
-							<hr />
-							<ol id="ol_2">
-								<li>seria: 
-									<input class="input2" type="number" value="4" max="10" style="width: 50px; display:none"/>
-									<p class="value2" style="display: inline-block">4</p> x
-									<input class="input2" type="number" value="80" max="500" style="width: 50px; display:none"/>
-									<p class="value2" style="display: inline-block">80</p>kg
-								</li>
-								<li>seria: 
-									<input class="input2" type="number" value="4" max="10" style="width: 50px; display:none"/>
-									<p class="value2" style="display: inline-block">4</p> x
-									<input class="input2" type="number" value="80" max="500" style="width: 50px; display:none"/>
-									<p class="value2" style="display: inline-block">80</p>kg
-								</li>
-								<li>seria:
-									<input class="input2" type="number" value="4" max="10" style="width: 50px; display:none"/>
-									<p class="value2" style="display: inline-block">4</p> x
-									<input class="input2" type="number" value="80" max="500" style="width: 50px; display:none"/>
-									<p class="value2" style="display: inline-block">80</p>kg
-								</li>
-
-							</ol>
-						</div>
-					</div>
-					<div class="card m-2" style="width: fit-content; height: fit-content;">
-						<div class="card-header">
-							<img src="..\..\exercises_img\\3_4_Sit-Up\\0.jpg" alt="Alternate Text" style="max-width: 400px;"/>
-						</div>
-						<div class="card-body" style="height: 85%">
-							<h5 class="card-title text-center">3/4 Sit-Up</h5>
-							<hr />
-							<ol id="ol_3">
-								<li>seria:
-									<input class="input3" type="number" value="4" max="10" style="width: 50px; display:none"/>
-									<p class="value3" style="display: inline-block">4</p> x
-									<input class="input3" type="number" value="80" max="500" style="width: 50px; display:none"/>
-									<p class="value3" style="display: inline-block">80</p>kg
-								</li>
-								<li>seria:
-									<input class="input3" type="number" value="4" max="10" style="width: 50px; display:none"/>
-									<p class="value3" style="display: inline-block">4</p> x
-									<input class="input3" type="number" value="80" max="500" style="width: 50px; display:none"/>
-									<p class="value3" style="display: inline-block">80</p>kg
-								</li>
-								<li>seria:
-									<input class="input3" type="number" value="4" max="10" style="width: 50px; display:none"/>
-									<p class="value3" style="display: inline-block">4</p> x
-									<input class="input3" type="number" value="80" max="500" style="width: 50px; display:none"/>
-									<p class="value3" style="display: inline-block">80</p>kg
-								</li>
-
-							</ol>
-						</div>
-					</div>
+					}
 				</div>
 			
 				<div class="m-4 p-2" style="border: 1px solid white; border-radius: 10px; min-height: 100px;">
