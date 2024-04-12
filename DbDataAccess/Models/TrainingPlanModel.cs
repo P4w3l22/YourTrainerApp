@@ -16,10 +16,10 @@ public class TrainingPlanModel
 	public List<ExerciseTrainingPlan>? Exercises { get; set; }
 	public Dictionary<string, bool> TrainingDaysDict { get; set; }
 
-	//private void CreateTrainingDaysDict()
+	//public void CreateTrainingDaysDict()
 	//{
 	//	TrainingDaysDict = new();
-	//	string[] splitedTrainingDaysDb = _trainingDays.Split(';');
+	//	string[] splitedTrainingDaysDb = TrainingDays.Split(';');
 	//	foreach (string day in splitedTrainingDaysDb)
 	//	{
 	//		List<string> dayKeyValue = day.Split(':').ToList();

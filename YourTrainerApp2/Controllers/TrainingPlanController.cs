@@ -27,7 +27,7 @@ namespace YourTrainerApp2.Controllers
         {
             var apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
 
-            var trainingPlans = JsonConvert.DeserializeObject<List<TrainingPlanModel>>(Convert.ToString(apiResponse.Result))
+            var trainingPlans = JsonConvert.DeserializeObject<List<TrainingPlan>>(Convert.ToString(apiResponse.Result))
                                            .Where(tp => tp.Creator == "admin")
                                            .ToList();
 
@@ -41,51 +41,12 @@ namespace YourTrainerApp2.Controllers
 
         public async Task<IActionResult> Show(int id)
         {
-			//         var trainingPlanApiResponse = await _trainingPlanService.GetAsync<APIResponse>(id);
-
-			//         var trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(Convert.ToString(trainingPlanApiResponse.Result));
-
-
-			//         trainingPlan.Exercises = new();
-			//         List<TrainingPlanExerciseDTO> trainingPlanExercisesData = new();
-
-			//         var trainingPlanExerciseApiResponse = await _trainingPlanExerciseService.GetAllAsync<APIResponse>(id);
-			//var trainingPlanExercises = JsonConvert.DeserializeObject<List<TrainingPlanExercise>>(Convert.ToString(trainingPlanExerciseApiResponse.Result));
-
-			//         foreach (var trainingPlanExercise in trainingPlanExercises)
-			//         {
-			//	var exerciseApiResponse = await _exerciseService.GetAsync<APIResponse>(id);
-
-			//	var exercise = JsonConvert.DeserializeObject<Models.Exercise>(Convert.ToString(exerciseApiResponse.Result));
-
-
-			//             var planExercise = new TrainingPlanExerciseDTO(trainingPlanExercise.Weights)
-			//             {
-			//                 Id = trainingPlanExercise.Id,
-			//                 Name = exercise.Name,
-			//                 ImgPath = exercise.ImgPath1,
-			//                 Series = trainingPlanExercise.Series
-			//             };
-
-			//             trainingPlanExercisesData.Add(planExercise);
-			//         }
-
-			//         ViewBag.TrainingPlan = trainingPlan;
-			//         ViewBag.TrainingPlanExercises = trainingPlanExercisesData;
-
 			var trainingPlanApiResponse = await _trainingPlanService.GetAsync<APIResponse>(id);
 
-			var trainingPlan = JsonConvert.DeserializeObject<TrainingPlanModel>(Convert.ToString(trainingPlanApiResponse.Result));
+			var trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(Convert.ToString(trainingPlanApiResponse.Result));
+            trainingPlan.CreateTrainingDaysDict();
 
-			trainingPlan.TrainingDaysDict = new();
-			string[] splitedTrainingDaysDb = trainingPlan.TrainingDays.Split(';');
-			foreach (string day in splitedTrainingDaysDb)
-			{
-				List<string> dayKeyValue = day.Split(':').ToList();
-				trainingPlan.TrainingDaysDict.Add(dayKeyValue[0], dayKeyValue[1] == "0" ? false : true);
-			}
-
-			return View(trainingPlan);
+            return View(trainingPlan);
         }
     }
 }
