@@ -72,8 +72,8 @@ namespace ExerciseAPI.Controllers
 		{
 			try
 			{
-				var plan = await _data.GetPlan(trainingPlanExerciseUpdate.TPId);
-				if (plan == null) return NotFound();
+				//var plan = await _data.GetPlan(trainingPlanExerciseUpdate.TPId);
+				//if (plan == null) return NotFound();
 
 				var trainingPlanExercise = _mapper.Map<TrainingPlanExerciseModel>(trainingPlanExerciseUpdate);
 				await _data.UpdatePlanExercise(trainingPlanExercise);

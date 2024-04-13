@@ -2,11 +2,12 @@
 	@TPId INT,
 	@EId INT,
 	@Series INT,
+	@Reps NVARCHAR(50),
 	@Weights NVARCHAR(200)
 AS
 BEGIN
 
-	INSERT INTO dbo.TrainingPlanExercises (TPId, EId, Series, Weights)
-	VALUES (@TPId, @EId, @Series, @Weights);
+	INSERT INTO dbo.TrainingPlanExercises (TPId, EId, Series, Reps, Weights)
+	VALUES (@TPId, @EId, @Series, @Reps, @Weights);
 
 END

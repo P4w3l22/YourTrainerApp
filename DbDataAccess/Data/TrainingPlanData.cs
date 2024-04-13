@@ -27,30 +27,28 @@ public class TrainingPlanData : ITrainingPlanData
 
 		plan.Exercises = new();
 
-		var exercises = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
+		var exercisesTrainingPlan = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
 
-		foreach ( var exercise in exercises )
+		foreach (var exercise in exercisesTrainingPlan)
 		{
 			var exerciseData = await _exerciseData.GetExercise(exercise.EId);
-
-			ExerciseTrainingPlan exerciseTrainingPlan = new()
-			{
-				Id = exercise.Id,
-				ExerciseData = exerciseData,
-				Series = exercise.Series,
-				Weights = exercise.Weights,
-			};
-
-			plan.Exercises.Add(exerciseTrainingPlan);
+			plan.Exercises.Add(CreateExerciseTrainingPlan(exercise, exerciseData));
 		}
 
-		//TrainingPlanWithExercisesModel planWithExercises = new()
-		//{
-		//	Plan = plan,
-		//	PlanExercises = exercises.ToList()
-		//};
-
 		return plan;
+	}
+
+	private ExerciseTrainingPlan CreateExerciseTrainingPlan(TrainingPlanExerciseModel exercise, ExerciseModel exerciseData)
+	{
+		ExerciseTrainingPlan exerciseTrainingPlan = new()
+		{
+			Id = exercise.Id,
+			ExerciseData = exerciseData,
+			Series = exercise.Series,
+			Weights = exercise.Weights,
+		};
+
+		return exerciseTrainingPlan;
 	}
 
 	public async Task InsertPlan(TrainingPlanModel model) =>
@@ -63,7 +61,14 @@ public class TrainingPlanData : ITrainingPlanData
 		});
 
 	public async Task UpdatePlan(TrainingPlanModel model) =>
-		await _db.SaveData("spTrainingPlan_Update", model);
+		await _db.SaveData("spTrainingPlan_Update", new
+		{
+			model.Id,
+			model.Title,
+			model.TrainingDays,
+			model.Notes,
+			model.Creator
+		});
 
 	public async Task DeletePlan(int id) =>
 		await _db.SaveData("spTrainingPlan_Delete", new { Id = id });
@@ -72,19 +77,13 @@ public class TrainingPlanData : ITrainingPlanData
 	public async Task<IEnumerable<TrainingPlanExerciseModel>> GetPlanExercises(int id) =>
 		await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
 
-
-	//public async Task<TrainingPlanExerciseModel> GetPlanExercises(int id)
-	//{
-	//	var exercises = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
-	//	return exercises.FirstOrDefault();
-	//}
-
 	public async Task InsertPlanExercise(TrainingPlanExerciseModel model) =>
 		await _db.SaveData("spTrainingPlanExercise_Insert", new
 		{
 			model.TPId,
 			model.EId,
 			model.Series,
+			model.Reps,
 			model.Weights
 		});
 

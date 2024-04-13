@@ -4,8 +4,9 @@
 	[TPId] INT NOT NULL,
 	[EId] INT NOT NULL,
 	[Series] INT NOT NULL,
+	[Reps] NVARCHAR(50) NOT NULL,
 	[Weights] NVARCHAR(200) NOT NULL,
-    CONSTRAINT [TPId] FOREIGN KEY ([Id]) REFERENCES [TrainingPlans]([Id]),
-    CONSTRAINT [EId] FOREIGN KEY ([Id]) REFERENCES [Exercises]([Id]),
+    CONSTRAINT [FK_TPId] FOREIGN KEY ([TPId]) REFERENCES [TrainingPlans]([Id]),
+    CONSTRAINT [FK_EId] FOREIGN KEY ([EId]) REFERENCES [Exercises]([Id]),
 
 )

@@ -1,7 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[spTrainingPlan_Update]
 	@Id INT,
 	@Title NVARCHAR(200),
-	@TrainingDays NVARCHAR(15),
+	@TrainingDays NVARCHAR(80),
 	@Notes NVARCHAR(2000),
 	@Creator NVARCHAR(200)
 AS
