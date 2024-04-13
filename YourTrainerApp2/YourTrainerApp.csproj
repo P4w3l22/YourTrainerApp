@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
 		<PrivateAssets>all</PrivateAssets>
@@ -33,6 +33,9 @@
     <Folder Include="Areas\Trainer\Data\" />
     <Folder Include="Areas\Trainer\Models\" />
     <Folder Include="Areas\Trainer\Views\" />
+    <Folder Include="Areas\Visitor\Data\" />
+    <Folder Include="Areas\Visitor\Models\" />
+    <Folder Include="Controllers\" />
     <Folder Include="Data\" />
   </ItemGroup>
 
@@ -43,6 +46,17 @@
   <ItemGroup>
     <ProjectReference Include="..\DbDataAccess\DbDataAccess.csproj" />
     <ProjectReference Include="..\YourTrainer_Utility\YourTrainer_Utility.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\Admin\Views\_ViewImports.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Admin\Views\_ViewStart.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

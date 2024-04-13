@@ -1,5 +1,12 @@
 ﻿@model Exercise
 
+
+@* TODO: poprawić szerokość wyświetlania zawartości *@
+
+@* TODO: poprawić wygląd kart *@
+
+
+
 <div class="container row">
     <div class="col-2">
         <nav class="navbar-expand-lg">
@@ -25,34 +32,34 @@
 
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('back')">
                             <a class="nav-link dropdown-item" style="color: white" href="#">Plecy</a>
-                        </li>
-
+                        </li>                                                  
+                                                                               
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('shoulders')">
                             <a class="nav-link dropdown-item" style="color: white" href="#">Barki</a>
-                        </li>
-
+                        </li>                                                  
+                                                                               
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('triceps')">
                             <a class="nav-link dropdown-item" style="color: white" href="#">Triceps</a>
-                        </li>
-
+                        </li>                                                  
+                                                                               
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('biceps')">
                             <a class="nav-link dropdown-item" style="color: white" href="#">Biceps</a>
-                        </li>
-
+                        </li>                                                  
+                                                                               
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('forearms')">
                             <a class="nav-link dropdown-item" style="color: white" href="#">Przedramiona</a>
-                        </li>
-
+                        </li>                                                  
+                                                                               
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('legs')">
                             @* <a class="nav-link dropdown-item" style="color: #22CE00" href="#">Nogi</a> *@
                             <a class="nav-link dropdown-item" style="color: white" href="#">Nogi</a>
-                        </li>
-
+                        </li>                                                  
+                                                                               
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('abdominals')">
                             @* <a class="nav-link dropdown-item" style="color: #28D770" href="#">Brzuch</a> *@
                             <a class="nav-link dropdown-item" style="color: white" href="#">Brzuch</a>
-                        </li>
-
+                        </li>                                                  
+                                                                               
                         <li class="nav-item dropdown cat_choice" onclick="loadContent('calves')">
                             <a class="nav-link dropdown-item" style="color: white" href="#">Łydki</a>
                         </li>
@@ -71,8 +78,7 @@
 </div>
 
 @section Scripts {
-    <script>
-        // content changes
+    <script> // content changes
         var elements = document.querySelectorAll('ul.navbar-nav li.cat_choice');
         // var contents = document.querySelectorAll('.dis');
 
@@ -87,7 +93,7 @@
                 })
                 elements[id].style.borderBottom = '2px solid green';
                 elements[id].style.color = 'green';
-
+                
 
             });
         });
@@ -108,13 +114,13 @@
     </script>
 
     <script>
-
+        
         function loadContent(type) {
             $("#loader").show();
             $.ajax({
-                url: '/Exercise/GetDynamicContent',
+                url: '/Visitor/ExercisesSet/GetDynamicContent',
                 type: 'GET',
-                data: { exerType: type },
+                data: { exerciseType: type },
                 success: function (response) {
                     if (response.length > 0) {
                         var array = response.split(",");
@@ -132,7 +138,7 @@
                             cardHeader.classList.add("card-header");
 
                             var cardImg = document.createElement("img");
-                            cardImg.src = subArray[1];
+                            cardImg.src = "\\" + subArray[1];
                             cardImg.alt = "Zdjęcie ćwiczenia";
                             cardImg.style.maxWidth = "300px";
 
@@ -148,7 +154,7 @@
                             cardTitle.classList.add("card-title");
 
                             var title = document.createElement("a");
-                            title.href = "../Exercise/Exercise/" + subArray[2];
+                            title.href = "../Visitor/ExercisesSet/Exercise/" + subArray[2];
                             title.text = subArray[0];
                             title.style.textDecoration = "none";
                             title.color = "green";

@@ -1,12 +1,12 @@
-using ExerciseAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using YourTrainerApp2.Models;
 using Exercise = YourTrainerApp2.Models.Exercise;
 
-namespace YourTrainerApp2.Controllers
+namespace YourTrainerApp.Areas.Visistor.Controllers
 {
+    [Area("Visitor")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

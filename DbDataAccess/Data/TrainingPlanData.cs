@@ -24,12 +24,11 @@ public class TrainingPlanData : ITrainingPlanData
 	{
 		var plans = await _db.GetData<TrainingPlanModel, dynamic>("spTrainingPlan_Get", new { Id = id });
 		var plan = plans.FirstOrDefault();
-
 		plan.Exercises = new();
 
-		var exercisesTrainingPlan = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
+		var planExercises = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
 
-		foreach (var exercise in exercisesTrainingPlan)
+		foreach (var exercise in planExercises)
 		{
 			var exerciseData = await _exerciseData.GetExercise(exercise.EId);
 			plan.Exercises.Add(CreateExerciseTrainingPlan(exercise, exerciseData));
@@ -38,9 +37,8 @@ public class TrainingPlanData : ITrainingPlanData
 		return plan;
 	}
 
-	private ExerciseTrainingPlan CreateExerciseTrainingPlan(TrainingPlanExerciseModel exercise, ExerciseModel exerciseData)
-	{
-		ExerciseTrainingPlan exerciseTrainingPlan = new()
+	private ExerciseTrainingPlan CreateExerciseTrainingPlan(TrainingPlanExerciseModel exercise, ExerciseModel exerciseData) =>
+		new()
 		{
 			Id = exercise.Id,
 			ExerciseData = exerciseData,
@@ -48,9 +46,7 @@ public class TrainingPlanData : ITrainingPlanData
 			Reps = exercise.Reps,
 			Weights = exercise.Weights,
 		};
-
-		return exerciseTrainingPlan;
-	}
+	
 
 	public async Task InsertPlan(TrainingPlanModel model) =>
 		await _db.SaveData("spTrainingPlan_Insert", new

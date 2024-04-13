@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using YourTrainerApp2.Models;
 
-namespace YourTrainerApp2.Controllers
+namespace YourTrainerApp.Areas.Visistor.Controllers
 {
+    [Area("Visitor")]
     public class BlogController : Controller
     {
         public IActionResult Index()

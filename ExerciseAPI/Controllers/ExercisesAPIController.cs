@@ -57,7 +57,7 @@ namespace ExerciseAPI.Controllers
 
                 var exercise = await _data.GetExercise(id);
 
-                if (exercise == null)
+                if (exercise is null)
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
                     return NotFound();
@@ -152,11 +152,17 @@ namespace ExerciseAPI.Controllers
 		{
 			try
 			{
-				if (id == 0) { return BadRequest(); }
+				if (id == 0) 
+                { 
+                    return BadRequest(); 
+                }
 
 				var exercise = await _data.GetExercise(id);
 
-				if (exercise == null) { return NotFound(); }
+				if (exercise == null) 
+                { 
+                    return NotFound(); 
+                }
 
 				await _data.DeleteExercise(id);
 				_response.StatusCode = HttpStatusCode.NoContent;
