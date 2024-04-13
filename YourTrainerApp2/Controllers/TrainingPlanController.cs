@@ -46,6 +46,7 @@ namespace YourTrainerApp2.Controllers
 			var trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(Convert.ToString(trainingPlanApiResponse.Result));
             trainingPlan.CreateTrainingDaysDict();
 
+
             return View(trainingPlan);
         }
     }

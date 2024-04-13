@@ -45,6 +45,7 @@ public class TrainingPlanData : ITrainingPlanData
 			Id = exercise.Id,
 			ExerciseData = exerciseData,
 			Series = exercise.Series,
+			Reps = exercise.Reps,
 			Weights = exercise.Weights,
 		};
 

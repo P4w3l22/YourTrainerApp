@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace ExerciseAPI.Models
+namespace YourTrainerApp2.Models
 {
 	public class APIResponse
 	{

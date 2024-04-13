@@ -38,7 +38,7 @@ public class ExerciseData : IExerciseData
 		});
 
 	public async Task UpdateExercise(ExerciseModel exercise) =>
-		await _db.SaveData("dbo.spExercise_Update", exercise);
+		await _db.SaveData("spExercise_Update", exercise);
 
 	public async Task DeleteExercise(int id) =>
 		await _db.SaveData("spExercise_Delete", new { Id = id });
