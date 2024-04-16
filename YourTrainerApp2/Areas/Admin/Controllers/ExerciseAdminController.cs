@@ -37,15 +37,40 @@ namespace YourTrainerApp.Areas.Admin.Controllers
 		}
 
 		[HttpPost, ActionName("Create")]
-		public async Task<IActionResult> CreatePOST(ExerciseCreateVM exerciseCreated)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreatePOST(ExerciseCreateVM exerciseCreated)
 		{
-			await _exerciseService.CreateAsync<Exercise>(exerciseCreated.Exercise);
-			TempData["success"] = "Utworzono ćwiczenie!";
-			return RedirectToAction("Index");
+			Console.WriteLine(ModelState.IsValid);
+
+			var apiResponse = await _exerciseService.CreateAsync<APIResponse>(exerciseCreated.Exercise);
+
+			if (ModelState.IsValid)
+			{
+				if (apiResponse is not null || apiResponse.IsSuccess)
+				{
+					TempData["success"] = "Utworzono ćwiczenie!";
+                    return RedirectToAction("Index");
+                }
+                				
+			}
+			else
+            {
+                if (apiResponse.Errors is not null)
+				{
+					ModelState.AddModelError("Errors", apiResponse.Errors.FirstOrDefault());
+				}
+            }
+
+			ExerciseCreateVM exerciseVM = new();
+			exerciseVM.Exercise = exerciseCreated.Exercise;
+			
+			return View(exerciseVM);
 		}
 
 		public async Task<IActionResult> Update(int id)
 		{
+			ExerciseCreateVM exerciseCreateLists = new();
+
 			if (id == 0)
 			{
 				return NotFound();
@@ -57,11 +82,13 @@ namespace YourTrainerApp.Areas.Admin.Controllers
 
 			if (exercise is null) return NotFound();
 
-			return View(exercise);
+			exerciseCreateLists.Exercise = exercise;
+
+			return View(exerciseCreateLists);
 		}
 
 		[HttpPost, ActionName("Update")]
-		public IActionResult UpdatePOST(Exercise? exerciseUpdated)
+		public async Task<IActionResult> UpdatePOST(ExerciseCreateVM exerciseUpdated)
 		{
 			//Exercise? exerFromDb = _db.Exercises.FirstOrDefault(u => u.Id == id);
 
@@ -70,7 +97,7 @@ namespace YourTrainerApp.Areas.Admin.Controllers
 				return NotFound();
 			}
 
-            _exerciseService.UpdateAsync<Exercise>(exerciseUpdated);
+            await _exerciseService.UpdateAsync<APIResponse>(exerciseUpdated.Exercise);
             TempData["success"] = "Zaktualizowano ćwiczenie!";
             return RedirectToAction("Index");
 		}
@@ -96,7 +123,7 @@ namespace YourTrainerApp.Areas.Admin.Controllers
 		[HttpPost, ActionName("Delete")]
 		public async Task<IActionResult> DeletePOST(int id)
 		{
-			await _exerciseService.DeleteAsync<Exercise>(id);
+			await _exerciseService.DeleteAsync<APIResponse>(id);
             TempData["success"] = "Usunięto ćwiczenie!";
             return RedirectToAction("Index");
 

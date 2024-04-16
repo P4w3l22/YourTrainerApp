@@ -83,12 +83,13 @@ namespace ExerciseAPI.Controllers
         {
             try
             {
-                //var exercises = await _data.GetExercises();
-                //if (exercises.Where(e => e.Name.ToLower() == exerciseCreate.Name.ToLower()) != null)
-                //{
-                //    ModelState.AddModelError("ErrorMessages", "Ćwiczenie już istnieje!");
-                //    return BadRequest(ModelState);
-                //}
+                var exercises = await _data.GetExercises();
+                var exList = exercises.Where(e => e.Name.ToLower() == exerciseCreate.Name.ToLower()).ToList();
+                if (exList.Count > 0)
+                {
+                    ModelState.AddModelError("Errors", "Ćwiczenie już istnieje!");
+                    return BadRequest(ModelState);
+                }
 
                 if (exerciseCreate == null)
                 {

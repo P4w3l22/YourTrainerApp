@@ -1,67 +1,84 @@
-﻿@model Exercise
+﻿@using YourTrainerApp.Models.VM
+@model ExerciseCreateVM
+
 
 
 <div class="card shadow border-0 my-4">
 	<div class="card-header bg-secondary bg-gradient m-lg-0 py-3">
 		<div class="row">
 			<div class="col-12 text-center">
-				<h2 class="text-white py-2">Usuń ćwiczenie</h2>
+				<h2 class="text-white py-2">Aktualizuj ćwiczenie</h2>
 			</div>
 		</div>
 	</div>
 	<div class="card-body p-4">
-		<form method="post">
+		<form method="post" asp-action="Update">
 			<div class="border p-3 mt-4">
-				<input asp-for="Id" hidden />
+				<input asp-for="Exercise.Id" hidden />
 				@*<div asp-validation-summary="All"></div>*@
 				<div class="form-floating py-2 col-12">
-					<input asp-for="Name" class="form-control border-0 shadow" />
-					<label asp-for="Name" class="ms-2"></label>
+					<input asp-for="Exercise.Name" class="form-control border-0 shadow" />
+					<label asp-for="Exercise.Name" class="ms-2"></label>
 				</div>
 				<div class="form-floating py-2 col-12">
-					<input asp-for="Force" class="form-control border-0 shadow" />
-					<label asp-for="Force" class="ms-2"></label>
+					@* <input asp-for="Force" class="form-control border-0 shadow" /> *@
+					<select class="form-select" asp-for="Exercise.Force" asp-items="@Model.ForceOptionsList">
+						<option selected disabled>--Wybierz typ ćwiczenia</option>
+					</select>
+					<label asp-for="Exercise.Force" class="ms-2"></label>
 				</div>
 				<div class="form-floating py-2 col-12">
-					<input asp-for="Level" class="form-control border-0 shadow" />
-					<label asp-for="Level" class="ms-2"></label>
+					<select class="form-select" asp-for="Exercise.Level" asp-items="@Model.LevelOptionsList">
+						<option selected disabled>--Wybierz poziom trudności ćwiczenia</option>
+					</select>
+					@* <input asp-for="Exercise.Level" class="form-control border-0 shadow" /> *@
+					<label asp-for="Exercise.Level" class="ms-2"></label>
 				</div>
 				<div class="form-floating py-2 col-12">
-					<input asp-for="Mechanic" class="form-control border-0 shadow" />
-					<label asp-for="Mechanic" class="ms-2"></label>
+					@* <input asp-for="Exercise.Mechanic" class="form-control border-0 shadow" /> *@
+					<select class="form-select" asp-for="Exercise.Mechanic" asp-items="@Model.MechanicOptionsList">
+						<option selected disabled>--Wybierz--</option>
+					</select>
+					<label asp-for="Exercise.Mechanic" class="ms-2"></label>
 				</div>
 				<div class="form-floating py-2 col-12">
-					<input asp-for="Equipment" class="form-control border-0 shadow" />
-					<label asp-for="Equipment" class="ms-2"></label>
+					<input asp-for="Exercise.Equipment" class="form-control border-0 shadow" />
+					<label asp-for="Exercise.Equipment" class="ms-2"></label>
 				</div>
 				<div class="form-floating py-2 col-12">
-					<input asp-for="PrimaryMuscles" class="form-control border-0 shadow" />
-					<label asp-for="PrimaryMuscles" class="ms-2"></label>
+					@* <input asp-for="Exercise.PrimaryMuscles" class="form-control border-0 shadow" /> *@
+					<select class="form-select" asp-for="Exercise.PrimaryMuscles" asp-items="@Model.PrimaryMuscleOptionsList">
+						<option selected disabled>--Wybierz--</option>
+					</select>
+					<label asp-for="Exercise.PrimaryMuscles" class="ms-2"></label>
 				</div>
 				<div class="form-floating py-2 col-12">
-					<input asp-for="SecondaryMuscles" class="form-control border-0 shadow" />
-					<label asp-for="SecondaryMuscles" class="ms-2"></label>
+					<input asp-for="Exercise.SecondaryMuscles" class="form-control border-0 shadow" />
+					<label asp-for="Exercise.SecondaryMuscles" class="ms-2"></label>
 				</div>
 				<div class="form-floating py-2 col-12">
-					<input asp-for="Instructions" class="form-control border-0 shadow" />
-					<label asp-for="Instructions" class="ms-2"></label>
+					<input asp-for="Exercise.Instructions" class="form-control border-0 shadow" />
+					<label asp-for="Exercise.Instructions" class="ms-2"></label>
 				</div>
 				<div class="form-floating py-2 col-12">
-					<input asp-for="Category" class="form-control border-0 shadow" />
-					<label asp-for="Category" class="ms-2"></label>
+					@* <input asp-for="Exercise.Category" class="form-control border-0 shadow" /> *@
+					<select class="form-select" asp-for="Exercise.Category" asp-items="@Model.CategoryOptionsList">
+						<option selected disabled>--Wybierz--</option>
+					</select>
+					<label asp-for="Exercise.Category" class="ms-2"></label>
 				</div>
 				<div class="form-floating py-2 col-12">
-					<input asp-for="ImgPath1" class="form-control border-0 shadow" />
-					<label asp-for="ImgPath1" class="ms-2"></label>
+					<input asp-for="Exercise.ImgPath1" class="form-control border-0 shadow" />
+					<label asp-for="Exercise.ImgPath1" class="ms-2"></label>
 				</div>
 				<div class="form-floating py-2 col-12">
-					<input asp-for="ImgPath2" class="form-control border-0 shadow" />
-					<label asp-for="ImgPath2" class="ms-2"></label>
+					<input asp-for="Exercise.ImgPath2" class="form-control border-0 shadow" />
+					<label asp-for="Exercise.ImgPath2" class="ms-2"></label>
 				</div>
 
 				<div class="row mt-3">
 					<div class="col-6 col-md-3">
-						<button type="submit" class="btn btn-light form-control">Aktualizuj</button>
+						<button type="submit" class="btn btn-danger form-control">Aktualizuj</button>
 					</div>
 					<div class="col-6 col-md-3">
 						<a asp-controller="ExerciseAdmin" asp-action="Index" class="btn btn-outline-secondary border form-control">
@@ -69,8 +86,6 @@
 						</a>
 					</div>
 				</div>
-
-
 			</div>
 		</form>
 	</div>
