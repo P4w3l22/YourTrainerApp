@@ -23,19 +23,17 @@ namespace YourTrainerApp.Areas.Visistor.Controllers
 
 		public async Task<IActionResult> Exercise(int id)
 		{
-			if (id == null || id == 0)
+			if (id == 0)
 			{
 				return NotFound();
 			}
 			var response = await _exerciseService.GetAsync<APIResponse>(id);
-
 			Exercise exercise = JsonConvert.DeserializeObject<Exercise>(Convert.ToString(response.Result));
 
-			if (exercise == null)
+			if (exercise is null)
 			{
 				return NotFound();
 			}
-			Console.WriteLine(exercise.Instructions);
 
 			return View(exercise);
 		}

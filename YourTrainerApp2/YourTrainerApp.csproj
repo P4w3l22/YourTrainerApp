@@ -34,9 +34,7 @@
     <Folder Include="Areas\Trainer\Models\" />
     <Folder Include="Areas\Trainer\Views\" />
     <Folder Include="Areas\Visitor\Data\" />
-    <Folder Include="Areas\Visitor\Models\" />
     <Folder Include="Controllers\" />
-    <Folder Include="Data\" />
   </ItemGroup>
 
   <ItemGroup>

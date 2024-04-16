@@ -1,57 +1,48 @@
 ﻿
 @model List<TrainingPlan>
 
-<div class="container">
-	<h2 class="mb-5"><a style="text-decoration: none" href="#">Zaloguj się</a> aby wczytać zapisane plany treningowe</h2>
-	<div>
-		<a asp-controller="TrainingPlan" asp-action="Create" class="btn btn-primary">
-			Dodaj nowy plan <i class="bi bi-plus"></i>
-		</a>
+<div class="m-3 text-center">
+	<div style="background-color: gray; border-radius: 8px">
+		<h2>Stwórz tutaj swój plan treningowy lub sprawdź nasze!</h2>
 	</div>
+	<div style="background-color: gray; border-radius: 8px">
+		<h4 class="mb-5"><a style="text-decoration: none" href="#">Zaloguj się</a> aby wczytać zapisane plany treningowe</h4>
+		<div>
+			<a asp-controller="TrainingPlan" asp-action="Create" class="btn btn-primary">
+				Dodaj nowy plan <i class="bi bi-plus"></i>
+			</a>
+		</div>
 
-	<div>
-		<h2 class="my-3">Przykładowe plany treningowe: </h2>
-		<div style="display: flex;">
-			<div class="row">
-			@foreach (var trainingPlan in Model)
-			{
-				<div class="card m-2" style="max-width: 400px; min-width: 300px;">
-					<div class="card-header" style="text-align: center">
-						<h3>
-							<a asp-controller="TrainingPlan" asp-action="Show" asp-route-id="@trainingPlan.Id" style="text-decoration: none; color: green">
-								@trainingPlan.Title @trainingPlan.Id
-							</a>
-						</h3>
-					</div>
-					<div class="card-body">
-						<div class="card-text">
-							<ul>
-								<li>Dla początkujących</li>
-								<li>5 ćwiczeń</li>
-							</ul>
-							<hr />
-							<div class="m-2">
-								@trainingPlan.Notes
+		<div>
+			<h2 class="my-3">Przykładowe plany treningowe: </h2>
+			<div style="display: flex;">
+				<div class="row">
+				@foreach (var trainingPlan in Model)
+				{
+					<div class="card m-2" style="max-width: 400px; min-width: 300px;">
+						<div class="card-header" style="text-align: center">
+							<h3>
+								<a asp-controller="TrainingPlan" asp-action="Show" asp-route-id="@trainingPlan.Id" style="text-decoration: none; color: green">
+									@trainingPlan.Title @trainingPlan.Id
+								</a>
+							</h3>
+						</div>
+						<div class="card-body">
+							<div class="card-text">
+								<ul>
+									<li>Dla początkujących</li>
+									<li>5 ćwiczeń</li>
+								</ul>
+								<hr />
+								<div class="m-2">
+									@trainingPlan.Notes
+								</div>
 							</div>
 						</div>
 					</div>
+				}
 				</div>
-			}
 			</div>
 		</div>
 	</div>
-	
-	
-	@* <form method="post" class="row my-5">
-		<div class="form-floating col-12">
-			<input asp-for="Title" class="form-control border-0 shadow" />
-			<label asp-for="Title" class="ms-2 text-black" />
-			<span asp-validation-for="Title" class="text-danger" />
-		</div>
-		<div class="form-floating col-12">
-			<input asp-for="Days" class="form-control border-0 shadow" />
-			<label asp-for="Days" class="ms-2" />
-			<span asp-validation-for="Days" class="text-danger" />
-		</div>
-	</form> *@
 </div>

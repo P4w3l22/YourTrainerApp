@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using YourTrainerApp.Models.VM;
 using YourTrainerApp2.Models;
 using YourTrainerApp2.Services.IServices;
 
@@ -30,13 +31,16 @@ namespace YourTrainerApp.Areas.Admin.Controllers
 
 		public IActionResult Create()
 		{
-			return View();
+			ExerciseCreateVM exerciseCreateLists = new();
+
+			return View(exerciseCreateLists);
 		}
 
 		[HttpPost, ActionName("Create")]
-		public async Task<IActionResult> CreatePOST(Exercise exerciseCreated)
+		public async Task<IActionResult> CreatePOST(ExerciseCreateVM exerciseCreated)
 		{
-			await _exerciseService.CreateAsync<Exercise>(exerciseCreated);
+			await _exerciseService.CreateAsync<Exercise>(exerciseCreated.Exercise);
+			TempData["success"] = "Utworzono ćwiczenie!";
 			return RedirectToAction("Index");
 		}
 
@@ -66,8 +70,9 @@ namespace YourTrainerApp.Areas.Admin.Controllers
 				return NotFound();
 			}
 
-			_exerciseService.UpdateAsync<Exercise>(exerciseUpdated);
-			return RedirectToAction("Index");
+            _exerciseService.UpdateAsync<Exercise>(exerciseUpdated);
+            TempData["success"] = "Zaktualizowano ćwiczenie!";
+            return RedirectToAction("Index");
 		}
 
 		public async Task<IActionResult> Delete(int id)
@@ -92,8 +97,8 @@ namespace YourTrainerApp.Areas.Admin.Controllers
 		public async Task<IActionResult> DeletePOST(int id)
 		{
 			await _exerciseService.DeleteAsync<Exercise>(id);
-
-			return RedirectToAction("Index");
+            TempData["success"] = "Usunięto ćwiczenie!";
+            return RedirectToAction("Index");
 
 		}
 	}
