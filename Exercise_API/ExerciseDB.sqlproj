@@ -79,6 +79,9 @@
     <Build Include="dbo\StoredProcedures\spTrainingPlanExercise_GetAll.sql" />
     <Build Include="dbo\StoredProcedures\spTrainingPlanExercise_Insert.sql" />
     <Build Include="dbo\StoredProcedures\spTrainingPlanExercise_Update.sql" />
+    <Build Include="dbo\Tables\LocalUsers.sql" />
+    <Build Include="dbo\StoredProcedures\spLocalUsers_Get.sql" />
+    <Build Include="dbo\StoredProcedures\spLocalUsers_Insert.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
