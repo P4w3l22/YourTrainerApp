@@ -19,9 +19,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
-builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
-builder.Services.AddSingleton<IExerciseData, ExerciseData>();
-builder.Services.AddSingleton<ITrainingPlanData, TrainingPlanData>();
+builder.Services.AddScoped<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddScoped<IExerciseData, ExerciseData>();
+builder.Services.AddScoped<ITrainingPlanData, TrainingPlanData>();
+builder.Services.AddScoped<ILocalUserData, LocalUserData>();
 
 var app = builder.Build();
 

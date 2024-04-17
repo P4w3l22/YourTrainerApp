@@ -114,10 +114,19 @@ public class LocalUserData : ILocalUserData
 			Role = registerationRequest.Role
 		};
 
-		await _db.SaveData("spLocalUsers_Insert", user);
+		await _db.SaveData("spLocalUsers_Insert", new
+		{
+			UserName = user.UserName,
+			Name = user.Name,
+			Password = user.Password,
+			Role = user.Role
+		});
 
 		user.Password = string.Empty;
 		return user;
 	}
+
+	public async Task<bool> IsUniqueUser(string userName) =>
+		await GetUserAccountByUserName(userName) is null;
 
 }
