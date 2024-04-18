@@ -3,6 +3,7 @@ using DbDataAccess.Data;
 using DbDataAccess.Models;
 using ExerciseAPI.Models;
 using ExerciseAPI.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -41,6 +42,7 @@ namespace ExerciseAPI.Controllers
             return _response;
         }
 
+        [Authorize(Roles = "admin")]
         [HttpGet("{id:int}", Name = "GetExercise")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
