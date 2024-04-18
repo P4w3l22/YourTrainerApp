@@ -14,7 +14,7 @@ class Program
 	{
 		//CreateExerList.CreateJsonFile();
 
-		//GetExerList.GetDataFromJson();
+		GetExerList.GetDataFromJson();
 
 		//JpgList.DeleteJsonFiles();
 
@@ -22,7 +22,7 @@ class Program
 
 		//TestExerList.GetObjValues();
 
-		JpgList.GetJpgsPaths();
+		//JpgList.GetJpgsPaths();
 
 	}
 }
@@ -76,6 +76,7 @@ class GetExerList
 		string directoryPath = @"C:\Users\pawel\source\repos\YourTrainerApp2\CreatingExercisesJsonDb\exercises.json";
 		string jsonContent = File.ReadAllText(directoryPath);
 		int id = 1;
+		int counter = 0;
 
 		using (JsonDocument document = JsonDocument.Parse(jsonContent))
 		{
@@ -110,13 +111,19 @@ class GetExerList
 							exercise.Equipment = item.Value.ToString();
 							break;
 						case "primaryMuscles":
-							exercise.PrimaryMuscles = item.Value;
+							exercise.PrimaryMuscles = item.Value.ToString();
+							var substring = item.Value.ToString().Substring(6, item.Value.ToString().Length - 10);
+							Console.WriteLine(substring);
+							if (substring == "chest" || substring == "biceps" || substring == "triceps" || substring == "shoulders" || substring == "back" || substring == "abdominals" || substring == "quadriceps")
+							{
+								counter++;
+							}
 							break;
 						case "secondaryMuscles":
-							exercise.SecondaryMuscles = item.Value;
+							exercise.SecondaryMuscles = item.Value.ToString();
 							break;
 						case "instructions":
-							exercise.Instructions = item.Value;
+							exercise.Instructions = item.Value.ToString();
 							break;
 						case "category":
 							exercise.Category = item.Value.ToString();
@@ -124,6 +131,8 @@ class GetExerList
 					}
 
 				}
+
+
 
 				//Exercise exercise = new Exercise
 				//{
@@ -141,7 +150,7 @@ class GetExerList
 				//};
 				id++;
 
-				Console.WriteLine(exercise.Name);
+				Console.WriteLine(counter);
 
 
 				//Exercise? exer = JsonSerializer.Deserialize<Exercise>(property.Value);
@@ -261,9 +270,9 @@ class Exercise
 	public string? Level { get; set; }
 	public string? Mechanic { get; set; }
 	public string? Equipment { get; set; }
-	public string[]? PrimaryMuscles { get; set; }
-	public string[]? SecondaryMuscles { get; set; }
-	public string[]? Instructions { get; set; }
+	public string? PrimaryMuscles { get; set; }
+	public string? SecondaryMuscles { get; set; }
+	public string? Instructions { get; set; }
 	public string? Category { get; set; }
 
 }

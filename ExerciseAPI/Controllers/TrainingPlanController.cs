@@ -3,6 +3,7 @@ using DbDataAccess.Data;
 using DbDataAccess.Models;
 using ExerciseAPI.Models;
 using ExerciseAPI.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -114,6 +115,7 @@ namespace ExerciseAPI.Controllers
 			return _response;
 		}
 
+		[Authorize(Roles = "admin")]
 		[HttpDelete("{id:int}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		public async Task<ActionResult<APIResponse>> DeletePlan(int id)

@@ -42,7 +42,7 @@ namespace ExerciseAPI.Controllers
             return _response;
         }
 
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [HttpGet("{id:int}", Name = "GetExercise")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -77,7 +77,8 @@ namespace ExerciseAPI.Controllers
             return _response;
         }
 
-        [HttpPost]
+		[Authorize(Roles = "admin")]
+		[HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -116,7 +117,8 @@ namespace ExerciseAPI.Controllers
 
         }
 
-        [HttpPut]
+		[Authorize(Roles = "admin")]
+		[HttpPut]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> UpdateExercise([FromBody] ExerciseUpdateDTO exerciseUpdate)
@@ -146,6 +148,7 @@ namespace ExerciseAPI.Controllers
             
         }
 
+		[Authorize(Roles = "admin")]
 		[HttpDelete("{id:int}", Name = "DeleteExercise")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
