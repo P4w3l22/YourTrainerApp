@@ -6,6 +6,7 @@
 	[Series] INT NOT NULL,
 	[Reps] NVARCHAR(50) NOT NULL,
 	[Weights] NVARCHAR(200) NOT NULL,
+	[Sequence] INT,
     CONSTRAINT [FK_TPId] FOREIGN KEY ([TPId]) REFERENCES [TrainingPlans]([Id]),
     CONSTRAINT [FK_EId] FOREIGN KEY ([EId]) REFERENCES [Exercises]([Id]),
 

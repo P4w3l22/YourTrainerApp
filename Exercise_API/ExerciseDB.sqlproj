@@ -59,6 +59,7 @@
     <Folder Include="dbo" />
     <Folder Include="dbo\StoredProcedures" />
     <Folder Include="dbo\Tables" />
+    <Folder Include="dbo\Triggers" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\StoredProcedures\spExercise_GetAll.sql" />
@@ -82,6 +83,8 @@
     <Build Include="dbo\Tables\LocalUsers.sql" />
     <Build Include="dbo\StoredProcedures\spLocalUsers_Get.sql" />
     <Build Include="dbo\StoredProcedures\spLocalUsers_Insert.sql" />
+    <Build Include="dbo\Triggers\fill_sequence_after_insert.sql" />
+    <Build Include="dbo\Triggers\update_sequence_after_delete.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
