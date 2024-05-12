@@ -5,7 +5,7 @@
 
 		<div class="col-8">
 			<div class="card my-4">
-				<div class="card-header">
+				<div class="card-header text-center">
 					<h3 class="card-title">@Model.Name</h3>
 				</div>
 				<div class="card-body row">
@@ -35,8 +35,8 @@
 		</div>
 		<div class="col-4 d-flex justify-content-center">
 			<div class="card my-4" style="width: fit-content">
-				<img src="https://media.istockphoto.com/id/898222860/pl/wektor/m%C4%99skie-cia%C5%82o-cz%C5%82owieka-mapa-mi%C4%99%C5%9Bni-rectus-abdominis.jpg?s=2048x2048&w=is&k=20&c=NXpHy5Pmo42hhbRiRcRGK-kEF_ibBWaiQC-0Y-rbEpo="
-						style="width: 200px" />
+				@* <img src="https://media.istockphoto.com/id/898222860/pl/wektor/m%C4%99skie-cia%C5%82o-cz%C5%82owieka-mapa-mi%C4%99%C5%9Bni-rectus-abdominis.jpg?s=2048x2048&w=is&k=20&c=NXpHy5Pmo42hhbRiRcRGK-kEF_ibBWaiQC-0Y-rbEpo="
+						style="width: 200px" /> *@
 				<div class="card-body">
 					<ul>
 						<li>Grupa mięśni: @Model.Force</li>
@@ -46,10 +46,14 @@
 						<li>Główne mięśnie: @Model.PrimaryMuscles</li>
 						<li>Mięśnie pomocnicze:
 							<ul>
-							@foreach (string musc in Model.SecondaryMuscles.Split(";"))
+							@if (Model.SecondaryMuscles is not null)
 							{
-								<li>@musc</li>
+								@foreach (string musc in Model.SecondaryMuscles.Split(";"))
+								{
+									<li>@musc</li>
+								}	
 							}
+							
 							</ul>
 						</li>
 						<li>Kategoria: @Model.Category</li>

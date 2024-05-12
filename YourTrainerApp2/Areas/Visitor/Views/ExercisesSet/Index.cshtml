@@ -73,6 +73,18 @@
             <iframe src="https://gifer.com/embed/ZKZx" width=180 height=180.000 frameBorder="0" allowFullScreen></iframe><p></p>
         </div>
     </div>
+    @* <div class="container">
+        <div class="card my-2" style="width: fit-content;">
+            <div class="card-header p-0">
+                <img src="\exercises_img\\Alternating_Floor_Press\\0.jpg" alt="Zdjęcie ćwiczenia" style="max-width: 300px;">
+            </div>
+            <div class="card-body" style="height: 95%;">
+                <h5 class="card-title text-center">
+                    <a href="../Visitor/ExercisesSet/Exercise/16" style="text-decoration: none; color: #33C26F">Alternating Floor Press</a>
+                </h5>
+            </div>
+        </div>
+    </div> *@
 </div>
 
 @section Scripts {
@@ -89,7 +101,7 @@
                     el.style.borderBottom = 'none';
                     el.style.color = 'white'
                 })
-                elements[id].style.borderBottom = '2px solid green';
+                elements[id].style.borderBottom = '2px solid #33C26F';
                 elements[id].style.color = 'green';
                 
 
@@ -129,16 +141,18 @@
                             var subArray = el.split("&");
 
                             var card = document.createElement("div");
-                            card.classList.add("card", "my-2");
+                            card.classList.add("card", "m-3", "p-0");
                             card.style.width = "fit-content";
+                            card.style.height = "fit-content";
 
                             var cardHeader = document.createElement("div");
-                            cardHeader.classList.add("card-header");
+                            cardHeader.classList.add("card-header", "p-0");
 
                             var cardImg = document.createElement("img");
                             cardImg.src = "\\" + subArray[1];
                             cardImg.alt = "Zdjęcie ćwiczenia";
-                            cardImg.style.maxWidth = "300px";
+                            cardImg.style.width = "300px";
+                            cardImg.style.maxHeight = "200.81px"
 
                             cardHeader.appendChild(cardImg);
 
@@ -147,7 +161,7 @@
                             cardBody.classList.add("card-body");
                             cardBody.style.height = "95%";
 
-                            var cardTitle = document.createElement("h5");
+                            var cardTitle = document.createElement("h6");
                             cardTitle.color = "green";
                             cardTitle.classList.add("card-title");
 
@@ -155,6 +169,7 @@
                             title.href = "../Visitor/ExercisesSet/Exercise/" + subArray[2];
                             title.text = subArray[0];
                             title.style.textDecoration = "none";
+                            title.style.color = "#33C26F";
                             title.color = "green";
 
                             cardTitle.appendChild(title);

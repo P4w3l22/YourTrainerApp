@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDataSourceStorage">
+    <option name="dataSources">
+      <list>
+        <State>
+          <option name="id" value="5549b8ad-e65f-4486-a593-083f9bee7467" />
+          <option name="name" value="ExerciseDB" />
+          <option name="dbmsName" value="MSSQL" />
+          <option name="urls">
+            <array>
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spExercise_GetAll.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spExercise_Get.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spExercise_Insert.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spExercise_Update.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spExercise_Delete.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlan_Delete.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlan_Get.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlan_GetAll.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlan_Insert.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlan_Update.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlanExercise_Delete.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlanExercise_Get.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlanExercise_GetAll.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlanExercise_Insert.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlanExercise_Update.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spLocalUsers_Get.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spLocalUsers_Insert.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/Exercises.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/TrainingPlans.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/TrainingPlanExercises.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/LocalUsers.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Triggers/fill_sequence_after_insert.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Triggers/update_sequence_after_delete.sql" />
+            </array>
+          </option>
+          <option name="remarks" value="Database Project" />
+          <option name="outPath" value="$PROJECT_DIR$/Exercise_API" />
+          <option name="codeStyleName" value="Visual Studio Database Project" />
+          <option name="scriptOptions">
+            <map>
+              <entry key="ConstraintContext" value="CONSTRAINT_IN_TABLE" />
+              <entry key="MsVsDdlCompatibility" value="1" />
+              <entry key="QualifyWithSchema" value="ALWAYS" />
+              <entry key="Reformat" value="1" />
+              <entry key="UseSemicolon" value="1" />
+            </map>
+          </option>
+        </State>
+      </list>
+    </option>
+  </component>
+</project>

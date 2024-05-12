@@ -1,65 +1,58 @@
 ﻿@model List<Exercise>
 
-<div class="card shadow my-4">
-	<div class="card-header bg-secondary bg-gradient py-3">
+<div class="my-4">
+	<div class="py-3">
 		<div class="row">
 			<div class="col-12 text-center">
-				<h2 class="text-white py-2">Lista ćwiczeń2</h2>
+				<h2 class="text-white py-2">Lista ćwiczeń</h2>
 			</div>
 		</div>
 	</div>
-	<div class="card-body p-4">
+	<div class="p-4">
 		<div class="row pb-3">
 			<div class="col-8"></div>
 			<div class="col-4 text-end">
-				<a asp-controller="ExerciseAdmin" asp-action="Create" class="btn btn-primary">
+				<a asp-controller="ExerciseAdmin" asp-action="Create" class="btn" style="background-color: #37D477; color: black">
 					Dodaj nowe ćwiczenie <i class="bi bi-plus"></i>
 				</a>
 			</div>
 		</div>
 
-		<table>
+		<table style="border-collapse: separate; border-spacing: 0 20px;">
 			<tr>
 				<thead>
 					<th class="w-25">Nazwa</th>
-					@* <th>Push/Pull</th>
-					<th>Poziom</th>
-					<th>Izolowane/Całe ciało</th>
-					<th>Sprzęt</th>
-					<th>Główne mięśnie</th>
-					<th>Poboczne mięśnie</th>
-					<th>Instrukcje</th>
-					<th>Kategoria</th> *@
 					<th class ="w-20">Zdjęcie 1</th>
 					<th class ="w-20">Zdjęcie 2</th>
 					<th>Edycja/Usuń</th>
 				</thead>
 			</tr>
+			<tr>
 				<tbody>
 					@foreach (var obj in Model)
 					{
-					<tr class="m-3">
-						<td>@obj.Name</td>
-						<td>
-							<img src="..\@obj.ImgPath1" width="75%"
-								 style="border-radius: 5px; border: 1px solid #bbb9b9" />
-						</td>
-						<td>
-							<img src="..\@obj.ImgPath2" width="75%"
+						<tr>
+							<td>@obj.Name</td>
+							<td>
+								<img src="..\@obj.ImgPath1" width="75%"
 									 style="border-radius: 5px; border: 1px solid #bbb9b9" />
-						</td>
-						<td>
-							<div class="w-75 btn-group" role="group">
-								<a asp-controller="ExerciseAdmin" asp-action="Update" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
-									<i class="bi bi-pencil-square"></i> Edit
-								</a>
-								<a asp-controller="ExerciseAdmin" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger mx-2">
-									<i class="bi bi-trash-fill"></i> Delete
-								</a>
-							</div>
-						</td>
-					</tr>
-					
+							</td>
+							<td>
+								<img src="..\@obj.ImgPath2" width="75%"
+										 style="border-radius: 5px; border: 1px solid #bbb9b9" />
+							</td>
+							<td>
+								<div class="w-75 btn-group" role="group">
+									<a asp-controller="ExerciseAdmin" asp-action="Update" asp-route-id="@obj.Id" class="btn" style="background-color: orange;">
+										<i class="bi bi-pencil-square"></i> Edit
+									</a>
+									<a asp-controller="ExerciseAdmin" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger mx-1">
+										<i class="bi bi-trash-fill"></i> Delete
+									</a>
+								</div>
+							</td>
+						</tr>
+						@* <hr /> *@
 					}
 				</tbody>
 			</tr>

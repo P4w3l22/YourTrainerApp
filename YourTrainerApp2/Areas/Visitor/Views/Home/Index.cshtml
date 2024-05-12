@@ -4,45 +4,45 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center" >
-    <h1 class="display-4">Progresuj razem z nami!</h1>
+<div class="text-center px-3">
+    <h1 class="display-4 p-4">Progresuj razem z nami!</h1>
     @* TODO: karuzela z ofertą: kontaktuj się z trenerem, dobierz plan pod siebie, przeglądaj ćwiczenia *@
-    <div id="carouselExampleControls1" class="carousel slide my-5" data-bs-ride="carousel">
+    <div id="carouselExampleControls1" class="carousel slide my-5 p-5" data-bs-ride="carousel" 
+         style="border: 1px solid #33C26F;
+                border-radius: 10px;
+                background-color: #33C26F">
         <div class="carousel-inner" id="cardMost">
             <div class="carousel-item active" style="text-align:center">
-                <div style="min-height: 200px;
-                            background-image: url(https://img.freepik.com/free-photo/dumbbells-floor-gym-ai-generative_123827-23743.jpg);
+                <div style="min-height: 400px;
                             max-width: 800px; 
                             margin-left: auto; 
                             margin-right: auto;
                             border-radius: 10px;">
-					<h3>Kontaktuj się z trenerem</h3>
-                    <h6>Zaloguj się i dodaj swojego trenera by móc otrzymywać od niego plany treningowe, wskazówki i kontaktować się z nim</h6>
+                    <h3 style="color: black">Kontaktuj się z trenerem</h3>
+                    <h6 style="color: black">Zaloguj się i dodaj swojego trenera by móc otrzymywać od niego plany treningowe, wskazówki i kontaktować się z nim</h6>
                 </div>
 				
             </div>
 
             <div class="carousel-item">
-                <div style="min-height: 200px;
-                            background-color: gray;
+                <div style="min-height: 400px;
                             max-width: 800px;
                             margin-left: auto;
                             margin-right: auto;
                             border-radius: 10px;">
-                    <h3>Dobierz plan pod siebie</h3>
-                    <h6>Oferujemy możliwość stworzenia własnego planu treningowego, spróbuj <a asp-area="" asp-controller="TrainingPlan" asp-action="Show">tutaj</a></h6>
+                    <h3 style="color: black">Dobierz plan pod siebie</h3>
+                    <h6 style="color: black">Oferujemy możliwość stworzenia własnego planu treningowego, spróbuj <a asp-area="" asp-controller="TrainingPlan" asp-action="Show">tutaj</a></h6>
                 </div>
             </div>
 
             <div class="carousel-item">
-                <div style="min-height: 200px;
-                            background-color: gray;
+                <div style="min-height: 400px;
                             max-width: 800px;
                             margin-left: auto;
                             margin-right: auto;
                             border-radius: 10px;">
-                    <h3>Przeglądaj ćwiczenia</h3>
-                    <h6>Znajdź ćwiczenie które Cię interesuje klikając <a asp-area="" asp-controller="Exercise" asp-action="Index">tutaj</a></h6>
+                    <h3 style="color: black">Przeglądaj ćwiczenia</h3>
+                    <h6 style="color: black">Znajdź ćwiczenie które Cię interesuje klikając <a asp-area="" asp-controller="Exercise" asp-action="Index">tutaj</a></h6>
                 </div>
             </div>
         </div>
@@ -63,22 +63,7 @@
     </div>
 
     @* TODO: oferta z przykładowymi planami treningowymi *@
-
-    <div class="m-4" style="background-color: gray; min-height: 500px; border-radius: 10px">
-        <div class="card" style="max-width: 400px">
-            <div class="card-header">
-                Tytuł
-            </div>
-            <div class="card-body">
-                <div class="card-title">
-                    tytuł
-                </div>
-                <div class="card-text">
-                    przykładowy plan
-                </div>
-            </div>
-        </div>
-	</div>
+    
     @* TODO: oferta bloga *@
 
     @* TODO: opinie klientów *@

@@ -2,28 +2,21 @@
 @model List<TrainingPlan>
 
 <div class="m-3 text-center">
-	<div style="background-color: gray; border-radius: 8px">
-		<h2>Stwórz tutaj swój plan treningowy lub sprawdź nasze!</h2>
-	</div>
-	<div style="background-color: gray; border-radius: 8px">
-		<h4 class="mb-5"><a style="text-decoration: none" href="#">Zaloguj się</a> aby wczytać zapisane plany treningowe</h4>
-		<div>
-			<a asp-controller="TrainingPlan" asp-action="Create" class="btn btn-primary">
-				Dodaj nowy plan <i class="bi bi-plus"></i>
-			</a>
-		</div>
+	<div class="container">
 
-		<div>
-			<h2 class="my-3">Przykładowe plany treningowe: </h2>
+		<div style="margin-bottom: 100px; margin-top: 50px;">
+			<h2 class="my-3">Nasze plany treningowe: </h2>
 			<div style="display: flex;">
 				<div class="row">
 				@foreach (var trainingPlan in Model)
 				{
-					<div class="card m-2" style="max-width: 400px; min-width: 300px;">
-						<div class="card-header" style="text-align: center">
+					<div class="card m-2 p-0" style="max-width: 400px; min-width: 300px;">
+						<div class="card-header text-center">
 							<h3>
-								<a asp-controller="TrainingPlan" asp-action="Show" asp-route-id="@trainingPlan.Id" style="text-decoration: none; color: green">
-									@trainingPlan.Title @trainingPlan.Id
+								<a asp-controller="TrainingPlan" asp-action="Show" asp-route-id="@trainingPlan.Id" 
+								   style="text-decoration: none; 
+										  color: #33C26F">
+									@trainingPlan.Title
 								</a>
 							</h3>
 						</div>
@@ -31,7 +24,7 @@
 							<div class="card-text">
 								<ul>
 									<li>Dla początkujących</li>
-									<li>5 ćwiczeń</li>
+									<li>3 ćwiczeń</li>
 								</ul>
 								<hr />
 								<div class="m-2">
@@ -44,5 +37,13 @@
 				</div>
 			</div>
 		</div>
+
+		<h4 class="mb-5"><a style="text-decoration: none; color: #33C26F" href="#">Zaloguj się</a> aby wczytać zapisane plany treningowe</h4>
+		<div>
+			<a asp-controller="TrainingPlan" asp-action="Create" class="btn" style="background-color: #33C26F; color: black;">
+				Dodaj nowy plan <i class="bi bi-plus"></i>
+			</a>
+		</div>
+	
 	</div>
 </div>

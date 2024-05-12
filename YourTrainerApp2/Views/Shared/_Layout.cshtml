@@ -7,19 +7,19 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/YourTrainerApp2.styles.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/YourTrainerApp2.styles.css" asp-append-version="true" /> *@
 </head>
-<body style="background-color: #05423C;
+<body style="background-color: #101010;
              background-size: cover;">
     <partial name="_Notification"/>
     <header>
         <nav class="navbar navbar-expand-lg m-4 p-3" data-bs-theme="" 
              style="border-radius: 50px;
                     background-color: #1A1A1A;
-                    box-shadow: 0px 0px 3px black">
-            <div class="container-fluid" style="padding-right:0px">
+                    box-shadow: 0 0 3px black">
+            <div class="container-fluid" style="padding-right:0">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="~/images/dumbell2.png" style="max-height: 40px" />
+                    <img src="~/images/dumbell2.png" style="max-height: 40px" alt="Strona domowa"/>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -30,7 +30,7 @@
                         <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
                             <div style="padding-left: 10px; padding-right: 10px;">
                                 <a class="nav-link text-dark" asp-area="Visitor" asp-controller="ExercisesSet" asp-action="Index">
-                                    <p style="color: #6F7172; margin-bottom: 0px">
+                                    <p style="color: #6F7172; margin-bottom: 0">
                                         Atlas ćwiczeń
                                     </p>
                                 </a>
@@ -42,7 +42,7 @@
                         <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
                             <div style="padding-left: 10px; padding-right: 10px;">
                                 <a class="nav-link text-dark" asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Index">
-                                    <p style="color: #6F7172; margin-bottom: 0px">
+                                    <p style="color: #6F7172; margin-bottom: 0">
                                         Plan treningowy
                                     </p>
                                 </a>
@@ -51,7 +51,7 @@
                         <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
                             <div style="padding-left: 10px; padding-right: 10px;">
                                 <a class="nav-link text-dark" asp-area="Visitor" asp-controller="Blog" asp-action="Index">
-                                    <p style="color: #6F7172; margin-bottom: 0px">
+                                    <p style="color: #6F7172; margin-bottom: 0">
                                         Blog
                                     </p>
                                 </a>
@@ -63,9 +63,18 @@
                         </li> *@
                         <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
                             <div style="padding-left: 10px; padding-right: 10px;">
-                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="TrainingPlanAdmin" asp-action="Index">
-                                    <p style="color: #6F7172; margin-bottom: 0px">
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="ExerciseAdmin" asp-action="Index">
+                                    <p style="color: #6F7172; margin-bottom: 0">
                                         Ćwiczenia
+                                    </p>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
+                            <div style="padding-left: 10px; padding-right: 10px;">
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="TrainingPlanAdmin" asp-action="Index">
+                                    <p style="color: #6F7172; margin-bottom: 0">
+                                        Plany treningowe
                                     </p>
                                 </a>
                             </div>

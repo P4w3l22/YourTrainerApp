@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spExercise_Delete.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spExercise_Get.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spExercise_GetAll.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spExercise_Insert.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spExercise_Update.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spLocalUsers_Get.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spLocalUsers_Insert.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlanExercise_Delete.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlanExercise_Get.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlanExercise_GetAll.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlanExercise_Insert.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlanExercise_Update.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlan_Delete.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlan_Get.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlan_GetAll.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlan_Insert.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlan_Update.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/Exercises.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/LocalUsers.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/TrainingPlanExercises.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/TrainingPlans.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/Triggers/fill_sequence_after_insert.sql" dialect="TSQL" />
+    <file url="file://$PROJECT_DIR$/Exercise_API/dbo/Triggers/update_sequence_after_delete.sql" dialect="TSQL" />
+  </component>
+</project>
