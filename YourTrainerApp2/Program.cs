@@ -11,6 +11,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient<IExerciseService, ExerciseService>();
 builder.Services.AddScoped<IExerciseService, ExerciseService>();
 
+builder.Services.AddHttpClient<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddHttpClient<ITrainingPlanService, TrainingPlanService>();
 builder.Services.AddScoped<ITrainingPlanService, TrainingPlanService>();
 

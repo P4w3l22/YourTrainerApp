@@ -73,10 +73,12 @@ class GetExerList
 {
 	protected internal static void GetDataFromJson()
 	{
-		string directoryPath = @"C:\Users\pawel\source\repos\YourTrainerApp2\CreatingExercisesJsonDb\exercises.json";
+		string directoryPath = @"C:\Users\pawel\source\repos\YourTrainerApp2\CreatingExercisesJsonDb\exercisesList.json";
 		string jsonContent = File.ReadAllText(directoryPath);
 		int id = 1;
 		int counter = 0;
+
+		string exercisesListTxt = string.Empty;
 
 		using (JsonDocument document = JsonDocument.Parse(jsonContent))
 		{
@@ -96,7 +98,7 @@ class GetExerList
 					switch (item.Name)
 					{
 						case "name":
-							exercise.Name = item.Value.ToString();
+							exercise.Name = item.Value.ToString().Replace("'", "''");
 							break;
 						case "force":
 							exercise.Force = item.Value.ToString();
@@ -111,19 +113,31 @@ class GetExerList
 							exercise.Equipment = item.Value.ToString();
 							break;
 						case "primaryMuscles":
-							exercise.PrimaryMuscles = item.Value.ToString();
 							var substring = item.Value.ToString().Substring(6, item.Value.ToString().Length - 10);
-							Console.WriteLine(substring);
-							if (substring == "chest" || substring == "biceps" || substring == "triceps" || substring == "shoulders" || substring == "back" || substring == "abdominals" || substring == "quadriceps")
-							{
-								counter++;
-							}
+							exercise.PrimaryMuscles = substring;
+
 							break;
 						case "secondaryMuscles":
-							exercise.SecondaryMuscles = item.Value.ToString();
+							var substringSecondaryMuscles = string.Empty;
+							if (item.Value.ToString().Length > 4)
+							{
+								substringSecondaryMuscles = item.Value.ToString().Substring(6, item.Value.ToString().Length - 10);
+								substringSecondaryMuscles = substringSecondaryMuscles.Replace("\",\r\n ", ";");
+								substringSecondaryMuscles = substringSecondaryMuscles.Replace(" \"", "");
+							}
+							exercise.SecondaryMuscles = substringSecondaryMuscles;
 							break;
 						case "instructions":
-							exercise.Instructions = item.Value.ToString();
+							string instructions = item.Value.ToString();
+							
+							instructions = instructions.Substring(1, instructions.Length - 2);
+							instructions = instructions.Replace("\",", ";");
+							instructions = instructions.Replace("\"", "");
+							instructions = instructions.Replace("\r\n ", "");
+							instructions = instructions.Replace("\r\n", "");
+							instructions = instructions.Replace("'", "''");
+							
+							exercise.Instructions = instructions;
 							break;
 						case "category":
 							exercise.Category = item.Value.ToString();
@@ -132,8 +146,17 @@ class GetExerList
 
 				}
 
-
-
+				exercisesListTxt += $"('{exercise.Category}', " +
+				                    $"'{exercise.Equipment}', " +
+				                    $"'{exercise.Force}', " +
+				                    $"'exercisesListImg\\{exercise.Name.Replace(" ", "_").Replace("'", "''")}\\0.jpg', " +
+				                    $"'exercisesListImg\\{exercise.Name.Replace(" ", "_").Replace("'", "''")}\\1.jpg', " +
+				                    $"'{exercise.Instructions}', " +
+				                    $"'{exercise.Level}', " +
+				                    $"'{exercise.Mechanic}', " +
+				                    $"'{exercise.Name}', " +
+				                    $"'{exercise.PrimaryMuscles}', " +
+				                    $"'{exercise.SecondaryMuscles}'),\n";
 				//Exercise exercise = new Exercise
 				//{
 				//	Id = id,
@@ -149,14 +172,17 @@ class GetExerList
 				//	//ImgPath = exer[9]
 				//};
 				id++;
-
-				Console.WriteLine(counter);
-
+				Console.WriteLine(id);
 
 				//Exercise? exer = JsonSerializer.Deserialize<Exercise>(property.Value);
 
 			}
 		}
+		
+		string exercisesListTxtPath = @"C:\Users\pawel\source\repos\YourTrainerApp2\CreatingExercisesJsonDb\exercisesLists.txt";
+				
+		File.WriteAllText(exercisesListTxtPath, exercisesListTxt);
+
 	}
 }
 

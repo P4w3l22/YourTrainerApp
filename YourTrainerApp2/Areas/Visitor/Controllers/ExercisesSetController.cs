@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using YourTrainerApp.Models;
 using YourTrainerApp2.Models;
@@ -8,7 +9,7 @@ namespace YourTrainerApp.Areas.Visistor.Controllers
 {
     [Area("Visitor")]
     public class ExercisesSetController : Controller
-	{
+    {
 		private readonly IExerciseService _exerciseService;
 
 		public ExercisesSetController(IExerciseService exerciseService)
@@ -34,6 +35,12 @@ namespace YourTrainerApp.Areas.Visistor.Controllers
 			{
 				return NotFound();
 			}
+
+            if (exercise.ImgPath1.Contains("''"))
+            {
+                exercise.ImgPath1 = exercise.ImgPath1.Replace("''", "'");
+                exercise.ImgPath2 = exercise.ImgPath2.Replace("''", "'");
+            }
 
 			return View(exercise);
 		}
@@ -114,8 +121,17 @@ namespace YourTrainerApp.Areas.Visistor.Controllers
                        .Where(u => u.PrimaryMuscles == primaryMuscle)
                        .ToList();
 
-        private string GetExerciseData(Exercise exercise) =>
-            exercise.Name + '&' + exercise.ImgPath1 + '&' + exercise.Id;
+        private string GetExerciseData(Exercise exercise)
+        {
+            if (exercise.ImgPath1.Contains("''"))
+            {
+                exercise.ImgPath1 = exercise.ImgPath1.Replace("''", "'");
+                exercise.ImgPath2 = exercise.ImgPath2.Replace("''", "'");
+            }
+
+            return exercise.Name + '&' + exercise.ImgPath1 + '&' + exercise.Id;
+        }
+            
 
     }
 }

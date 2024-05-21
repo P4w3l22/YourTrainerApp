@@ -25,6 +25,7 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Auth\Data\" />
     <Folder Include="Areas\GymMember\Controllers\" />
     <Folder Include="Areas\GymMember\Data\" />
     <Folder Include="Areas\GymMember\Models\" />
