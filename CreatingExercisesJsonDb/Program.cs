@@ -14,7 +14,7 @@ class Program
 	{
 		//CreateExerList.CreateJsonFile();
 
-		GetExerList.GetDataFromJson();
+		//GetExerList.GetDataFromJson();
 
 		//JpgList.DeleteJsonFiles();
 
@@ -55,18 +55,6 @@ class JpgList
 
 		}
 	}
-
-	protected internal static void GetJpgsPaths()
-	{
-		string directoryPath = @"C:\Users\pawel\source\repos\YourTrainerApp2\YourTrainerApp2\wwwroot\exercises_img\";
-		string[] dirs = Directory.GetDirectories(directoryPath);
-		foreach (string dir in dirs)
-		{
-			string name = Path.GetFileName(dir);
-			Console.WriteLine(name);
-		}
-	}
-
 }
 
 class GetExerList
@@ -76,7 +64,6 @@ class GetExerList
 		string directoryPath = @"C:\Users\pawel\source\repos\YourTrainerApp2\CreatingExercisesJsonDb\exercisesList.json";
 		string jsonContent = File.ReadAllText(directoryPath);
 		int id = 1;
-		int counter = 0;
 
 		string exercisesListTxt = string.Empty;
 
@@ -88,8 +75,6 @@ class GetExerList
 			// Iterowanie po obiektach i wyświetlanie wartości
 			foreach (JsonProperty property in root.EnumerateObject())
 			{
-				//Console.WriteLine($"{property.Value}");
-
 				dynamic exer = JsonConvert.DeserializeObject(property.Value.ToString());
 				Exercise exercise = new();
 
@@ -157,97 +142,15 @@ class GetExerList
 				                    $"'{exercise.Name}', " +
 				                    $"'{exercise.PrimaryMuscles}', " +
 				                    $"'{exercise.SecondaryMuscles}'),\n";
-				//Exercise exercise = new Exercise
-				//{
-				//	Id = id,
-				//	Name = exer[0].Value,
-				//	Force = exer[1].Value,
-				//	Level = exer[2].Value,
-				//	Mechanic = exer[3].Value,
-				//	Equipment = exer[4].Value,
-				//	PrimaryMuscles = exer[5].Value,
-				//	SecondaryMuscles = exer[6].Value,
-				//	Instructions = exer[7].Value,
-				//	Category = exer[8].Value
-				//	//ImgPath = exer[9]
-				//};
 				id++;
 				Console.WriteLine(id);
-
-				//Exercise? exer = JsonSerializer.Deserialize<Exercise>(property.Value);
-
 			}
 		}
 		
 		string exercisesListTxtPath = @"C:\Users\pawel\source\repos\YourTrainerApp2\CreatingExercisesJsonDb\exercisesLists.txt";
 				
 		File.WriteAllText(exercisesListTxtPath, exercisesListTxt);
-
 	}
-}
-
-class TestExerList
-{
-	protected internal static void GetObjValues()
-	{
-		//string directoryPath = @"C:\Users\pawel\source\repos\YourTrainerApp2\CreatingExercisesJsonDb\exercises.json";
-		//string jsonContent = File.ReadAllText(directoryPath);
-
-		//using (JsonDocument document = JsonDocument.Parse(jsonContent))
-		//{
-		//	// Pobieranie korzenia(całego obiektu) dokumentu
-		//	JsonElement root = document.RootElement;
-
-		//	// Iterowanie po obiektach i wyświetlanie wartości
-		//	foreach (JsonProperty property in root.EnumerateObject())
-		//	{
-		//		//Console.WriteLine($"{property.Value}");
-
-		//		Exercise? exer = JsonSerializer.Deserialize<Exercise>(property.Value);
-		//		Console.WriteLine(exer.name);
-		//		Console.WriteLine(exer.force);
-		//		Console.WriteLine(exer.level);
-		//		Console.WriteLine(exer.mechanic);
-		//		Console.WriteLine(exer.equipment);
-
-		//	}
-		//}
-
-		string directoryPath = @"C:\Users\pawel\source\repos\YourTrainerApp2\CreatingExercisesJsonDb\exercises.json";
-		string jsonContent = File.ReadAllText(directoryPath);
-		List<Exercise> exerList = new();
-		int id = 1;
-
-		JArray jsonArray = JArray.Parse(jsonContent);
-
-		foreach (JObject jsonObject in jsonArray)
-		{
-			foreach (JProperty item in jsonObject.Properties())
-			{
-				string key = item.Name;
-				JToken value = item.Value;
-
-				Console.WriteLine($"Klucz: {key}, \nWartość: {value}");
-			}
-		}
-
-
-
-	}
-
-	//protected static void GetValues(string directoryPath)
-	//{
-	//	// Console.WriteLine(File.ReadAllText(directoryPath + @"\exercise.json"));
-	//	string jsonString = File.ReadAllText(directoryPath);
-
-	//	Exercise? exer = JsonSerializer.Deserialize<Exercise>(jsonString);
-	//	Console.WriteLine(exer.name);
-	//	Console.WriteLine(exer.force);
-	//	Console.WriteLine(exer.level);
-	//	Console.WriteLine(exer.mechanic);
-	//	Console.WriteLine(exer.equipment);
-
-	//}
 }
 
 class CreateExerList
@@ -278,9 +181,6 @@ class CreateExerList
 		// Console.WriteLine(File.ReadAllText(directoryPath + @"\exercise.json"));
 		string jsonString = File.ReadAllText(directoryPath + @"\exercise.json");
 		string pathToJpg = "";
-
-		//Exercise? exer = Newtonsoft.Json.JsonSerializer.Deserialize<Exercise>(jsonString);
-		// Console.WriteLine(exer.name);
 
 		string jsonPartToFile = $"\"{id}\" : {jsonString}";
 		return jsonPartToFile;
