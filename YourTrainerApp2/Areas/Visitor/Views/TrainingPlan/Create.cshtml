@@ -1,4 +1,4 @@
-﻿@model List<string>
+﻿@model TrainingPlan
 
 @* @foreach (string el in Model)
 {
@@ -9,17 +9,28 @@
 	<form method="post">
 		<div style="text-align: center">
 			<label for="Title" class="form-label mt-4">Nazwa planu</label>
-			<input name="Title" id="Title" type="text" class="form-control" />
+			<input name="Title" id="Title" type="text" class="form-control" asp-for="@Model.Title"/>
 		</div>
-		<br><br>
+		<br>
 		<div class="btn-group-toggle my-4 d-flex justify-content-center" data-toggle="buttons">
+			
+			@* <input type="hidden" name="TrainingDaysDict['Poniedziałek'].Key"/>
+			<input type="checkbox" name="TrainingDaysDict['Poniedziałek']" value="true"> Poniedziałek *@
+			
+			
 			<label class="btn btn-secondary mx-1">
-				<input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
-					   name="trDays" value="monday"> Poniedziałek
+				<input type="hidden" name='TrainingDaysDict[Poniedziałek].Key' />
+				<input type="checkbox" name='TrainingDaysDict[Poniedziałek]' value="true" onclick="changeCheckboxColor(this)" style="display:none">
+				@* <input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
+					   name="trDays" value="monday">  *@
+				Poniedziałek
 			</label>
 			<label class="btn btn-secondary mx-1">
-				<input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
-					   name="trDays" value="tuesday"> Wtorek
+				<input type="hidden" name='TrainingDaysDict["Wtorek"].Key' />
+				<input type="checkbox" name='TrainingDaysDict["Wtorek"]' value="true" onclick="changeCheckboxColor(this)" style="display:none">
+				@* <input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
+					   name="trDays" value="tuesday">  *@
+				Wtorek
 			</label>
 			<label class="btn btn-secondary mx-1">
 				<input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
@@ -42,6 +53,12 @@
 					   name="trDays" value="sunday"> Niedziela
 			</label>
 		</div>
+		<br />
+
+		<div>
+			<textarea class="form-control" type="text" name="name" value="" asp-for="@Model.Notes"></textarea>
+		</div>
+
 		<div>
 			<button type="submit" class="btn btn-outline-primary form-control">Zatwierdź</button>
 
@@ -55,8 +72,6 @@
 		function changeCheckboxColor(checkbox) {
 			if (checkbox.checked) {
 				checkbox.parentElement.style.color = '#22CE00';
-				// checkbox.parentElement.style.color = '#212020';
-
 			} else {
 				checkbox.parentElement.style.color = '';
 			}

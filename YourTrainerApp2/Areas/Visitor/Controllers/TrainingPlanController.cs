@@ -38,9 +38,22 @@ namespace YourTrainerApp.Areas.Visistor.Controllers
             return View(trainingPlans);
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
-            return View(new List<string> { "1", "2" });
+            TrainingPlan trainingPlan = new();
+            return View(trainingPlan);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(TrainingPlan trainingPlan)
+        {
+            if (trainingPlan.TrainingDaysDict["Poniedziałek"])
+            {
+
+            }
+            return View(new TrainingPlan());
         }
 
         public async Task<IActionResult> Show(int id)

@@ -1,27 +1,33 @@
 ﻿@model YourTrainerApp.Areas.Auth.Models.LoginRequest
 
 <form method="POST">
-    <div class="container border p-4">
+    <div class="container border py-5" style="border-radius: 20px">
         <div class="row text-center">
-            <h1>Login</h1>
+            <h1>Zaloguj</h1>
         </div>
-        <div class="row text-center">
+        <div class="row">
             <div asp-validation-summary="All" class="text-danger"></div>
         </div>
-        <div class="row">
+        <div class="row text-end">
             <div class="col-6 offset-3 pb-2">
-                <input asp-for="UserName" type="text" class="form-control" placeholder="Username.." />
+                <input asp-for="UserName" type="text" class="form-control" placeholder="Nazwa użytkownika.." />
             </div>
             <div class="col-6 offset-3 pb-2">
-                <input asp-for="Password" type="test" class="form-control" placeholder="Password.." />
+                <input asp-for="Password" type="password" class="form-control" placeholder="Hasło.." />
             </div>
-            <div class="col-6 offset-3 pb-2">
-                <button type="submit" class="form-control btn-success" value="Submit">Login</button>
-            </div>
+            @* <div class="col-6 offset-3 pb-2"> *@
+            @*     <button type="submit" class="form-control button-green" value="Submit">Zaloguj</button> *@
+            @* </div> *@
         </div>
+        <br/>
+        
         <div class="row">
             <div class="col-3">
-                <button class="btn btn-primary" asp-action="Register">Rejestracja</button>
+            </div>
+            <div class="col-6 text-center">
+                <button type="submit" class="btn button-green" value="Submit">Zaloguj</button>
+                <a class="button-blank-green btn" asp-controller="Auth" asp-action="Register">Rejestracja</a>
+                <a class="a-green px-2" asp-action="">Zapomniałeś hasła?</a>
             </div>
         </div>
     </div>

@@ -27,3 +27,26 @@ body {
   margin-bottom: 60px;
 }
 
+
+
+.button-blank-green {
+    border: 1px solid #37D477;
+    background-color: inherit
+}
+
+    .button-blank-green:hover {
+        background-color: #37D477;
+        color: #303030;
+        border: 1px solid #303030;
+    }
+
+.a-green {
+    text-decoration: none;
+    color: #37D477;
+}
+
+.button-green {
+    /*padding: 3px;*/
+    background-color: #37D477;
+    color: #303030;
+}

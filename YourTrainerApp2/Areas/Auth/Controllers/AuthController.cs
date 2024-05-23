@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using YourTrainer_Utility;
+using YourTrainerApp.Areas.Admin.Models;
 using YourTrainerApp.Services.IServices;
 using YourTrainerApp2.Models;
 using LoginRequest = YourTrainerApp.Areas.Auth.Models.LoginRequest;
@@ -37,25 +38,42 @@ public class AuthController : Controller
         {
             LoginResponse loginResponse = JsonConvert.DeserializeObject<LoginResponse>(Convert.ToString(apiResponse.Result));
             HttpContext.Session.SetString(StaticDetails.SessionToken, loginResponse.Token);
-            return RedirectToAction("Index", "Home");
+            TempData["success"] = "Zalogowano!";
+            return RedirectToAction("Index", "Home", new { area = "Visitor" });
         }
         ModelState.AddModelError("CustomError", apiResponse.Errors.FirstOrDefault());
         return View(loginRequest);
     }
 
     [HttpGet]
-    public IActionResult Register() =>
-        View();
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterationRequest registerRequest)
+    public IActionResult Register()
     {
-        var apiResponse = await _authService.RegisterAsync<APIResponse>(registerRequest);
+        RegisterationRequestDTO registerRequest = new();
+		return View(registerRequest);
+	}
+
+	[HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(RegisterationRequestDTO registerRequest)
+    {
+        if (registerRequest.ConfirmPassword != registerRequest.RegisterationRequest.Password)
+        {
+            ModelState.AddModelError("CustomError", "Hasła nie są identyczne");
+            return View(registerRequest);
+        }
+        
+        var apiResponse = await _authService.RegisterAsync<APIResponse>(registerRequest.RegisterationRequest);
         if (apiResponse is not null && apiResponse.IsSuccess)
         {
-            return RedirectToAction("Login");
+            TempData["success"] = "Zarejestrowano!";
+
+            LoginResponse loginResponse = JsonConvert.DeserializeObject<LoginResponse>(Convert.ToString(apiResponse.Result));
+            HttpContext.Session.SetString(StaticDetails.SessionToken, loginResponse.Token);
+
+            return RedirectToAction("Index", "Home", new { area = "Visitor" });
         }
+        
+        ModelState.AddModelError("CustomError", apiResponse.Errors.FirstOrDefault());
 
         return View(registerRequest);
     }
@@ -64,7 +82,8 @@ public class AuthController : Controller
     {
         await HttpContext.SignOutAsync();
         HttpContext.Session.SetString(StaticDetails.SessionToken, string.Empty);
-        return RedirectToAction("Index", "Home");
+        TempData["success"] = "Wylogowano!";
+        return RedirectToAction("Index", "Home", new { area = "Visitor" });
     }
 
     public IActionResult AccessDenied() =>

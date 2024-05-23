@@ -10,7 +10,7 @@ public class TrainingPlanService : BaseService, ITrainingPlanService
 	private readonly IHttpClientFactory _client;
 	private string APIUrl;
 
-	public TrainingPlanService(IHttpClientFactory client, IConfiguration configuration) : base(client)
+	public TrainingPlanService(IHttpClientFactory client, IConfiguration? configuration) : base(client)
 	{
 		_client = client;
 		APIUrl = configuration.GetValue<string>("ServiceUrls:ExerciseAPI");

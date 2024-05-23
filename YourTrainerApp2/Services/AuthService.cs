@@ -7,10 +7,12 @@ namespace YourTrainerApp.Services.IServices;
 
 public class AuthService : BaseService, IAuthService
 {
+    private readonly IHttpClientFactory _clientFactory;
     private string APIUrl;
     
-    public AuthService(IHttpClientFactory client, IConfiguration configuration) : base(client)
+    public AuthService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(clientFactory)
     {
+        _clientFactory = clientFactory;
         APIUrl = configuration.GetValue<string>("ServiceUrls:ExerciseAPI");
     }
 

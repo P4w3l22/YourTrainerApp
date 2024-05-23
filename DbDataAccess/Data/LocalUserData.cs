@@ -38,7 +38,7 @@ public class LocalUserData : ILocalUserData
 			{
 				User = null,
 				Token = string.Empty,
-				Errors = new List<string>() { "Brak konta dla danego użytkownika" }
+				Errors = new List<string>() { "Niewłaściwy login" }
 			};
 		}
 		catch (ArgumentException ex)

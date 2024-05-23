@@ -3,6 +3,7 @@ using YourTrainerApp2.Services.IServices;
 using YourTrainerApp2.Services;
 using YourTrainerApp.Services.IServices;
 using YourTrainerApp.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,26 @@ builder.Services.AddScoped<ITrainingPlanService, TrainingPlanService>();
 builder.Services.AddHttpClient<ITrainingPlanExerciseService, TrainingPlanExerciseService>();
 builder.Services.AddScoped<ITrainingPlanExerciseService, TrainingPlanExerciseService>();
 
+
+builder.Services.AddSingleton<IHttpContextAccessor,  HttpContextAccessor>();
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(100);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+})
+.AddAuthentication(options =>
+{
+    options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(options =>
+{
+    options.LogoutPath = "/Auth/Logout"; // Œcie¿ka wylogowania
+}); ;
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -34,6 +55,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseAuthentication();
+
+app.UseSession();
 
 app.MapControllerRoute(
         name: "default",

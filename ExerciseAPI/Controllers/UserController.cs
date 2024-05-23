@@ -2,8 +2,10 @@
 using DbDataAccess.Models;
 using ExerciseAPI.Models;
 using ExerciseAPI.Models.DTO;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using LoginRequest = DbDataAccess.Models.LoginRequest;
 
 namespace ExerciseAPI.Controllers;
 
@@ -64,7 +66,14 @@ public class UserController : Controller
             return BadRequest(_response);
         }
 
+        var loginResponse = await _data.Login(new LoginRequest()
+        {
+            UserName = registerRequest.UserName,
+            Password = registerRequest.Password
+        }, _token);
+
         _response.IsSuccess = true;
+        _response.Result = loginResponse;
         _response.StatusCode = HttpStatusCode.OK;
         return Ok(_response);
     }
