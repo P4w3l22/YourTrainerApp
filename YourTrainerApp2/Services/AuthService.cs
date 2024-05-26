@@ -1,7 +1,9 @@
 ﻿using YourTrainer_Utility;
 using YourTrainerApp.Areas.Auth.Models;
-using YourTrainerApp2.Models;
-using YourTrainerApp2.Services;
+using YourTrainerApp.Models;
+using YourTrainerApp.Services;
+using LoginRequest = YourTrainerApp.Areas.Auth.Models.LoginRequest;
+
 
 namespace YourTrainerApp.Services.IServices;
 

@@ -1,13 +1,12 @@
-﻿using ExerciseAPI.Models;
+﻿
 
-namespace YourTrainerApp.Models.DTO
+namespace YourTrainerApp.Models.DTO;
+
+public class TrainingPlanIndex
 {
-	public class TrainingPlanIndex
-	{
-		public int Id { get; set; }
-		public string Title { get; set; }
-		public string Notes { get; set; }
-		public string Creator { get; set; }
+	public int Id { get; set; }
+	public string Title { get; set; }
+	public string Notes { get; set; }
+	public string Creator { get; set; }
 
-	}
 }

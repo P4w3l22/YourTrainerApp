@@ -1,13 +1,12 @@
-﻿using YourTrainerApp2.Models;
+﻿using YourTrainerApp.Models;
 
-namespace YourTrainerApp.Services.IServices
+namespace YourTrainerApp.Services.IServices;
+
+public interface ITrainingPlanService
 {
-    public interface ITrainingPlanService
-    {
-        Task<T> CreateAsync<T>(TrainingPlan trainingPlan);
-        Task<T> DeleteAsync<T>(int id);
-        Task<T> GetAllAsync<T>();
-        Task<T> GetAsync<T>(int id);
-        Task<T> UpdateAsync<T>(TrainingPlan trainingPlan);
-    }
+    Task<T> CreateAsync<T>(TrainingPlan trainingPlan);
+    Task<T> DeleteAsync<T>(int id);
+    Task<T> GetAllAsync<T>();
+    Task<T> GetAsync<T>(int id);
+    Task<T> UpdateAsync<T>(TrainingPlan trainingPlan);
 }

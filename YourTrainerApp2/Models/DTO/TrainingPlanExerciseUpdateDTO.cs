@@ -1,4 +1,4 @@
-﻿namespace YourTrainerApp2.Models.DTO;
+﻿namespace YourTrainerApp.Models.DTO;
 
 public class TrainingPlanExerciseUpdateDTO
 {

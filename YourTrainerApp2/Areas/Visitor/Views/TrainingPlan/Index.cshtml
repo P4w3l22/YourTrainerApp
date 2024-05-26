@@ -1,30 +1,50 @@
-﻿
+﻿@inject IHttpContextAccessor httpAcc
+
 @model List<TrainingPlan>
 
 <div class="m-3 text-center">
 	<div class="container">
-
+		<br /><br />
+		<div>
+			
+			@if (httpAcc.HttpContext.Session.GetString("Username") is not null &&
+				 httpAcc.HttpContext.Session.GetString("Username").Length > 0)
+			{
+				<div>
+					<a asp-controller="TrainingPlan" asp-action="Create" class="btn button-green">
+						Dodaj nowy plan
+					</a>
+				</div>
+			}
+			else
+			{
+				<h2 class="mb-5">
+					<a class="a-green" asp-area="Auth" asp-controller="Auth" asp-action="Login">Zaloguj się</a> aby wczytać zapisane plany treningowe
+				</h2>
+			}
+			
+		</div>
+		<br /><br />
 		<div style="margin-bottom: 100px; margin-top: 50px;">
 			<h2 class="my-3">Nasze plany treningowe: </h2>
 			<div>
-				<div class="row" style="display: flex; justify-content: center">
+				<div class="row d-flex justify-content-center">
 				@foreach (var trainingPlan in Model)
 				{
-					<div class="card m-2 p-0" style="max-width: 400px; min-width: 300px;">
+					<div class="t-plan-size card m-2 p-0">
 						<div class="card-header text-center">
 							<h3>
 								<a asp-controller="TrainingPlan" asp-action="Show" asp-route-id="@trainingPlan.Id" 
-								   style="text-decoration: none; 
-										  color: #33C26F">
+									class="a-green">
 									@trainingPlan.Title
 								</a>
 							</h3>
 						</div>
 						<div class="card-body">
 							<div class="card-text">
-								<ul>
+								<ul class="no-dots">
 									<li>Dla początkujących</li>
-									<li>3 ćwiczeń</li>
+									<li>@trainingPlan.Exercises.Count() ćwiczeń</li>
 								</ul>
 								<hr />
 								<div class="m-2">
@@ -37,13 +57,5 @@
 				</div>
 			</div>
 		</div>
-
-		<h4 class="mb-5"><a style="text-decoration: none; color: #33C26F" href="#">Zaloguj się</a> aby wczytać zapisane plany treningowe</h4>
-		<div>
-			<a asp-controller="TrainingPlan" asp-action="Create" class="btn" style="background-color: #33C26F; color: black;">
-				Dodaj nowy plan <i class="bi bi-plus"></i>
-			</a>
-		</div>
-	
 	</div>
 </div>

@@ -1,4 +1,4 @@
-﻿namespace YourTrainerApp2.Models;
+﻿namespace YourTrainerApp.Models;
 
 public class TrainingPlanExercise
 {

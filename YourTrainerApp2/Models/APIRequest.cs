@@ -1,6 +1,6 @@
 ﻿using static YourTrainer_Utility.StaticDetails;
 
-namespace YourTrainerApp2.Models;
+namespace YourTrainerApp.Models;
 
 public class APIRequest
 {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using YourTrainerApp2.Models;
+using YourTrainerApp.Models;
 
 namespace YourTrainerApp.Models.VM;
 

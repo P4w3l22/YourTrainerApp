@@ -1,6 +1,6 @@
-﻿using DbDataAccess.Models;
+﻿using YourTrainerApp.Models;
 
-namespace YourTrainerApp2.Models;
+namespace YourTrainerApp.Models;
 
 public class TrainingPlan
 {
@@ -11,7 +11,7 @@ public class TrainingPlan
     public string Creator { get; set; }
 
 	public Dictionary<string, bool> TrainingDaysDict {  get; set; }
-	public List<ExerciseTrainingPlan> Exercises { get; set; }
+	public List<TrainingPlanExercise> Exercises { get; set; }
 
 
     public void CreateTrainingDaysDict()

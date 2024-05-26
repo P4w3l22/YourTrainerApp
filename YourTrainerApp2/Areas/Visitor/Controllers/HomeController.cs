@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
-using YourTrainerApp2.Models;
-using Exercise = YourTrainerApp2.Models.Exercise;
+using YourTrainerApp.Models;
+using Exercise = YourTrainerApp.Models.Exercise;
 
 namespace YourTrainerApp.Areas.Visistor.Controllers
 {

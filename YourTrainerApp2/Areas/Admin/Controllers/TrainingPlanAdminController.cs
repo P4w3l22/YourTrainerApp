@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using YourTrainerApp.Services.IServices;
-using YourTrainerApp2.Models;
+using YourTrainerApp.Models;
 
 namespace YourTrainerApp.Areas.Admin.Controllers;
 

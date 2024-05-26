@@ -1,13 +1,12 @@
-﻿using YourTrainerApp2.Models;
+﻿using YourTrainerApp.Models;
 
-namespace YourTrainerApp2.Services.IServices
+namespace YourTrainerApp.Services.IServices;
+
+public interface IExerciseService
 {
-    public interface IExerciseService
-    {
-        Task<T> GetAllAsync<T>();
-        Task<T> GetAsync<T>(int id);
-        Task<T> CreateAsync<T>(Exercise exercise);
-        Task<T> UpdateAsync<T>(Exercise exercise);
-        Task<T> DeleteAsync<T>(int id);
-    }
+    Task<T> GetAllAsync<T>();
+    Task<T> GetAsync<T>(int id);
+    Task<T> CreateAsync<T>(Exercise exercise);
+    Task<T> UpdateAsync<T>(Exercise exercise);
+    Task<T> DeleteAsync<T>(int id);
 }

@@ -1,11 +1,9 @@
-﻿using ExerciseAPI.Models;
-using YourTrainerApp2.Models;
+﻿using YourTrainerApp.Models;
 
-namespace YourTrainerApp2.Services.IServices
+namespace YourTrainerApp.Services.IServices;
+
+public interface IBaseService
 {
-	public interface IBaseService
-	{
-		APIResponse response { get; set; }
-		Task<T> SendAsync<T>(APIRequest request);
-	}
+	APIResponse response { get; set; }
+	Task<T> SendAsync<T>(APIRequest request);
 }

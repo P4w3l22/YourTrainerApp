@@ -1,64 +1,85 @@
-﻿@model TrainingPlan
+﻿@using Newtonsoft.Json
+@inject IHttpContextAccessor httpAcc
 
-@* @foreach (string el in Model)
-{
-	<p>@el</p>
-} *@
+@* @model TrainingPlan *@
 
-<div class="container m-2">
+@{
+	TrainingPlan Model = JsonConvert.DeserializeObject<TrainingPlan>(TempData["TrainingPlanData"] as string);
+
+}
+	
+
+
+<div class="container m-2 d-flex justify-content-center">
+	
 	<form method="post">
-		<div style="text-align: center">
+		<div class="text-center">
+			<h2>Dodaj nowy plan</h2>
+		</div>
+		<div>
 			<label for="Title" class="form-label mt-4">Nazwa planu</label>
 			<input name="Title" id="Title" type="text" class="form-control" asp-for="@Model.Title"/>
 		</div>
 		<br>
 		<div class="btn-group-toggle my-4 d-flex justify-content-center" data-toggle="buttons">
-			
-			@* <input type="hidden" name="TrainingDaysDict['Poniedziałek'].Key"/>
-			<input type="checkbox" name="TrainingDaysDict['Poniedziałek']" value="true"> Poniedziałek *@
-			
-			
 			<label class="btn btn-secondary mx-1">
 				<input type="hidden" name='TrainingDaysDict[Poniedziałek].Key' />
-				<input type="checkbox" name='TrainingDaysDict[Poniedziałek]' value="true" onclick="changeCheckboxColor(this)" style="display:none">
-				@* <input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
-					   name="trDays" value="monday">  *@
+				<input type="checkbox" name='TrainingDaysDict[Poniedziałek]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
 				Poniedziałek
 			</label>
 			<label class="btn btn-secondary mx-1">
-				<input type="hidden" name='TrainingDaysDict["Wtorek"].Key' />
-				<input type="checkbox" name='TrainingDaysDict["Wtorek"]' value="true" onclick="changeCheckboxColor(this)" style="display:none">
-				@* <input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
-					   name="trDays" value="tuesday">  *@
+				<input type="hidden" name='TrainingDaysDict[Wtorek].Key' />
+				<input type="checkbox" name='TrainingDaysDict[Wtorek]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
 				Wtorek
 			</label>
 			<label class="btn btn-secondary mx-1">
-				<input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
-					   name="trDays" value="wednesday"> Środa
+				<input type="hidden" name='TrainingDaysDict[Środa].Key'/>
+				<input type="checkbox" name='TrainingDaysDict[Środa]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
+				Środa
 			</label>
 			<label class="btn btn-secondary mx-1">
-				<input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
-					   name="trDays" value="thursday"> Czwartek
+				<input type="hidden" name='TrainingDaysDict[Czwartek].Key' />
+				<input type="checkbox" name='TrainingDaysDict[Czwartek]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
+				Czwartek
 			</label>
 			<label class="btn btn-secondary mx-1">
-				<input type="checkbox" onclick="changeCheckboxColor(this)" style="display:none"
-					   name="trDays" value="friday"> Piątek
+				<input type="hidden" name='TrainingDaysDict[Piątek].Key' />
+				<input type="checkbox" name='TrainingDaysDict[Piątek]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
+				Piątek
 			</label>
 			<label class="btn btn-secondary mx-1">
-				<input type="checkbox" onclick="changeCheckboxColor(this)" style="display:none"
-					   name="trDays" value="saturday"> Sobota
+				<input type="hidden" name='TrainingDaysDict[Sobota].Key' />
+				<input type="checkbox" name='TrainingDaysDict[Sobota]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
+				Sobota
 			</label>
 			<label class="btn btn-secondary mx-1">
-				<input type="checkbox" autocomplete="off" onclick="changeCheckboxColor(this)" style="display:none"
-					   name="trDays" value="sunday"> Niedziela
+				<input type="hidden" name='TrainingDaysDict[Niedziela].Key' />
+				<input type="checkbox" name='TrainingDaysDict[Niedziela]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
+				Niedziela
 			</label>
 		</div>
 		<br />
 
 		<div>
-			<textarea class="form-control" type="text" name="name" value="" asp-for="@Model.Notes"></textarea>
+			<input asp-for="@Model.Creator" value="@httpAcc.HttpContext.Session.GetString("Username")" hidden/>
 		</div>
 
+		<div class="row">
+			@* Przechować model danych w zmiennej sesji - same id *@
+
+			<label class="form-label mt-4">Ćwiczenia</label>
+			<a class="btn button-green mx-3" type="button" style="width: fit-content" 
+			   asp-area="Visitor" asp-controller="TrainingPlan" asp-action="ExerciseSelection"> + </a>
+			
+
+		</div>
+
+		<div>
+			<label for="notes" class="form-label mt-4">Notatka do planu</label>
+			<textarea name="notes" class="form-control" type="text" asp-for="@Model.Notes"></textarea>
+		</div>
+
+		<br /><br />
 		<div>
 			<button type="submit" class="btn btn-outline-primary form-control">Zatwierdź</button>
 
@@ -66,14 +87,19 @@
 	</form>
 </div>
 
+@* jQuerry modal popup *@
+
 @section Scripts
 {
+
 	<script>
 		function changeCheckboxColor(checkbox) {
 			if (checkbox.checked) {
 				checkbox.parentElement.style.color = '#22CE00';
+				checkbox.parentElement.style.border = '1px solid #22CE00';
 			} else {
 				checkbox.parentElement.style.color = '';
+				checkbox.parentElement.style.border = 'none';
 			}
 		}
 	</script>

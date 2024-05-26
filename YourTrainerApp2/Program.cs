@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using YourTrainerApp2.Services.IServices;
-using YourTrainerApp2.Services;
 using YourTrainerApp.Services.IServices;
 using YourTrainerApp.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;

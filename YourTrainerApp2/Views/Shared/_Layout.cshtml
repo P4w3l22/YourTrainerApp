@@ -7,11 +7,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - YourTrainerApp2</title>
+    <title>@ViewData["Title"] - YourTrainerApp</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    @* <link rel="stylesheet" href="~/YourTrainerApp2.styles.css" asp-append-version="true" /> *@
 </head>
 <body style="background-color: #101010;
              background-size: cover;">
@@ -52,42 +51,36 @@
                                 </a>
                             </div>
                         </li>
-                        <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
-                            <div style="padding-left: 10px; padding-right: 10px;">
-                                <a class="nav-link text-dark" asp-area="Visitor" asp-controller="Blog" asp-action="Index">
-                                    <p style="color: #6F7172; margin-bottom: 0">
-                                        Blog
-                                    </p>
-                                </a>
-                            </div>
-                        </li>
+
+                        @if (httpAcc.HttpContext.Session.GetString("Username") is not null ||
+                             httpAcc.HttpContext.Session.GetString("Username") == "admin@gmail.com")
+                        {
+                            <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
+                                <div style="padding-left: 10px; padding-right: 10px;">
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="ExerciseAdmin" asp-action="Index">
+                                        <p style="color: #6F7172; margin-bottom: 0">
+                                            Ćwiczenia
+                                        </p>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
+                                <div style="padding-left: 10px; padding-right: 10px;">
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="TrainingPlanAdmin" asp-action="Index">
+                                        <p style="color: #6F7172; margin-bottom: 0">
+                                            Plany treningowe
+                                        </p>
+                                    </a>
+                                </div>
+                            </li>
+                        }
                         
-                        @* <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="ExerciseAdmin" asp-action="Index"><p style="color: black">Ćwiczenia</p></a>
-                        </li> *@
-                        <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
-                            <div style="padding-left: 10px; padding-right: 10px;">
-                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="ExerciseAdmin" asp-action="Index">
-                                    <p style="color: #6F7172; margin-bottom: 0">
-                                        Ćwiczenia
-                                    </p>
-                                </a>
-                            </div>
-                        </li>
-                        <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
-                            <div style="padding-left: 10px; padding-right: 10px;">
-                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="TrainingPlanAdmin" asp-action="Index">
-                                    <p style="color: #6F7172; margin-bottom: 0">
-                                        Plany treningowe
-                                    </p>
-                                </a>
-                            </div>
-                        </li>
                     </ul>
                     
                     @if (httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken) is not null &&
                          httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken).ToString().Length > 0)
                     {
+                        <p>@httpAcc.HttpContext.Session.GetString("Username")</p>
                         <a class="nav-link text-dark" asp-area="Auth" asp-controller="Auth" asp-action="Logout">Wyloguj</a>
                     }
                     else

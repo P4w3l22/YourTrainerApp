@@ -1,7 +1,7 @@
 ﻿using YourTrainer_Utility;
 using YourTrainerApp.Services.IServices;
-using YourTrainerApp2.Models;
-using YourTrainerApp2.Services;
+using YourTrainerApp.Models;
+using YourTrainerApp.Services;
 
 namespace YourTrainerApp.Services;
 

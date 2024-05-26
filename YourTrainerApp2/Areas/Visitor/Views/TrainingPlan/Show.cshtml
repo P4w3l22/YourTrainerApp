@@ -1,4 +1,4 @@
-﻿@using DbDataAccess.Models
+﻿@* @using DbDataAccess.Models *@
 
 @model TrainingPlan
 
@@ -35,11 +35,11 @@
 			<div class="m-2">
 				<div class="row d-flex justify-content-center mb-5">
 
-					@foreach (ExerciseTrainingPlan exercise in Model.Exercises)
+					@* @foreach (ExerciseTrainingPlan exercise in Model.Exercises)
 					{
 						<div class="card m-2" style="width: fit-content; height: fit-content;">
 							<div class="card-header">
-								<img src="..\..\@exercise.ExerciseData.ImgPath1" alt="Alternate Text" style="max-width: 400px;"/>
+								<img src="\@exercise.ExerciseData.ImgPath1" alt="Alternate Text" style="max-width: 400px;"/>
 							</div>
 							<div class="card-body" style="height: 85%">
 								<h5 class="card-title text-center">@exercise.ExerciseData.Name</h5>
@@ -52,6 +52,32 @@
 									@for (int i = 0; i < exerciseRepsList.Count(); i++)
 									{
 										<li>seria:
+											<p class="value1" style="display: inline-block">@exerciseRepsList[i] powtórzeń</p>
+										</li>
+									}
+
+								</ol>
+							</div>
+						</div>
+					} *@
+					@foreach (TrainingPlanExercise exercise in Model.Exercises)
+					{
+						<div class="card m-2" style="width: fit-content; height: fit-content;">
+							<div class="card-header">
+								<img src="" alt="Alternate Text" style="max-width: 400px;" />
+							</div>
+							<div class="card-body" style="height: 85%">
+								<h5 class="card-title text-center">@exercise.EId</h5>
+								<hr />
+								<ol id="ol_1">
+									@{
+										var exerciseWeightsList = exercise.Weights.Split(';');
+										var exerciseRepsList = exercise.Reps.Split(';');
+									}
+									@for (int i = 0; i < exerciseRepsList.Count(); i++)
+									{
+										<li>
+											seria:
 											<p class="value1" style="display: inline-block">@exerciseRepsList[i] powtórzeń</p>
 										</li>
 									}

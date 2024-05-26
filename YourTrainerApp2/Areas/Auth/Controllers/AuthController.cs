@@ -1,12 +1,13 @@
 ﻿using System.Net;
-using DbDataAccess.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using NuGet.Protocol.Plugins;
 using YourTrainer_Utility;
 using YourTrainerApp.Areas.Admin.Models;
+using YourTrainerApp.Areas.Auth.Models;
+using YourTrainerApp.Models;
 using YourTrainerApp.Services.IServices;
-using YourTrainerApp2.Models;
 using LoginRequest = YourTrainerApp.Areas.Auth.Models.LoginRequest;
 using RegisterationRequest = YourTrainerApp.Areas.Auth.Models.RegisterationRequest;
 
@@ -37,7 +38,8 @@ public class AuthController : Controller
         if (apiResponse is not null && apiResponse.IsSuccess)
         {
             LoginResponse loginResponse = JsonConvert.DeserializeObject<LoginResponse>(Convert.ToString(apiResponse.Result));
-            HttpContext.Session.SetString(StaticDetails.SessionToken, loginResponse.Token);
+            SetSessionStrings(loginResponse.Token, loginResponse.User.UserName);
+
             TempData["success"] = "Zalogowano!";
             return RedirectToAction("Index", "Home", new { area = "Visitor" });
         }
@@ -56,7 +58,7 @@ public class AuthController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterationRequestDTO registerRequest)
     {
-        if (registerRequest.ConfirmPassword != registerRequest.RegisterationRequest.Password)
+        if (registerRequest.RegisterationRequest.Password != registerRequest.ConfirmPassword)
         {
             ModelState.AddModelError("CustomError", "Hasła nie są identyczne");
             return View(registerRequest);
@@ -68,9 +70,9 @@ public class AuthController : Controller
             TempData["success"] = "Zarejestrowano!";
 
             LoginResponse loginResponse = JsonConvert.DeserializeObject<LoginResponse>(Convert.ToString(apiResponse.Result));
-            HttpContext.Session.SetString(StaticDetails.SessionToken, loginResponse.Token);
+            SetSessionStrings(loginResponse.Token, loginResponse.User.UserName);
 
-            return RedirectToAction("Index", "Home", new { area = "Visitor" });
+			return RedirectToAction("Index", "Home", new { area = "Visitor" });
         }
         
         ModelState.AddModelError("CustomError", apiResponse.Errors.FirstOrDefault());
@@ -78,10 +80,17 @@ public class AuthController : Controller
         return View(registerRequest);
     }
 
+    private void SetSessionStrings(string sessionToken, string userName)
+    {
+        HttpContext.Session.SetString(StaticDetails.SessionToken, sessionToken);
+        HttpContext.Session.SetString("Username", userName);
+    }
+
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync();
-        HttpContext.Session.SetString(StaticDetails.SessionToken, string.Empty);
+        SetSessionStrings(string.Empty, string.Empty);
+
         TempData["success"] = "Wylogowano!";
         return RedirectToAction("Index", "Home", new { area = "Visitor" });
     }

@@ -50,3 +50,12 @@ body {
     background-color: #37D477;
     color: #303030;
 }
+
+.row .t-plan-size {
+    max-width: 400px;
+    min-width: 300px;
+}
+
+ul.no-dots {
+    list-style-type: none;
+}
