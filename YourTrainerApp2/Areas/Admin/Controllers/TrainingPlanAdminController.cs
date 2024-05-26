@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using YourTrainerApp.Services.IServices;
 using YourTrainerApp.Models;
+using YourTrainerApp.Attributes;
 
 namespace YourTrainerApp.Areas.Admin.Controllers;
 
@@ -15,6 +16,8 @@ public class TrainingPlanAdminController : Controller
         _trainingPlanService = trainingPlanService;
     }
 
+
+    [AdminSessionCheck]
     public async Task<IActionResult> Index()
     {
         var apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();

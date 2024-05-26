@@ -52,7 +52,7 @@
                             </div>
                         </li>
 
-                        @if (httpAcc.HttpContext.Session.GetString("Username") is not null ||
+                        @if (httpAcc.HttpContext.Session.GetString("Username") is not null &&
                              httpAcc.HttpContext.Session.GetString("Username") == "admin@gmail.com")
                         {
                             <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">

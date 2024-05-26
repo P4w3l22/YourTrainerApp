@@ -4,6 +4,7 @@ using YourTrainerApp.Models.VM;
 using YourTrainerApp.Models;
 using YourTrainerApp.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
+using YourTrainerApp.Attributes;
 
 namespace YourTrainerApp.Areas.Admin.Controllers;
 
@@ -17,17 +18,9 @@ public class ExerciseAdminController : Controller
 		_exerciseService = exerciseService;
 	}
 
-
+	[AdminSessionCheck]
 	public async Task<IActionResult> Index()
 	{
-		// Dodać właściwość w nawiasach kwadratowych ( [...] )
-		if (IsNotAdmin())
-		{
-			RaiseUnauthorizeAccess();
-			return RedirectToAction("Index", "Home", new { area = "Visitor" });
-
-		}
-
 		List<Exercise> exerciseList = new();
 
 		var apiResponse = await _exerciseService.GetAllAsync<APIResponse>();
@@ -41,32 +34,17 @@ public class ExerciseAdminController : Controller
 	}
 
 
-	public IActionResult Create()
-	{
-		if (IsNotAdmin())
-		{
-			RaiseUnauthorizeAccess();
-			return RedirectToAction("Index", "Home", new { area = "Visitor" });
-		}
-
-		return View(new ExerciseCreateVM());
-	}
-		
+    [AdminSessionCheck]
+    public IActionResult Create() =>
+		View(new ExerciseCreateVM());
 
 
+	[AdminSessionCheck]
 	[HttpPost, ActionName("Create")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreatePOST(ExerciseCreateVM exerciseCreated)
 	{
-		Console.WriteLine(ModelState.IsValid);
-
 		var apiResponse = await _exerciseService.CreateAsync<APIResponse>(exerciseCreated.Exercise);
-
-		if (apiResponse is null)
-		{
-			TempData["error"] = "Brak dostępu";
-			return RedirectToAction("Index");
-		}
 
 		if (ModelState.IsValid)
 		{
@@ -91,13 +69,9 @@ public class ExerciseAdminController : Controller
 	}
 
 
-	public async Task<IActionResult> Update(int id)
+    [AdminSessionCheck]
+    public async Task<IActionResult> Update(int id)
 	{
-		if (IsNotAdmin())
-		{
-			RaiseUnauthorizeAccess();
-			return RedirectToAction("Index", "Home", new { area = "Visitor" });
-		}
 
 		ExerciseCreateVM exerciseCreateLists = new();
 
@@ -121,7 +95,8 @@ public class ExerciseAdminController : Controller
 	}
 
 
-	[HttpPost, ActionName("Update")]
+	[AdminSessionCheck]
+    [HttpPost, ActionName("Update")]
 	public async Task<IActionResult> UpdatePOST(ExerciseCreateVM exerciseUpdated)
 	{
 		if (exerciseUpdated is null)
@@ -135,14 +110,9 @@ public class ExerciseAdminController : Controller
 	}
 
 
-	public async Task<IActionResult> Delete(int id)
+    [AdminSessionCheck]
+    public async Task<IActionResult> Delete(int id)
 	{
-		if (IsNotAdmin())
-		{
-			RaiseUnauthorizeAccess();
-			return RedirectToAction("Index", "Home", new { area = "Visitor" });
-		}
-
 		if (id == 0)
 		{
 			return NotFound();
@@ -161,20 +131,12 @@ public class ExerciseAdminController : Controller
 	}
 
 
-	[HttpPost, ActionName("Delete")]
+    [AdminSessionCheck]
+    [HttpPost, ActionName("Delete")]
 	public async Task<IActionResult> DeletePOST(int id)
 	{
 		await _exerciseService.DeleteAsync<APIResponse>(id);
         TempData["success"] = "Usunięto ćwiczenie!";
         return RedirectToAction("Index");
-	}
-
-	private bool IsNotAdmin() =>
-		HttpContext.Session.GetString("Username") is null ||
-		HttpContext.Session.GetString("Username") != "admin@gmail.com";
-
-	private void RaiseUnauthorizeAccess()
-	{
-		TempData["error"] = "Brak dostępu";
 	}
 }
