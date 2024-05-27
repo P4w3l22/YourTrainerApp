@@ -5,7 +5,7 @@
 
 @{
 	TrainingPlan Model = JsonConvert.DeserializeObject<TrainingPlan>(httpAcc.HttpContext.Session.GetString("TrainingPlanData"));
-
+	string[] ModelsExercisesId = httpAcc.HttpContext.Session.GetString("ExercisesId").Split(';');
 }
 	
 
@@ -41,10 +41,20 @@
 			@* Przechować model danych w zmiennej sesji - same id *@
 
 			<label class="form-label mt-4">Ćwiczenia</label>
-			<a class="btn button-green mx-3" type="button" style="width: fit-content" 
-			   asp-area="Visitor" asp-controller="TrainingPlan" asp-action="ExerciseSelection"> + </a>
-			
 
+			@if (ModelsExercisesId is not null && ModelsExercisesId.Length > 0)
+			{
+				<p>
+				@foreach (string id in ModelsExercisesId)
+				{
+					@id
+					<br />
+				}
+				</p>
+			}
+
+			<a class="btn button-green mx-3" type="button" style="width: fit-content"
+			   asp-area="Visitor" asp-controller="TrainingPlan" asp-action="ExerciseSelection"> + </a>
 		</div>
 
 		<div>

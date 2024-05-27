@@ -23,13 +23,13 @@
                     cardHeader.id = "cardHeader" + subArray[2];
 
 
-                    var cardBtn = document.createElement("button");
+                    var cardBtn = document.createElement("a");
                     cardBtn.classList.add("btn", "cardBtn");
                     cardBtn.style.borderRadius = "50px";
                     cardBtn.style.backgroundColor = "#33C26F";
-                    //cardBtn.style.display = "none";
-                    cardBtn.id = subArray[2];
+                    cardBtn.href = "/Visitor/TrainingPlan/AddExerciseId/" + subArray[2]
                     cardBtn.textContent = "Dodaj";
+                    
 
                     var cardImg = document.createElement("img");
                     cardImg.src = "\\" + subArray[1];
@@ -62,7 +62,6 @@
 
                     cardBody.appendChild(cardTitle);
                     cardBody.appendChild(cardBtn);
-
 
                     card.appendChild(cardHeader);
                     card.appendChild(cardBody);

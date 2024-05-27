@@ -16,13 +16,6 @@
 		<button class="btn button-green" onclick="loadContent('calves')" id="calves">Łydki</button>
 	</div>
 
-	<div id="testDiv">
-		TEST
-	</div>
-	<div id="testDiv2" style="display: none">
-		TEST CONTENT
-	</div>
-
 	<div class="text-center"
 		 style="min-height: 500px;
 				display: flex;
@@ -40,39 +33,4 @@
 
 @section Scripts {
 	<script src="~/js/loadContent.js"></script>
-	<script>
-		document.addEventListener("DOMContentLoaded", function () {
-			var divs = document.querySelectorAll(".showButton");
-			divs.forEach(function (div) {
-				div.addEventListener("mouseenter", function () {
-					var button = this.querySelector(".cardBtn");
-					var title = button.getAttribute("data-title");
-					button.setAttribute("title", title);
-					button.style.display = "block";
-
-					button.addEventListener("click", function () {
-						// Wywołanie akcji kontrolera za pomocą AJAX
-
-						var formData = new FormData();
-						formData.append("id", button.getAttribute("id"))
-
-						var xhr = new XMLHttpRequest();
-						xhr.open("POST", "/ControllerName/ActionName", true);
-						xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-						xhr.onreadystatechange = function () {
-							if (xhr.readyState === 4 && xhr.status === 200) {
-								// Tutaj możesz obsłużyć odpowiedź z kontrolera
-								alert(xhr.responseText);
-							}
-						};
-						xhr.send(formData);
-					});
-				});
-				div.addEventListener("mouseleave", function () {
-					var button = this.querySelector(".cardBtn");
-					button.style.display = "none";
-				});
-			});
-		});
-	</script>
 }

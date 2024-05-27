@@ -39,19 +39,25 @@ public class TrainingPlanController : Controller
     public IActionResult Create()
     {
         TrainingPlan trainingPlan = new();
-        
+
+        // Przyporządkowywanie do zmiennej sesji planu treningowego lub odczytywanie go jeśli jest ustawiony
 		if (HttpContext.Session.GetString("TrainingPlanData") is null ||
-            HttpContext.Session.GetString("TrainingPlanData").ToString().Length == 0)
+			HttpContext.Session.GetString("TrainingPlanData").ToString().Length == 0)
 		{
 			string trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
-			var trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
 
-            HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);
+			HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);
 		}
 		else
 		{
 			string trainingPlanInJson = HttpContext.Session.GetString("TrainingPlanData");
-			TrainingPlan trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
+			trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
+		}
+
+        // Utworzenie zmiennej sesji zawierającej id ćwiczeń
+		if (HttpContext.Session.GetString("ExercisesId") is null)
+        {
+            HttpContext.Session.SetString("ExercisesId", "");
 		}
 
 		return View(trainingPlan);
@@ -61,31 +67,25 @@ public class TrainingPlanController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create(TrainingPlan trainingPlan)
     {
-        //if (trainingPlan.TrainingDaysDict["Wtorek"])
-        //{
-        //    Console.WriteLine("Działa");
-        //}
+		// TODO: dodać kod obsługujący dodawanie ćwiczeń na podstawie id ze zmiennej sesji do trainingPlan
 
-        string trainingPlanInJson = string.Empty;
-        TrainingPlan trainingPlanObject = new();
+		string trainingPlanInJson = string.Empty;
+		TrainingPlan trainingPlanObject = new();
 
-        HttpContext.Session.SetString("ExercisesId", "");
+		if (HttpContext.Session.GetString("TrainingPlanData") is null ||
+			HttpContext.Session.GetString("TrainingPlanData").ToString().Length == 0)
+		{
+			trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
 
-        if (HttpContext.Session.GetString("TrainingPlanData") is null ||
-            HttpContext.Session.GetString("TrainingPlanData").ToString().Length == 0)
-        {
-            trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
-			trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
+			HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);
+		}
+		else
+		{
+			trainingPlanInJson = HttpContext.Session.GetString("TrainingPlanData");
+			trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
+		}
 
-            HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);
-        }
-        else
-        {
-            trainingPlanInJson = HttpContext.Session.GetString("TrainingPlanData");
-            trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
-        }
-
-        return View(trainingPlan);
+		return View(trainingPlan);
     }
 
     public async Task<IActionResult> Show(int id)
@@ -102,43 +102,37 @@ public class TrainingPlanController : Controller
 
     public async Task<IActionResult> ExerciseSelectionAsync()
     {
-        //string exercisesId = HttpContext.Session.GetString("ExercisesId");
-
-        //exercisesId += "1040;1041";
-
-        //HttpContext.Session.SetString("ExercisesId", exercisesId);
-
-        string trainingPlanInJson = HttpContext.Session.GetString("TrainingPlanData");
-        TrainingPlan trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
-
-        trainingPlanObject.Exercises =
-		[
-			new TrainingPlanExercise()
-			{
-				Id = 20,
-				TpId = 1,
-				EId = 1040,
-				Series = 3,
-				Reps = "10;10;12",
-				Weights = "50;50;60"
-			},
-		];
-
-		HttpContext.Session.SetString("TrainingPlanData", JsonConvert.SerializeObject(trainingPlanObject));
+		
 
 		return View();
     }
 
     public IActionResult AddExerciseId(int id)
     {
-        var trainingPlan = HttpContext.Session.GetString("TrainingPlanData");
-		string trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
-		TrainingPlan trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
-        //trainingPlanObject.TrainingDays
+        string exercisesId = HttpContext.Session.GetString("ExercisesId");
+        if (exercisesId.Length > 0)
+        {
+            exercisesId += ";";
+        }
 
-		HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);
-        return RedirectToAction("Create");
+        exercisesId += id.ToString();
+        HttpContext.Session.SetString("ExercisesId", exercisesId);
+
+        TrainingPlan trainingPlan = GetTrainingPlanSessionData();
+
+        
+
+		return RedirectToAction("Create");
 	}
+
+    private void SaveTrainingPlanSessionData(TrainingPlan trainingPlan)
+    {
+		string trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
+        HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);	
+    }
+
+    private TrainingPlan GetTrainingPlanSessionData() =>
+		JsonConvert.DeserializeObject<TrainingPlan>(HttpContext.Session.GetString("TrainingPlanData"));
 
     private T DeserializeApiResult<T>(object apiResponseResult) =>
         JsonConvert.DeserializeObject<T>(Convert.ToString(apiResponseResult));
