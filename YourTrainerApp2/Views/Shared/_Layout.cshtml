@@ -39,9 +39,6 @@
                                 </a>
                             </div>
                         </li>
-                        @* <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Index"><p style="color: #6F7172">Plan treningowy</p></a>
-                        </li> *@
                         <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
                             <div style="padding-left: 10px; padding-right: 10px;">
                                 <a class="nav-link text-dark" asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Index">
@@ -74,7 +71,6 @@
                                 </div>
                             </li>
                         }
-                        
                     </ul>
                     
                     @if (httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken) is not null &&

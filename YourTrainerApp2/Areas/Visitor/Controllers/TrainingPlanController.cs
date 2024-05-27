@@ -39,18 +39,18 @@ public class TrainingPlanController : Controller
     public IActionResult Create()
     {
         TrainingPlan trainingPlan = new();
-
-		if (TempData["TrainingPlanData"] is null ||
-			TempData["TrainingPlanData"].ToString().Length == 0)
+        
+		if (HttpContext.Session.GetString("TrainingPlanData") is null ||
+            HttpContext.Session.GetString("TrainingPlanData").ToString().Length == 0)
 		{
 			string trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
 			var trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
 
-			TempData["TrainingPlanData"] = trainingPlanInJson;
+            HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);
 		}
 		else
 		{
-			string trainingPlanInJson = TempData["TrainingPlanData"] as string;
+			string trainingPlanInJson = HttpContext.Session.GetString("TrainingPlanData");
 			TrainingPlan trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
 		}
 
@@ -61,29 +61,31 @@ public class TrainingPlanController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create(TrainingPlan trainingPlan)
     {
-        if (trainingPlan.TrainingDaysDict["Wtorek"])
-        {
-            Console.WriteLine("Działa");
-        }
+        //if (trainingPlan.TrainingDaysDict["Wtorek"])
+        //{
+        //    Console.WriteLine("Działa");
+        //}
+
+        string trainingPlanInJson = string.Empty;
+        TrainingPlan trainingPlanObject = new();
 
         HttpContext.Session.SetString("ExercisesId", "");
 
-        if (TempData["TrainingPlanData"] is null ||
-            TempData["TrainingPlanData"].ToString().Length == 0)
+        if (HttpContext.Session.GetString("TrainingPlanData") is null ||
+            HttpContext.Session.GetString("TrainingPlanData").ToString().Length == 0)
         {
-            string trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
-            var trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
+            trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
+			trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
 
-            TempData["TrainingPlanData"] = trainingPlanInJson;
+            HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);
         }
         else
         {
-            string trainingPlanInJson = TempData["TrainingPlanData"] as string;
-            TrainingPlan trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);  
+            trainingPlanInJson = HttpContext.Session.GetString("TrainingPlanData");
+            trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
+        }
 
-		}
-        
-		return View(trainingPlan);
+        return View(trainingPlan);
     }
 
     public async Task<IActionResult> Show(int id)
@@ -106,7 +108,7 @@ public class TrainingPlanController : Controller
 
         //HttpContext.Session.SetString("ExercisesId", exercisesId);
 
-        string trainingPlanInJson = TempData["TrainingPlanData"] as string;
+        string trainingPlanInJson = HttpContext.Session.GetString("TrainingPlanData");
         TrainingPlan trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
 
         trainingPlanObject.Exercises =
@@ -122,10 +124,21 @@ public class TrainingPlanController : Controller
 			},
 		];
 
-		TempData["TrainingPlanData"] = JsonConvert.SerializeObject(trainingPlanObject);
+		HttpContext.Session.SetString("TrainingPlanData", JsonConvert.SerializeObject(trainingPlanObject));
 
 		return View();
     }
+
+    public IActionResult AddExerciseId(int id)
+    {
+        var trainingPlan = HttpContext.Session.GetString("TrainingPlanData");
+		string trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
+		TrainingPlan trainingPlanObject = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
+        //trainingPlanObject.TrainingDays
+
+		HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);
+        return RedirectToAction("Create");
+	}
 
     private T DeserializeApiResult<T>(object apiResponseResult) =>
         JsonConvert.DeserializeObject<T>(Convert.ToString(apiResponseResult));

@@ -1,5 +1,78 @@
 ﻿
 
 <div class="container">
-	<a class="btn" asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Create"></a>
+	<div class="my-5 text-center">
+		<h3>Wybierz ćwiczenie</h3>
+	</div>
+	<div class="container btn-group mb-5">
+		<button class="btn button-green" onclick="loadContent('chest')" id="chest">Klatka piersiowa</button>
+		<button class="btn button-green" onclick="loadContent('back')" id="back">Plecy</button>
+		<button class="btn button-green" onclick="loadContent('shoulders')" id="shoulders">Barki</button>
+		<button class="btn button-green" onclick="loadContent('triceps')" id="triceps">Triceps</button>
+		<button class="btn button-green" onclick="loadContent('biceps')" id="biceps">Biceps</button>
+		<button class="btn button-green" onclick="loadContent('forearms')" id="forearms">Przedramiona</button>
+		<button class="btn button-green" onclick="loadContent('legs')" id="legs">Nogi</button>
+		<button class="btn button-green" onclick="loadContent('abdominals')" id="abdominals">Brzuch</button>
+		<button class="btn button-green" onclick="loadContent('calves')" id="calves">Łydki</button>
+	</div>
+
+	<div id="testDiv">
+		TEST
+	</div>
+	<div id="testDiv2" style="display: none">
+		TEST CONTENT
+	</div>
+
+	<div class="text-center"
+		 style="min-height: 500px;
+				display: flex;
+				justify-content: center;"
+		 id="displayContent">
+		<div id="loader" style="display: none;">
+			<iframe src="https://gifer.com/embed/ZKZx" width=180 height=180.000 frameBorder="0" allowFullScreen></iframe><p></p>
+		</div>
+	</div>
+
+	<div>
+		<a class="btn a-green button-blank-green my-5" asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Create">Powrót</a>
+	</div>
 </div>
+
+@section Scripts {
+	<script src="~/js/loadContent.js"></script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			var divs = document.querySelectorAll(".showButton");
+			divs.forEach(function (div) {
+				div.addEventListener("mouseenter", function () {
+					var button = this.querySelector(".cardBtn");
+					var title = button.getAttribute("data-title");
+					button.setAttribute("title", title);
+					button.style.display = "block";
+
+					button.addEventListener("click", function () {
+						// Wywołanie akcji kontrolera za pomocą AJAX
+
+						var formData = new FormData();
+						formData.append("id", button.getAttribute("id"))
+
+						var xhr = new XMLHttpRequest();
+						xhr.open("POST", "/ControllerName/ActionName", true);
+						xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+						xhr.onreadystatechange = function () {
+							if (xhr.readyState === 4 && xhr.status === 200) {
+								// Tutaj możesz obsłużyć odpowiedź z kontrolera
+								alert(xhr.responseText);
+							}
+						};
+						xhr.send(formData);
+					});
+				});
+				div.addEventListener("mouseleave", function () {
+					var button = this.querySelector(".cardBtn");
+					button.style.display = "none";
+				});
+			});
+		});
+	</script>
+}

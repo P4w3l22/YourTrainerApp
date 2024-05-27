@@ -9,7 +9,7 @@ namespace YourTrainerApp.Areas.Visistor.Controllers;
 
 [Area("Visitor")]
 public class ExercisesSetController : Controller
-    {
+{
 	private readonly IExerciseService _exerciseService;
 
 	public ExercisesSetController(IExerciseService exerciseService)

@@ -4,7 +4,7 @@
 @* @model TrainingPlan *@
 
 @{
-	TrainingPlan Model = JsonConvert.DeserializeObject<TrainingPlan>(TempData["TrainingPlanData"] as string);
+	TrainingPlan Model = JsonConvert.DeserializeObject<TrainingPlan>(httpAcc.HttpContext.Session.GetString("TrainingPlanData"));
 
 }
 	
@@ -22,41 +22,14 @@
 		</div>
 		<br>
 		<div class="btn-group-toggle my-4 d-flex justify-content-center" data-toggle="buttons">
-			<label class="btn btn-secondary mx-1">
-				<input type="hidden" name='TrainingDaysDict[Poniedziałek].Key' />
-				<input type="checkbox" name='TrainingDaysDict[Poniedziałek]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
-				Poniedziałek
-			</label>
-			<label class="btn btn-secondary mx-1">
-				<input type="hidden" name='TrainingDaysDict[Wtorek].Key' />
-				<input type="checkbox" name='TrainingDaysDict[Wtorek]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
-				Wtorek
-			</label>
-			<label class="btn btn-secondary mx-1">
-				<input type="hidden" name='TrainingDaysDict[Środa].Key'/>
-				<input type="checkbox" name='TrainingDaysDict[Środa]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
-				Środa
-			</label>
-			<label class="btn btn-secondary mx-1">
-				<input type="hidden" name='TrainingDaysDict[Czwartek].Key' />
-				<input type="checkbox" name='TrainingDaysDict[Czwartek]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
-				Czwartek
-			</label>
-			<label class="btn btn-secondary mx-1">
-				<input type="hidden" name='TrainingDaysDict[Piątek].Key' />
-				<input type="checkbox" name='TrainingDaysDict[Piątek]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
-				Piątek
-			</label>
-			<label class="btn btn-secondary mx-1">
-				<input type="hidden" name='TrainingDaysDict[Sobota].Key' />
-				<input type="checkbox" name='TrainingDaysDict[Sobota]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
-				Sobota
-			</label>
-			<label class="btn btn-secondary mx-1">
-				<input type="hidden" name='TrainingDaysDict[Niedziela].Key' />
-				<input type="checkbox" name='TrainingDaysDict[Niedziela]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
-				Niedziela
-			</label>
+			@foreach (string day in new List<string>() {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"})
+			{
+				<label class="btn btn-secondary mx-1">
+					<input type="hidden" name='TrainingDaysDict[@day].Key' />
+					<input type="checkbox" name='TrainingDaysDict[@day]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
+					@day
+				</label>
+			}
 		</div>
 		<br />
 

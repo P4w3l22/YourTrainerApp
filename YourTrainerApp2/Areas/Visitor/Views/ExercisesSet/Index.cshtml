@@ -68,7 +68,7 @@
         </nav>
     </div>
 
-    <div class="col-10" id="testDiv" style="text-align: center; display: flex;">
+    <div class="col-10" id="displayContent" style="text-align: center; display: flex;">
         <div id="loader" style="display: none;">
             <iframe src="https://gifer.com/embed/ZKZx" width=180 height=180.000 frameBorder="0" allowFullScreen></iframe><p></p>
         </div>
@@ -88,6 +88,8 @@
 </div>
 
 @section Scripts {
+    <script src="~/js/loadContent.js"></script>
+
     <script> // content changes
         var elements = document.querySelectorAll('ul.navbar-nav li.cat_choice');
         // var contents = document.querySelectorAll('.dis');
@@ -123,80 +125,4 @@
         setInterval(changeImage, 2500);
     </script>
 
-    <script>
-        // TODO: zamienić obsługę wyświetlanych komponentów w js na kod c#
-        function loadContent(type) {
-            $("#loader").show();
-            $.ajax({
-                url: '/Visitor/ExercisesSet/GetDynamicContent',
-                type: 'GET',
-                data: { exerciseType: type },
-                success: function (response) {
-                    if (response.length > 0) {
-                        var array = response.split(",");
-                        var result = document.createElement("div");
-                        result.classList.add("row");
-                        for (const el of array) {
-
-                            var subArray = el.split("&");
-
-                            var card = document.createElement("div");
-                            card.classList.add("card", "m-3", "p-0");
-                            card.style.width = "fit-content";
-                            card.style.height = "fit-content";
-
-                            var cardHeader = document.createElement("div");
-                            cardHeader.classList.add("card-header", "p-0");
-
-                            var cardImg = document.createElement("img");
-                            cardImg.src = "\\" + subArray[1];
-                            cardImg.alt = "Zdjęcie ćwiczenia";
-                            cardImg.style.width = "300px";
-                            cardImg.style.height = "200.81px";
-                            cardImg.style.overflow = "hidden";
-
-                            cardHeader.appendChild(cardImg);
-
-
-                            var cardBody = document.createElement("div");
-                            cardBody.classList.add("card-body");
-                            cardBody.style.height = "95%";
-
-                            var cardTitle = document.createElement("h6");
-                            cardTitle.color = "green";
-                            cardTitle.classList.add("card-title");
-
-                            var title = document.createElement("a");
-                            title.href = "../Visitor/ExercisesSet/Exercise/" + subArray[2];
-                            title.text = subArray[0];
-                            title.style.textDecoration = "none";
-                            title.style.color = "#33C26F";
-                            title.color = "green";
-
-                            cardTitle.appendChild(title);
-
-                            cardBody.appendChild(cardTitle);
-
-
-                            card.appendChild(cardHeader);
-                            card.appendChild(cardBody);
-
-
-                            result.appendChild(card);
-                        }
-                        $('#loader').hide();
-                        $('#testDiv').html(result);
-                    }
-                    else {
-                        $('#loader').hide();
-                        $('#testDiv').html('Brak danych');
-                    }
-
-                },
-                error: function () {
-                    alert('Wystąpił błąd pobierania zawartości z bazy danych.');
-                }
-            })
-        }
-    </script>
 }
