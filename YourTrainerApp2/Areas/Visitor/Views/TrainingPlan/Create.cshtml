@@ -19,16 +19,18 @@
 			<h2>Dodaj nowy plan</h2>
 		</div>
 		<div>
-			<label for="Title" class="form-label mt-4">Nazwa planu</label>
-			<input name="Title" id="Title" type="text" class="form-control" asp-for="@Model.Title" />
+			<label for="title" class="form-label mt-4">Nazwa planu</label>
+			<input name="title" id="title" type="text" class="form-control" value="@Model.Title" onblur="saveTitleData()"/>
 		</div>
 		<br>
 		<div class="btn-group-toggle my-4 d-flex justify-content-center" data-toggle="buttons">
 			@foreach (string day in new List<string>() {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"})
 			{
-				<label class="btn btn-secondary mx-1">
-					<input type="hidden" name='TrainingDaysDict[@day].Key' />
-					<input type="checkbox" name='TrainingDaysDict[@day]' value="true" onclick="changeCheckboxColor(this)" class="d-none">
+				<label class="btn btn-secondary mx-1 ">
+					<input type="checkbox"
+						   class="days-checkbox d-none"
+						   onclick="saveTrainigDaysData('@day'); changeCheckboxColor(this)"
+						   @(Model.TrainingDaysDict[day] ? "checked" : "")>
 					@day
 				</label>
 			}
@@ -82,14 +84,14 @@
 											<input class="input_@exerciseId" 
 												   id="@j-r-@exerciseId" 
 												   type="number" value="@reps[j]" min="1" max="10" 
-												   style="width: 50px;" 
-												   oninput="saveRepsAndWeightsData(@exerciseId, @j)"/>
+												   style="width: 50px;"
+												   onblur="saveRepsAndWeightsData(@exerciseId, @j)" />
 											 x
 											<input class="input_@exerciseId" 
 												   id="@j-w-@exerciseId" 
 												   type="number" value="@weights[j]" step="2.5" max="500" 
 												   style="width: 50px;" 
-												   oninput="saveRepsAndWeightsData(@exerciseId, @j)"/>
+												   onblur="saveRepsAndWeightsData(@exerciseId, @j)"/>
 											kg
 										</li>		
 									}		
@@ -114,7 +116,7 @@
 
 		<div>
 			<label for="notes" class="form-label mt-4">Notatka do planu</label>
-			<textarea name="notes" class="form-control" type="text" asp-for="@trainingPlan.Notes"></textarea>
+			<textarea name="notes" class="form-control" id="notes" type="text" asp-for="@Model.Notes" onblur="saveNotesData()"></textarea>
 		</div>
 
 		<br /><br />
@@ -131,6 +133,57 @@
 @section Scripts
 {
 	<script>
+
+		function saveNotesData() {
+			var notes = document.getElementById("notes").value;
+
+			$.ajax({
+				type: 'GET',
+				url: '/Visitor/TrainingPlan/SaveNotesData',
+				data: { notes: notes },
+				// async: true,
+				success: function () {
+					console.log("Dane zapisane do sesji.");
+				},
+				error: function () {
+					console.log("Wystąpił błąd podczas zapisywania danych do sesji.");
+				}
+			});
+		}
+
+		function saveTrainigDaysData(day) {
+
+			$.ajax({
+				type: 'GET',
+				url: '/Visitor/TrainingPlan/SaveTrainigDaysData',
+				data: { day: day },
+				// async: true,
+				success: function () {
+					console.log("Dane zapisane do sesji.");
+				},
+				error: function () {
+					console.log("Wystąpił błąd podczas zapisywania danych do sesji.");
+				}
+			});
+		}
+
+		function saveTitleData() {
+			var title = document.getElementById("title").value;
+
+			$.ajax({
+				type: 'GET',
+				url: '/Visitor/TrainingPlan/SaveTitleData',
+				data: { title: title },
+				// async: true,
+				success: function () {
+					console.log("Dane zapisane do sesji.");
+				},
+				error: function () {
+					console.log("Wystąpił błąd podczas zapisywania danych do sesji.");
+				}
+			});
+		}
+
 		function saveRepsAndWeightsData(id, position) {
 			event.preventDefault();
 
@@ -154,6 +207,20 @@
 		}
 	</script>
 	<script>
+
+		var checkboxInputs = document.querySelectorAll(".days-checkbox");
+
+		checkboxInputs.forEach(function(checkboxInput) {
+			if (checkboxInput.checked) {
+				checkboxInput.parentElement.style.color = '#22CE00';
+				checkboxInput.parentElement.style.border = '1px solid #22CE00';
+			}
+			else {
+				checkboxInput.parentElement.style.color = '';
+				checkboxInput.parentElement.style.border = 'none';
+			}
+		})
+
 		function changeCheckboxColor(checkbox) {
 			if (checkbox.checked) {
 				checkbox.parentElement.style.color = '#22CE00';

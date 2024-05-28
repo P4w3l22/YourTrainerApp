@@ -40,6 +40,7 @@ public class TrainingPlanController : Controller
     public IActionResult Create()
     {
         TrainingPlan trainingPlan = new();
+        trainingPlan.Creator = HttpContext.Session.GetString("Username");
 
         // Przyporządkowywanie do zmiennej sesji planu treningowego lub odczytywanie go jeśli jest ustawiony
 		if (HttpContext.Session.GetString("TrainingPlanData") is null ||
@@ -68,24 +69,25 @@ public class TrainingPlanController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create(TrainingPlan trainingPlan)
     {
-		// TODO: dodać kod obsługujący dodawanie ćwiczeń na podstawie id ze zmiennej sesji do trainingPlan
+        // TODO: dodać kod obsługujący dodawanie ćwiczeń na podstawie id ze zmiennej sesji do trainingPlan
 
-		string trainingPlanInJson = string.Empty;
+        //string trainingPlanInJson = string.Empty;
 
-		if (HttpContext.Session.GetString("TrainingPlanData") is null ||
-			HttpContext.Session.GetString("TrainingPlanData").ToString().Length == 0)
-		{
-			trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
+        //if (HttpContext.Session.GetString("TrainingPlanData") is null ||
+        //	HttpContext.Session.GetString("TrainingPlanData").ToString().Length == 0)
+        //{
+        //	trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
 
-			HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);
-		}
-		else
-		{
-			trainingPlanInJson = HttpContext.Session.GetString("TrainingPlanData");
-			trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
-		}
+        //	HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);
+        //}
+        //else
+        //{
+        //	trainingPlanInJson = HttpContext.Session.GetString("TrainingPlanData");
+        //	trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
+        //}
+        TrainingPlan trainingPlan1 = GetTrainingPlanSessionData();
 
-		return View(trainingPlan);
+		return View(trainingPlan1);
     }
 
     public async Task<IActionResult> Show(int id)
@@ -247,7 +249,41 @@ public class TrainingPlanController : Controller
 		return RedirectToAction("Create");
 	}
 
-    private void SaveTrainingPlanSessionData(TrainingPlan trainingPlan)
+
+    public IActionResult SaveTitleData(string title)
+    {
+        TrainingPlan trainingPlan = GetTrainingPlanSessionData();
+        trainingPlan.Title = title;
+        SaveTrainingPlanSessionData(trainingPlan);
+        return Ok();
+    }
+
+    public IActionResult SaveTrainigDaysData(string day)
+    {
+        TrainingPlan trainingPlan = GetTrainingPlanSessionData();
+        if (trainingPlan.TrainingDaysDict[day])
+        {
+			trainingPlan.TrainingDaysDict[day] = false;
+		}
+        else
+        {
+            trainingPlan.TrainingDaysDict[day] = true;
+        }
+		
+        SaveTrainingPlanSessionData(trainingPlan);
+
+        return Ok();
+    }
+
+    public IActionResult SaveNotesData(string notes)
+    {
+        TrainingPlan trainingPlan = GetTrainingPlanSessionData();
+        trainingPlan.Notes = notes;
+        SaveTrainingPlanSessionData(trainingPlan);
+        return Ok();
+    }
+
+	private void SaveTrainingPlanSessionData(TrainingPlan trainingPlan)
     {
 		string trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
         HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);	

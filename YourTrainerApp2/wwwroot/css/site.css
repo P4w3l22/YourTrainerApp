@@ -63,3 +63,12 @@ body {
 ul.no-dots {
     list-style-type: none;
 }
+
+.days-checkbox {
+    /*color: red;*/
+}
+
+.check:checked + .days-checkbox {
+    color: #22CE00;
+    border: 1px solid #22CE00;
+}

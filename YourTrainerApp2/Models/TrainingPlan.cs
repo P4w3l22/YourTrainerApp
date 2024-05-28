@@ -13,6 +13,19 @@ public class TrainingPlan
 	public Dictionary<string, bool> TrainingDaysDict {  get; set; }
 	public List<TrainingPlanExercise> Exercises { get; set; }
 
+    public TrainingPlan()
+    {
+        TrainingDaysDict = new()
+        {
+            { "Poniedziałek", false },
+            { "Wtorek", false },
+            { "Środa", false },
+            { "Czwartek", false },
+            { "Piątek", false },
+            { "Sobota", false },
+            { "Niedziela", false }
+        };
+    }
 
     public void CreateTrainingDaysDict()
     {
