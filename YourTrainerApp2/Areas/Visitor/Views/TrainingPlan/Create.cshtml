@@ -58,49 +58,48 @@
 							<h6 class="card-title text-center">@exercises[i].Name</h6>
 							<hr />
 							<ol id="ol_@exerciseId">
+
+								@{
+									string[] reps = Model.Exercises[i].Reps.Split(";");
+									string[] weights = Model.Exercises[i].Weights.Split(";");
+								}
+
 								@for (int j = 0; j < Model.Exercises[i].Series; j++)
 								{
 									if (exercises[i].Equipment == "" || exercises[i].Equipment == "body only" || exercises[i].Equipment == "other")
 									{
 										<li>
 											seria:
-											<input class="input_@exerciseId" type="number" value="4" min="1" max="10" style="width: 50px;" />
+											<input class="input_@exerciseId" id="r_input_@exerciseId" type="number" value="4" min="1" max="10" style="width: 50px;" />
 											powtórzeń
-											<input class="input_@exerciseId" type="number" value="0" hidden/>
+											<input class="input_@exerciseId" id="w_input_@exerciseId" type="number" value="0" hidden/>
 										</li>
 									}
 									else
 									{
 										<li>
 											seria:
-											<input class="input_@exerciseId" type="number" value="4" min="1" max="10" style="width: 50px;" />
+											<input class="input_@exerciseId" 
+												   id="@j-r-@exerciseId" 
+												   type="number" value="@reps[j]" min="1" max="10" 
+												   style="width: 50px;" 
+												   oninput="saveRepsAndWeightsData(@exerciseId, @j)"/>
 											 x
-											<input class="input_@exerciseId" type="number" value="80" step="2.5" max="500" style="width: 50px;" />
+											<input class="input_@exerciseId" 
+												   id="@j-w-@exerciseId" 
+												   type="number" value="@weights[j]" step="2.5" max="500" 
+												   style="width: 50px;" 
+												   oninput="saveRepsAndWeightsData(@exerciseId, @j)"/>
 											kg
 										</li>		
 									}		
 								}
-									
-								@* <li>
-									seria:
-									<input class="input_@exerciseId" type="number" value="4" max="10" style="width: 50px;" />
-									 x
-									<input class="input_@exerciseId" type="number" value="80" max="500" style="width: 50px;" />
-									kg
-								</li>
-								<li>
-									seria:
-									<input class="input_@exerciseId" type="number" value="4" max="10" style="width: 50px;" />
-									 x
-									<input class="input_@exerciseId" type="number" value="80" max="500" style="width: 50px;" />
-									kg
-								</li> *@
-
+								
 							</ol>
 							<div class="row d-flex justify-content-center">
 								<div class="col-4 btn-group">
 									<a class="btn button-red" asp-action="DecrementExerciseSeries" asp-route-id="@exerciseId">-</a>
-									<a class="btn button-green" asp-action="IncrementExerciseSeries" asp-route-id="@exerciseId">+</a>
+									<a class="btn button-green" asp-action="IncrementExerciseSeries" asp-route-id="@exerciseId">+</a>	
 								</div>
 							</div>
 						</div>
@@ -121,7 +120,7 @@
 		<br /><br />
 		<div>
 			<button type="submit" class="btn btn-outline-primary form-control"
-					asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Create" @* asp-route-trainingPlan="@trainingPlan" *@>Zatwierdź</button>
+					asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Create" asp-route-trainingPlan="@trainingPlan">Zatwierdź</button>
 
 		</div>
 	</form>
@@ -131,6 +130,29 @@
 
 @section Scripts
 {
+	<script>
+		function saveRepsAndWeightsData(id, position) {
+			event.preventDefault();
+
+			var reps = document.getElementById(position + "-r-" + id).value;
+			var weights = document.getElementById(position + "-w-" + id).value;
+
+			$.ajax({
+				type: 'GET',
+				url: '/Visitor/TrainingPlan/SaveRepsAndWeightsData',
+				data: { values: reps + ";" + weights, exerciseId: id, seriesPosition: position },
+				// async: true,
+				success: function (response) {
+					console.log(response);
+					console.log("Dane zapisane do sesji.");
+				},
+				error: function (response) {
+					console.log(response);
+					console.log("Wystąpił błąd podczas zapisywania danych do sesji.");
+				}
+			});
+		}
+	</script>
 	<script>
 		function changeCheckboxColor(checkbox) {
 			if (checkbox.checked) {
@@ -181,4 +203,7 @@
 		}
 
 	</script>
+
+
+
 }

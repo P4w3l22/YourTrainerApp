@@ -113,6 +113,9 @@ public class TrainingPlanController : Controller
             if (trainingPlanExercise.EId == id)
             {
                 trainingPlanExercise.Series++;
+                trainingPlanExercise.Reps += ";4";
+                trainingPlanExercise.Weights += ";80";
+
                 break;
             }
         }
@@ -133,7 +136,26 @@ public class TrainingPlanController : Controller
                 if (trainingPlanExercise.Series > 0)
                 {
                     trainingPlanExercise.Series--;
-                }
+
+                    string[] reps = trainingPlanExercise.Reps.Split(";");
+                    string[] weights = trainingPlanExercise.Weights.Split(";");
+
+                    trainingPlanExercise.Reps = "";
+                    trainingPlanExercise.Weights = "";
+
+                    for (int i = 0; i < trainingPlanExercise.Series; i++)
+                    {
+                        trainingPlanExercise.Reps += reps[i] + ';';
+                        trainingPlanExercise.Weights += weights[i] + ';';
+					}
+
+                    if (trainingPlanExercise.Weights.Length > 0)
+                    {
+						trainingPlanExercise.Reps = trainingPlanExercise.Reps.Substring(0, trainingPlanExercise.Reps.Length-1);
+						trainingPlanExercise.Weights = trainingPlanExercise.Weights.Substring(0, trainingPlanExercise.Weights.Length-1);
+					}
+
+				}
 				
 				break;
 			}
@@ -143,6 +165,52 @@ public class TrainingPlanController : Controller
 
 		return RedirectToAction("Create");
 	}
+
+    [HttpGet]
+    public IActionResult SaveRepsAndWeightsData(string values, string exerciseId, string seriesPosition)
+    {
+        int id = int.Parse(exerciseId);
+        int seriesId = int.Parse(seriesPosition);
+        string[] repsAndWeights = values.Split(';');
+
+		TrainingPlan trainingPlan = GetTrainingPlanSessionData();
+
+		foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
+		{
+			if (trainingPlanExercise.EId == id)
+			{
+				string[] reps = trainingPlanExercise.Reps.Split(";");
+				string[] weights = trainingPlanExercise.Weights.Split(";");
+
+                trainingPlanExercise.Reps = "";
+                trainingPlanExercise.Weights = "";
+
+				reps[seriesId] = repsAndWeights[0].ToString();
+				weights[seriesId] = repsAndWeights[1].ToString(); 
+
+				for (int i = 0; i < trainingPlanExercise.Series; i++)
+				{
+					trainingPlanExercise.Reps += reps[i] + ';';
+					trainingPlanExercise.Weights += weights[i] + ';';
+				}
+
+				if (trainingPlanExercise.Weights.Length > 0)
+				{
+					trainingPlanExercise.Reps = trainingPlanExercise.Reps.Substring(0, trainingPlanExercise.Reps.Length - 1);
+					trainingPlanExercise.Weights = trainingPlanExercise.Weights.Substring(0, trainingPlanExercise.Weights.Length - 1);
+				}
+
+				//trainingPlanExercise.Reps += ";" + values[0];
+    //            trainingPlanExercise.Weights += ";" + values[1];
+
+				break;
+			}
+		}
+
+        SaveTrainingPlanSessionData(trainingPlan);
+
+		return Ok("Test");
+    }
 
 	public async Task<IActionResult> AddExerciseId(int id)
     {
@@ -167,7 +235,9 @@ public class TrainingPlanController : Controller
             trainingPlan.Exercises.Add(new()
             {
                 EId = exercise.Id,
-                Series = 3
+                Series = 3,
+                Reps = "4;4;4",
+                Weights = "80;80;80"
             });
 
             SaveTrainingPlanSessionData(trainingPlan);
