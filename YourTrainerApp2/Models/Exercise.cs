@@ -9,7 +9,6 @@ public class Exercise
 	[Key]
 	[Required]
 	public int Id { get; set; }
-
 	public string? Name { get; set; }
 	public string? Force { get; set; }
 	public string? Level { get; set; }

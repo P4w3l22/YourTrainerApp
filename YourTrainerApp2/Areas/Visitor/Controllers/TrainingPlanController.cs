@@ -7,6 +7,7 @@ using YourTrainerApp.Services.IServices;
 using YourTrainerApp.Models;
 using YourTrainerApp.Models.DTO;
 using YourTrainerApp.Services.IServices;
+using YourTrainerApp.Models.VM;
 
 namespace YourTrainerApp.Areas.Visistor.Controllers;
 
@@ -55,9 +56,9 @@ public class TrainingPlanController : Controller
 		}
 
         // Utworzenie zmiennej sesji zawierającej id ćwiczeń
-		if (HttpContext.Session.GetString("ExercisesId") is null)
+		if (HttpContext.Session.GetString("Exercises") is null)
         {
-            HttpContext.Session.SetString("ExercisesId", "");
+            HttpContext.Session.SetString("Exercises", JsonConvert.SerializeObject(new List<TrainingPlanExerciseCreateVM>()));
 		}
 
 		return View(trainingPlan);
@@ -70,7 +71,6 @@ public class TrainingPlanController : Controller
 		// TODO: dodać kod obsługujący dodawanie ćwiczeń na podstawie id ze zmiennej sesji do trainingPlan
 
 		string trainingPlanInJson = string.Empty;
-		TrainingPlan trainingPlanObject = new();
 
 		if (HttpContext.Session.GetString("TrainingPlanData") is null ||
 			HttpContext.Session.GetString("TrainingPlanData").ToString().Length == 0)
@@ -100,28 +100,80 @@ public class TrainingPlanController : Controller
         return View(trainingPlan);
     }
 
-    public async Task<IActionResult> ExerciseSelectionAsync()
-    {
-		
+    public async Task<IActionResult> ExerciseSelectionAsync() =>
+		View();
+    
 
-		return View();
-    }
-
-    public IActionResult AddExerciseId(int id)
+    public IActionResult IncrementExerciseSeries(int id)
     {
-        string exercisesId = HttpContext.Session.GetString("ExercisesId");
-        if (exercisesId.Length > 0)
+		TrainingPlan trainingPlan = GetTrainingPlanSessionData();
+
+        foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
         {
-            exercisesId += ";";
+            if (trainingPlanExercise.EId == id)
+            {
+                trainingPlanExercise.Series++;
+                break;
+            }
         }
 
-        exercisesId += id.ToString();
-        HttpContext.Session.SetString("ExercisesId", exercisesId);
+        SaveTrainingPlanSessionData(trainingPlan);
+
+		return RedirectToAction("Create");
+	}
+
+    public IActionResult DecrementExerciseSeries(int id)
+    {
+		TrainingPlan trainingPlan = GetTrainingPlanSessionData();
+
+		foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
+		{
+			if (trainingPlanExercise.EId == id)
+			{
+                if (trainingPlanExercise.Series > 0)
+                {
+                    trainingPlanExercise.Series--;
+                }
+				
+				break;
+			}
+		}
+
+		SaveTrainingPlanSessionData(trainingPlan);
+
+		return RedirectToAction("Create");
+	}
+
+	public async Task<IActionResult> AddExerciseId(int id)
+    {
+        string exercisesInJson = HttpContext.Session.GetString("Exercises");
+        List<TrainingPlanExerciseCreateVM> exercises = JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(exercisesInJson);
 
         TrainingPlan trainingPlan = GetTrainingPlanSessionData();
 
-        
+        var apiResponse = await _exerciseService.GetAsync<APIResponse>(id);
+		if (apiResponse is not null && apiResponse.IsSuccess)
+		{
+			TrainingPlanExerciseCreateVM exercise = JsonConvert.DeserializeObject<TrainingPlanExerciseCreateVM>(Convert.ToString(apiResponse.Result));
+		    exercises.Add(exercise);
 
+			HttpContext.Session.SetString("Exercises", JsonConvert.SerializeObject(exercises));
+
+            if (trainingPlan.Exercises is null)
+            {
+                trainingPlan.Exercises = new();
+            }
+
+            trainingPlan.Exercises.Add(new()
+            {
+                EId = exercise.Id,
+                Series = 3
+            });
+
+            SaveTrainingPlanSessionData(trainingPlan);
+        }
+
+        //TrainingPlan trainingPlan = GetTrainingPlanSessionData();
 		return RedirectToAction("Create");
 	}
 

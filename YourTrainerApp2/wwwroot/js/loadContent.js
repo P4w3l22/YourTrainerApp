@@ -52,7 +52,7 @@
                     cardTitle.style.whiteSpace = "nowrap";
 
                     var title = document.createElement("a");
-                    title.href = "../Visitor/ExercisesSet/Exercise/" + subArray[2];
+                    title.href = "/Visitor/ExercisesSet/Exercise/" + subArray[2];
                     title.text = subArray[0];
                     title.style.textDecoration = "none";
                     title.style.color = "#33C26F";

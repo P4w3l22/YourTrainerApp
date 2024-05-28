@@ -1,11 +1,13 @@
 ﻿@using Newtonsoft.Json
+@using YourTrainerApp.Models.VM
 @inject IHttpContextAccessor httpAcc
 
-@* @model TrainingPlan *@
+@model TrainingPlan 
 
 @{
-	TrainingPlan Model = JsonConvert.DeserializeObject<TrainingPlan>(httpAcc.HttpContext.Session.GetString("TrainingPlanData"));
-	string[] ModelsExercisesId = httpAcc.HttpContext.Session.GetString("ExercisesId").Split(';');
+	TrainingPlan trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(httpAcc.HttpContext.Session.GetString("TrainingPlanData"));
+	string exercisesInJson = httpAcc.HttpContext.Session.GetString("Exercises");
+	List<TrainingPlanExerciseCreateVM> exercises = JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(exercisesInJson);
 }
 	
 
@@ -18,7 +20,7 @@
 		</div>
 		<div>
 			<label for="Title" class="form-label mt-4">Nazwa planu</label>
-			<input name="Title" id="Title" type="text" class="form-control" asp-for="@Model.Title"/>
+			<input name="Title" id="Title" type="text" class="form-control" asp-for="@Model.Title" />
 		</div>
 		<br>
 		<div class="btn-group-toggle my-4 d-flex justify-content-center" data-toggle="buttons">
@@ -34,7 +36,7 @@
 		<br />
 
 		<div>
-			<input asp-for="@Model.Creator" value="@httpAcc.HttpContext.Session.GetString("Username")" hidden/>
+			<input asp-for="@trainingPlan.Creator" value="@httpAcc.HttpContext.Session.GetString("Username")" hidden />
 		</div>
 
 		<div class="row">
@@ -42,15 +44,69 @@
 
 			<label class="form-label mt-4">Ćwiczenia</label>
 
-			@if (ModelsExercisesId is not null && ModelsExercisesId.Length > 0)
+			@if (exercises is not null && exercises.Count > 0)
 			{
-				<p>
-				@foreach (string id in ModelsExercisesId)
+				<div class="row d-flex justify-content-center">
+				@for (int i = 0; i < exercises.Count; i++)
 				{
-					@id
-					<br />
+					int exerciseId = Model.Exercises[i].EId;
+					<div class="card m-2 p-0" style="width: 300px; height: fit-content;">
+						<div class="card-header p-0">
+							<img src="/@exercises[i].ImgPath1" alt="Alternate Text" style="width: 300px; height: 200.81px" />
+						</div>
+						<div class="card-body" style="height: 95%">
+							<h6 class="card-title text-center">@exercises[i].Name</h6>
+							<hr />
+							<ol id="ol_@exerciseId">
+								@for (int j = 0; j < Model.Exercises[i].Series; j++)
+								{
+									if (exercises[i].Equipment == "" || exercises[i].Equipment == "body only" || exercises[i].Equipment == "other")
+									{
+										<li>
+											seria:
+											<input class="input_@exerciseId" type="number" value="4" min="1" max="10" style="width: 50px;" />
+											powtórzeń
+											<input class="input_@exerciseId" type="number" value="0" hidden/>
+										</li>
+									}
+									else
+									{
+										<li>
+											seria:
+											<input class="input_@exerciseId" type="number" value="4" min="1" max="10" style="width: 50px;" />
+											 x
+											<input class="input_@exerciseId" type="number" value="80" step="2.5" max="500" style="width: 50px;" />
+											kg
+										</li>		
+									}		
+								}
+									
+								@* <li>
+									seria:
+									<input class="input_@exerciseId" type="number" value="4" max="10" style="width: 50px;" />
+									 x
+									<input class="input_@exerciseId" type="number" value="80" max="500" style="width: 50px;" />
+									kg
+								</li>
+								<li>
+									seria:
+									<input class="input_@exerciseId" type="number" value="4" max="10" style="width: 50px;" />
+									 x
+									<input class="input_@exerciseId" type="number" value="80" max="500" style="width: 50px;" />
+									kg
+								</li> *@
+
+							</ol>
+							<div class="row d-flex justify-content-center">
+								<div class="col-4 btn-group">
+									<a class="btn button-red" asp-action="DecrementExerciseSeries" asp-route-id="@exerciseId">-</a>
+									<a class="btn button-green" asp-action="IncrementExerciseSeries" asp-route-id="@exerciseId">+</a>
+								</div>
+							</div>
+						</div>
+					</div>
 				}
-				</p>
+				</div>
 			}
 
 			<a class="btn button-green mx-3" type="button" style="width: fit-content"
@@ -59,12 +115,13 @@
 
 		<div>
 			<label for="notes" class="form-label mt-4">Notatka do planu</label>
-			<textarea name="notes" class="form-control" type="text" asp-for="@Model.Notes"></textarea>
+			<textarea name="notes" class="form-control" type="text" asp-for="@trainingPlan.Notes"></textarea>
 		</div>
 
 		<br /><br />
 		<div>
-			<button type="submit" class="btn btn-outline-primary form-control">Zatwierdź</button>
+			<button type="submit" class="btn btn-outline-primary form-control"
+					asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Create" @* asp-route-trainingPlan="@trainingPlan" *@>Zatwierdź</button>
 
 		</div>
 	</form>
@@ -74,7 +131,6 @@
 
 @section Scripts
 {
-
 	<script>
 		function changeCheckboxColor(checkbox) {
 			if (checkbox.checked) {
@@ -85,5 +141,44 @@
 				checkbox.parentElement.style.border = 'none';
 			}
 		}
+	</script>
+	<script>
+		function displayInputs(id) {
+			var inputs = document.getElementsByClassName("input_" + id);
+
+			var values = document.getElementsByClassName("value_" + id);
+
+			for (var i = 0; i < inputs.length; i++) {
+				inputs[i].style.display = "inline-block";
+				values[i].style.display = "none";
+			}
+		}
+
+		function hideInputs(id) {
+			var inputs = document.getElementsByClassName("input_" + id);
+
+			var values = document.getElementsByClassName("value_" + id);
+
+			for (var i = 0; i < inputs.length; i++) {
+				inputs[i].style.display = "none";
+				values[i].style.display = "inline-block";
+			}
+		}
+
+		function addSeries(id) {
+			const htmlCode = '<li>seria: <input class="input_' + id + '" type="number" value="4" max="10" style="width: 50px;" /> x <input class="input_' + id + '" type="number" value="80" max="500" style="width: 50px;" /> kg</li>'
+
+			var ol = document.getElementById("ol_" + id);
+			ol.innerHTML += htmlCode;
+		}
+
+		function removeSeries(id) {
+			var ol = document.getElementById("ol_" + id);
+			let lastLi = ol.lastChild;
+
+			ol.removeChild(lastLi);
+
+		}
+
 	</script>
 }
