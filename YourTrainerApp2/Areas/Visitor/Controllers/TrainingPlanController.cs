@@ -67,25 +67,34 @@ public class TrainingPlanController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(TrainingPlan trainingPlan)
+    public async Task<IActionResult> Create(TrainingPlan trainingPlan)
     {
-        // TODO: dodać kod obsługujący dodawanie ćwiczeń na podstawie id ze zmiennej sesji do trainingPlan
-
-        //string trainingPlanInJson = string.Empty;
-
-        //if (HttpContext.Session.GetString("TrainingPlanData") is null ||
-        //	HttpContext.Session.GetString("TrainingPlanData").ToString().Length == 0)
-        //{
-        //	trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
-
-        //	HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);
-        //}
-        //else
-        //{
-        //	trainingPlanInJson = HttpContext.Session.GetString("TrainingPlanData");
-        //	trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
-        //}
         TrainingPlan trainingPlan1 = GetTrainingPlanSessionData();
+
+        trainingPlan1.CreateTrainingDaysString();
+
+        await _trainingPlanService.CreateAsync<APIResponse>(trainingPlan1);
+
+        var apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
+        TrainingPlan? trainingPlanDb = DeserializeApiResult<List<TrainingPlan>>(apiResponse.Result)
+						                  .Where(tp => tp.Title == trainingPlan1.Title && tp.Creator == trainingPlan1.Creator)
+						                  .FirstOrDefault();
+
+        int id = trainingPlanDb.Id;
+
+        foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan1.Exercises)
+        {
+            await _trainingPlanExerciseService.InsertAsync<APIResponse>(new TrainingPlanExerciseCreateDTO()
+            {
+                TPId = id,
+                EId = trainingPlanExercise.EId,
+                Series = trainingPlanExercise.Series,
+                Reps = trainingPlanExercise.Reps,
+                Weights = trainingPlanExercise.Weights
+            });
+        }
+
+
 
 		return View(trainingPlan1);
     }

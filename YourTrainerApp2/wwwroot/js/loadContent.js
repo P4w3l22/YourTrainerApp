@@ -38,6 +38,12 @@
                     cardImg.style.height = "200.81px";
                     cardImg.style.overflow = "hidden";
 
+                    //var cardDelete = document.createElement("a");
+                    //cardDelete.classList.add("btn", "cardBtnDelete", "button-red");
+                    //cardBtn.style.borderRadius = "50px";
+                    //cardBtn.href = "/Visitor/TrainingPlan//" + subArray[2]
+
+
                     cardHeader.appendChild(cardImg);
 
 

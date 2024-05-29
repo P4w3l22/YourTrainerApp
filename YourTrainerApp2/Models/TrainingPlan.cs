@@ -38,4 +38,15 @@ public class TrainingPlan
 		}
 	}
 
+    public void CreateTrainingDaysString()
+    {
+        foreach (KeyValuePair<string, bool> trainingDay in TrainingDaysDict)
+        {
+            TrainingDays += $"{trainingDay.Key}:" + (trainingDay.Value ? "1" : "0") + ";";
+		}
+
+        TrainingDays = TrainingDays.Substring(0, TrainingDays.Length - 1);
+        Console.WriteLine(TrainingDays);
+    }
+
 }

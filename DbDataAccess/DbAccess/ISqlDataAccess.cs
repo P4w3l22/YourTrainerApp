@@ -1,9 +1,8 @@
 ﻿
-namespace DbDataAccess.DbAccess
+namespace DbDataAccess.DbAccess;
+
+public interface ISqlDataAccess
 {
-	public interface ISqlDataAccess
-	{
-		Task<IEnumerable<T>> GetData<T, U>(string storedProcedure, U parameters, string connectionId = "DefaultSQLConnection");
-		Task SaveData<T>(string storedProcedure, T parameters, string connectionId = "DefaultSQLConnection");
-	}
+	Task<IEnumerable<T>> GetData<T, U>(string storedProcedure, U parameters, string connectionId = "DefaultSQLConnection");
+	Task SaveData<T>(string storedProcedure, T parameters, string connectionId = "DefaultSQLConnection");
 }
