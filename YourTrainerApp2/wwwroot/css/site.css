@@ -13,7 +13,7 @@ html {
 }
 
 .week:checked + .weekL {
-    color: greenyellow;
+    color: #37D477;
     box-shadow: 0 0 2px 1px;
 }
 

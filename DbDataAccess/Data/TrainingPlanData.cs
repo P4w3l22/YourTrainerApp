@@ -37,19 +37,19 @@ public class TrainingPlanData : ITrainingPlanData
 		return plan;
 	}
 
-	private async Task<List<ExerciseTrainingPlan>> SetPlanExercises(int id)
+	private async Task<List<TrainingPlanExerciseModel>> SetPlanExercises(int id)
 	{
-		List<ExerciseTrainingPlan> planExercises = new();
+		List<TrainingPlanExerciseModel> planExercises = new();
 
 		IEnumerable<TrainingPlanExerciseModel> planExercisesFromDb = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
 
-		foreach (var exercise in planExercisesFromDb)
-		{
-			var exerciseData = await _exerciseData.GetExercise(exercise.EId);
-			planExercises.Add(CreateExerciseTrainingPlan(exercise, exerciseData));
-		}
+		//foreach (var exercise in planExercisesFromDb)
+		//{
+		//	var exerciseData = await _exerciseData.GetExercise(exercise.EId);
+		//	planExercises.Add(CreateExerciseTrainingPlan(exercise, exerciseData));
+		//}
 
-		return planExercises;
+		return planExercisesFromDb.ToList();
 	}
 
 	private ExerciseTrainingPlan CreateExerciseTrainingPlan(TrainingPlanExerciseModel exercise, ExerciseModel exerciseData) =>

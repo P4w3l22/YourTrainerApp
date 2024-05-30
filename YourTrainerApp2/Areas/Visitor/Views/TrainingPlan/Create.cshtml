@@ -26,7 +26,7 @@
 		<div class="btn-group-toggle my-4 d-flex justify-content-center" data-toggle="buttons">
 			@foreach (string day in new List<string>() {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"})
 			{
-				<label class="btn btn-secondary mx-1 ">
+				<label class="btn btn-secondary mx-1 " style="background-color: #262626">
 					<input type="checkbox"
 						   class="days-checkbox d-none"
 						   onclick="saveTrainigDaysData('@day'); changeCheckboxColor(this)"
@@ -121,7 +121,7 @@
 
 		<br /><br />
 		<div>
-			<button type="submit" class="btn btn-outline-primary form-control"
+			<button type="submit" class="btn button-green form-control"
 					asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Create" asp-route-trainingPlan="@trainingPlan">Zatwierdź</button>
 
 		</div>
@@ -132,80 +132,7 @@
 
 @section Scripts
 {
-	<script>
-
-		function saveNotesData() {
-			var notes = document.getElementById("notes").value;
-
-			$.ajax({
-				type: 'GET',
-				url: '/Visitor/TrainingPlan/SaveNotesData',
-				data: { notes: notes },
-				// async: true,
-				success: function () {
-					console.log("Dane zapisane do sesji.");
-				},
-				error: function () {
-					console.log("Wystąpił błąd podczas zapisywania danych do sesji.");
-				}
-			});
-		}
-
-		function saveTrainigDaysData(day) {
-
-			$.ajax({
-				type: 'GET',
-				url: '/Visitor/TrainingPlan/SaveTrainigDaysData',
-				data: { day: day },
-				// async: true,
-				success: function () {
-					console.log("Dane zapisane do sesji.");
-				},
-				error: function () {
-					console.log("Wystąpił błąd podczas zapisywania danych do sesji.");
-				}
-			});
-		}
-
-		function saveTitleData() {
-			var title = document.getElementById("title").value;
-
-			$.ajax({
-				type: 'GET',
-				url: '/Visitor/TrainingPlan/SaveTitleData',
-				data: { title: title },
-				// async: true,
-				success: function () {
-					console.log("Dane zapisane do sesji.");
-				},
-				error: function () {
-					console.log("Wystąpił błąd podczas zapisywania danych do sesji.");
-				}
-			});
-		}
-
-		function saveRepsAndWeightsData(id, position) {
-			event.preventDefault();
-
-			var reps = document.getElementById(position + "-r-" + id).value;
-			var weights = document.getElementById(position + "-w-" + id).value;
-
-			$.ajax({
-				type: 'GET',
-				url: '/Visitor/TrainingPlan/SaveRepsAndWeightsData',
-				data: { values: reps + ";" + weights, exerciseId: id, seriesPosition: position },
-				// async: true,
-				success: function (response) {
-					console.log(response);
-					console.log("Dane zapisane do sesji.");
-				},
-				error: function (response) {
-					console.log(response);
-					console.log("Wystąpił błąd podczas zapisywania danych do sesji.");
-				}
-			});
-		}
-	</script>
+	<script src="~/js/trainingDataSaving.js"></script>
 	<script>
 
 		var checkboxInputs = document.querySelectorAll(".days-checkbox");
@@ -254,20 +181,20 @@
 			}
 		}
 
-		function addSeries(id) {
-			const htmlCode = '<li>seria: <input class="input_' + id + '" type="number" value="4" max="10" style="width: 50px;" /> x <input class="input_' + id + '" type="number" value="80" max="500" style="width: 50px;" /> kg</li>'
+		// function addSeries(id) {
+		// 	const htmlCode = '<li>seria: <input class="input_' + id + '" type="number" value="4" max="10" style="width: 50px;" /> x <input class="input_' + id + '" type="number" value="80" max="500" style="width: 50px;" /> kg</li>'
 
-			var ol = document.getElementById("ol_" + id);
-			ol.innerHTML += htmlCode;
-		}
+		// 	var ol = document.getElementById("ol_" + id);
+		// 	ol.innerHTML += htmlCode;
+		// }
 
-		function removeSeries(id) {
-			var ol = document.getElementById("ol_" + id);
-			let lastLi = ol.lastChild;
+		// function removeSeries(id) {
+		// 	var ol = document.getElementById("ol_" + id);
+		// 	let lastLi = ol.lastChild;
 
-			ol.removeChild(lastLi);
+		// 	ol.removeChild(lastLi);
 
-		}
+		// }
 
 	</script>
 

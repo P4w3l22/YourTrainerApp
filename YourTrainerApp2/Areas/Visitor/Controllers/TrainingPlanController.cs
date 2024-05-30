@@ -8,6 +8,9 @@ using YourTrainerApp.Models;
 using YourTrainerApp.Models.DTO;
 using YourTrainerApp.Services.IServices;
 using YourTrainerApp.Models.VM;
+using Microsoft.Extensions.Logging.Abstractions;
+using YourTrainerApp.Attributes;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace YourTrainerApp.Areas.Visistor.Controllers;
 
@@ -23,22 +26,43 @@ public class TrainingPlanController : Controller
         _trainingPlanService = trainingPlanService;
 		_trainingPlanExerciseService = trainingPlanExerciseService;
 		_exerciseService = exerciseService;
+        // Dodać w konstruktorze przyporządkowanie zmiennej sesji
     }
 
     public async Task<IActionResult> Index()
     {
         var apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
-        
+        string creator = HttpContext.Session.GetString("Username");
+
+        string test = HttpContext.Session.GetString("TrainingPlanData");
+        string test2 = HttpContext.Session.GetString("Exercises");
+
+		if (creator is null ||
+			creator.Length == 0)
+        {
+            creator = "admin";
+        }
+
         var trainingPlans = DeserializeApiResult<List<TrainingPlan>>(apiResponse.Result)
-                           .Where(tp => tp.Creator == "admin")
+                           .Where(tp => tp.Creator == creator)
                            .ToList();
+
+        if (HttpContext.Session.GetString("Exercises") is not null)
+        {
+            HttpContext.Session.SetString("Exercises", "");
+		}
 
         return View(trainingPlans);
     }
 
     [HttpGet]
-    public IActionResult Create()
+    public IActionResult Create(bool isCreating = true)
     {
+        if (!isCreating)
+        {
+            HttpContext.Session.SetString("Exercises", "");
+		}
+
         TrainingPlan trainingPlan = new();
         trainingPlan.Creator = HttpContext.Session.GetString("Username");
 
@@ -57,7 +81,8 @@ public class TrainingPlanController : Controller
 		}
 
         // Utworzenie zmiennej sesji zawierającej id ćwiczeń
-		if (HttpContext.Session.GetString("Exercises") is null)
+		if (HttpContext.Session.GetString("Exercises") is null ||
+			HttpContext.Session.GetString("Exercises").Length == 0)
         {
             HttpContext.Session.SetString("Exercises", JsonConvert.SerializeObject(new List<TrainingPlanExerciseCreateVM>()));
 		}
@@ -67,11 +92,14 @@ public class TrainingPlanController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ClearSessionStrings]
     public async Task<IActionResult> Create(TrainingPlan trainingPlan)
     {
         TrainingPlan trainingPlan1 = GetTrainingPlanSessionData();
 
         trainingPlan1.CreateTrainingDaysString();
+
+        // Do refaktoryzacji
 
         await _trainingPlanService.CreateAsync<APIResponse>(trainingPlan1);
 
@@ -94,12 +122,13 @@ public class TrainingPlanController : Controller
             });
         }
 
+		TempData["success"] = "Dodano plan!";
 
+		return RedirectToAction("Index");
+	}
 
-		return View(trainingPlan1);
-    }
-
-    public async Task<IActionResult> Show(int id)
+	//[ClearSessionStrings]
+	public async Task<IActionResult> Show(int id)
     {
 		var apiResponse = await _trainingPlanService.GetAsync<APIResponse>(id);
 
@@ -107,8 +136,21 @@ public class TrainingPlanController : Controller
 		var trainingPlan = DeserializeApiResult<TrainingPlan>(apiResponse.Result);
         trainingPlan.CreateTrainingDaysDict();
 
+		List<TrainingPlanExerciseCreateVM> exercises = new();
 
-        return View(trainingPlan);
+
+		foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
+        {
+			var apiResponse2 = await _exerciseService.GetAsync<APIResponse>(trainingPlanExercise.EId);
+            TrainingPlanExerciseCreateVM exercise = JsonConvert.DeserializeObject<TrainingPlanExerciseCreateVM>(Convert.ToString(apiResponse2.Result));
+            exercises.Add(exercise);
+		}
+
+        string exercisesInJson = JsonConvert.SerializeObject(exercises);
+        HttpContext.Session.SetString("Exercises", exercisesInJson);
+
+
+		return View(trainingPlan);
     }
 
     public async Task<IActionResult> ExerciseSelectionAsync() =>
@@ -227,6 +269,11 @@ public class TrainingPlanController : Controller
     {
         string exercisesInJson = HttpContext.Session.GetString("Exercises");
         List<TrainingPlanExerciseCreateVM> exercises = JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(exercisesInJson);
+
+        if (exercises is null)
+        {
+            exercises = new();
+        }
 
         TrainingPlan trainingPlan = GetTrainingPlanSessionData();
 

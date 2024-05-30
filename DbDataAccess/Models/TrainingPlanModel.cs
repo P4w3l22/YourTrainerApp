@@ -13,6 +13,6 @@ public class TrainingPlanModel
 	public string TrainingDays { get; set; }
 	public string Notes { get; set; }
 	public string Creator { get; set; }
-	public List<ExerciseTrainingPlan>? Exercises { get; set; }
+	public List<TrainingPlanExerciseModel>? Exercises { get; set; }
 
 }

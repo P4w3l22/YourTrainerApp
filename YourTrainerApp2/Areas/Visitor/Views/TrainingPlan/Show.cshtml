@@ -1,14 +1,24 @@
-﻿@* @using DbDataAccess.Models *@
+﻿@using Newtonsoft.Json
+@using YourTrainerApp.Models.VM
+@* @using DbDataAccess.Models *@
+
+@inject IHttpContextAccessor httpAcc
+
 
 @model TrainingPlan
 
+@{
+	List<TrainingPlanExerciseCreateVM> exercises = JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(httpAcc.HttpContext.Session.GetString("Exercises"));
+}
+
 <div>
-	<div class="card border-light m-3" style="min-height: 900px;">
-		<div class="card-header" style="text-align: center">
+	<div class="container m-2 d-flex justify-content-center p-4" @* style="min-height: 900px;" *@>
+		<form>
+		<div class="text-center p-4">
 			<h2>@Model.Title</h2>
 		</div>
-		<div class="card-body">
-			<div class="card-title">
+		<div>
+			<div class="p-3">
 				<span class="d-flex justify-content-md-center ">
 					@* @foreach (var exercise in Model.Exercises)
 					{
@@ -19,21 +29,22 @@
 					{
 						if (day.Value)
 						{
-							<input class="week" id="@day.Key" type="checkbox" value="@day.Key" hidden checked disabled/>
+							<input class="check" id="@day.Key" type="checkbox" value="@day.Key" hidden checked disabled/>
 						}
 						else
 						{
-							<input class="week" id="@day.Key" type="checkbox" value="@day.Key" hidden disabled/>
+							<input class="check" id="@day.Key" type="checkbox" value="@day.Key" hidden disabled/>
 						}
-						
-						<label class="weekL btn btn-secondary m-1" for="monday">@day.Key</label>
+
+						<label class="days-checkbox btn btn-secondary m-1"
+							   style="background-color: #262626">@day.Key</label>
 
 					}
 
 				 </span>
 			</div>
 			<div class="m-2">
-				<div class="row d-flex justify-content-center mb-5">
+				<div class="row d-flex justify-content-center">
 
 					@* @foreach (ExerciseTrainingPlan exercise in Model.Exercises)
 					{
@@ -60,25 +71,25 @@
 							</div>
 						</div>
 					} *@
-					@foreach (TrainingPlanExercise exercise in Model.Exercises)
+					@for (int i = 0; i < exercises.Count(); i++)
 					{
-						<div class="card m-2" style="width: fit-content; height: fit-content;">
-							<div class="card-header">
-								<img src="" alt="Alternate Text" style="max-width: 400px;" />
+						<div class="card m-2 p-0" style="width: 300px; height: fit-content;">
+							<div class="card-header p-0">
+								<img src="/@exercises[i].ImgPath1" alt="Alternate Text" style="width: 300px; height: 200.81px" />
 							</div>
-							<div class="card-body" style="height: 85%">
-								<h5 class="card-title text-center">@exercise.EId</h5>
+							<div class="card-body" style="height: 95%">
+								<h5 class="card-title text-center">@exercises[i].Name</h5>
 								<hr />
 								<ol id="ol_1">
 									@{
-										var exerciseWeightsList = exercise.Weights.Split(';');
-										var exerciseRepsList = exercise.Reps.Split(';');
+										var exerciseWeightsList = Model.Exercises[i].Weights.Split(';');
+										var exerciseRepsList = Model.Exercises[i].Reps.Split(';');
 									}
-									@for (int i = 0; i < exerciseRepsList.Count(); i++)
+									@for (int j = 0; j < exerciseRepsList.Count(); j++)
 									{
 										<li>
 											seria:
-											<p class="value1" style="display: inline-block">@exerciseRepsList[i] powtórzeń</p>
+											<p class="value1" style="display: inline-block">@exerciseRepsList[j] x @exerciseWeightsList[j]</p>
 										</li>
 									}
 
@@ -94,6 +105,7 @@
 				</div>
 			
 			</div>
-		</div>
+			</div>
+		</form>
 	</div>
 </div>

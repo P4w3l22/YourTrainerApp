@@ -11,7 +11,7 @@
 				 httpAcc.HttpContext.Session.GetString("Username").Length > 0)
 			{
 				<div>
-					<a asp-controller="TrainingPlan" asp-action="Create" class="btn button-green">
+					<a asp-controller="TrainingPlan" asp-action="Create" asp-route-isCreating="@false" class="btn button-green">
 						Dodaj nowy plan
 					</a>
 				</div>
@@ -19,14 +19,22 @@
 			else
 			{
 				<h2 class="mb-5">
-					<a class="a-green" asp-area="Auth" asp-controller="Auth" asp-action="Login">Zaloguj się</a> aby wczytać zapisane plany treningowe
+					<a class="a-green" asp-area="Auth" asp-controller="Auth" asp-action="Login">Zaloguj się</a> aby dodawać i wczytać zapisane plany treningowe
 				</h2>
 			}
 			
 		</div>
 		<br /><br />
 		<div style="margin-bottom: 100px; margin-top: 50px;">
-			<h2 class="my-3">Nasze plany treningowe: </h2>
+			@if (httpAcc.HttpContext.Session.GetString("Username") is not null &&
+					httpAcc.HttpContext.Session.GetString("Username").Length > 0)
+			{
+				<h2 class="my-3">Twoje plany treningowe: </h2>
+			}
+			else
+			{
+				<h2 class="my-3">Nasze plany treningowe: </h2>	
+			}
 			<div>
 				<div class="row d-flex justify-content-center">
 				@foreach (var trainingPlan in Model)
