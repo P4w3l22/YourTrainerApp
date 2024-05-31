@@ -115,7 +115,7 @@ public class TrainingPlanController : Controller
 		return _response;
 	}
 
-	[Authorize(Roles = "admin")]
+	//[Authorize(Roles = "admin")]
 	[HttpDelete("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	public async Task<ActionResult<APIResponse>> DeletePlan(int id)

@@ -5,7 +5,7 @@
 @model TrainingPlan 
 
 @{
-	TrainingPlan trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(httpAcc.HttpContext.Session.GetString("TrainingPlanData"));
+	//TrainingPlan trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(httpAcc.HttpContext.Session.GetString("TrainingPlanData"));
 	string exercisesInJson = httpAcc.HttpContext.Session.GetString("Exercises");
 	List<TrainingPlanExerciseCreateVM> exercises = JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(exercisesInJson);
 }
@@ -38,12 +38,10 @@
 		<br />
 
 		<div>
-			<input asp-for="@trainingPlan.Creator" value="@httpAcc.HttpContext.Session.GetString("Username")" hidden />
+			<input asp-for="@Model.Creator" value="@httpAcc.HttpContext.Session.GetString("Username")" hidden />
 		</div>
 
 		<div class="row">
-			@* Przechować model danych w zmiennej sesji - same id *@
-
 			<label class="form-label mt-4">Ćwiczenia</label>
 
 			@if (exercises is not null && exercises.Count > 0)
@@ -72,9 +70,15 @@
 									{
 										<li>
 											seria:
-											<input class="input_@exerciseId" id="r_input_@exerciseId" type="number" value="4" min="1" max="10" style="width: 50px;" />
+											<input class="input_@exerciseId" 
+												   id="@j-r-@exerciseId" 
+												   type="number" value="@reps[j]" min="1" max="10" 
+												   style="width: 50px;" 
+												   onblur="saveRepsAndWeightsData(@exerciseId, @j)"/>
 											powtórzeń
-											<input class="input_@exerciseId" id="w_input_@exerciseId" type="number" value="0" hidden/>
+											<input class="input_@exerciseId" 
+												   id="@j-w-@exerciseId"  
+												   type="number" value="0" hidden/>
 										</li>
 									}
 									else
@@ -122,7 +126,7 @@
 		<br /><br />
 		<div>
 			<button type="submit" class="btn button-green form-control"
-					asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Create" asp-route-trainingPlan="@trainingPlan">Zatwierdź</button>
+					asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Create" asp-route-trainingPlan="@Model">Zatwierdź</button>
 
 		</div>
 	</form>

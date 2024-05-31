@@ -1,16 +1,11 @@
-﻿//using DbDataAccess.Models;
-//using ExerciseAPI.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using YourTrainerApp.Models.DTO;
 using YourTrainerApp.Services.IServices;
 using YourTrainerApp.Models;
-using YourTrainerApp.Models.DTO;
-using YourTrainerApp.Services.IServices;
 using YourTrainerApp.Models.VM;
-using Microsoft.Extensions.Logging.Abstractions;
 using YourTrainerApp.Attributes;
-using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.IdentityModel.Tokens;
 
 namespace YourTrainerApp.Areas.Visistor.Controllers;
 
@@ -20,36 +15,47 @@ public class TrainingPlanController : Controller
     private readonly ITrainingPlanService _trainingPlanService;
     private readonly ITrainingPlanExerciseService _trainingPlanExerciseService;
     private readonly IExerciseService _exerciseService;
+    
+    private string? _sessionUsername 
+    {
+        get => HttpContext.Session.GetString("Username");
+        set => HttpContext.Session.SetString("Username", value); 
+    }
+    private TrainingPlan? _sessionTrainingPlan
+    {
+        get => JsonConvert.DeserializeObject<TrainingPlan>(HttpContext.Session.GetString("TrainingPlanData") ?? JsonConvert.SerializeObject(new TrainingPlan()));
+        set => HttpContext.Session.SetString("TrainingPlanData", JsonConvert.SerializeObject(value));
+    }
+    private List<TrainingPlanExerciseCreateVM>? _sessionExercises
+	{
+		get => JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(HttpContext.Session.GetString("Exercises") ?? JsonConvert.SerializeObject(new List<TrainingPlanExerciseCreateVM>()));
+		set => HttpContext.Session.SetString("Exercises", JsonConvert.SerializeObject(value));
+	}
 
-    public TrainingPlanController(ITrainingPlanService trainingPlanService, ITrainingPlanExerciseService trainingPlanExerciseService, IExerciseService exerciseService)
+	public TrainingPlanController(ITrainingPlanService trainingPlanService, ITrainingPlanExerciseService trainingPlanExerciseService, IExerciseService exerciseService)
 	{
         _trainingPlanService = trainingPlanService;
 		_trainingPlanExerciseService = trainingPlanExerciseService;
 		_exerciseService = exerciseService;
-        // Dodać w konstruktorze przyporządkowanie zmiennej sesji
-    }
+	}
 
     public async Task<IActionResult> Index()
     {
         var apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
-        string creator = HttpContext.Session.GetString("Username");
 
-        string test = HttpContext.Session.GetString("TrainingPlanData");
-        string test2 = HttpContext.Session.GetString("Exercises");
-
-		if (creator is null ||
-			creator.Length == 0)
+		if (_sessionUsername is null ||
+			_sessionUsername.Length == 0)
         {
-            creator = "admin";
+			_sessionUsername = "admin";
         }
 
-        var trainingPlans = DeserializeApiResult<List<TrainingPlan>>(apiResponse.Result)
-                           .Where(tp => tp.Creator == creator)
+        var trainingPlans = DeserializeResult<List<TrainingPlan>>(apiResponse.Result)
+                           .Where(tp => tp.Creator == _sessionUsername)
                            .ToList();
 
-        if (HttpContext.Session.GetString("Exercises") is not null)
+        if (_sessionExercises is not null)
         {
-            HttpContext.Session.SetString("Exercises", "");
+            _sessionExercises = new();
 		}
 
         return View(trainingPlans);
@@ -60,31 +66,25 @@ public class TrainingPlanController : Controller
     {
         if (!isCreating)
         {
-            HttpContext.Session.SetString("Exercises", "");
+			_sessionExercises = new();
 		}
 
         TrainingPlan trainingPlan = new();
-        trainingPlan.Creator = HttpContext.Session.GetString("Username");
+        trainingPlan.Creator = _sessionUsername;
 
         // Przyporządkowywanie do zmiennej sesji planu treningowego lub odczytywanie go jeśli jest ustawiony
-		if (HttpContext.Session.GetString("TrainingPlanData") is null ||
-			HttpContext.Session.GetString("TrainingPlanData").ToString().Length == 0)
+		if (_sessionTrainingPlan is null)
 		{
-			string trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
-
-			HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);
+			_sessionTrainingPlan = trainingPlan;
 		}
 		else
 		{
-			string trainingPlanInJson = HttpContext.Session.GetString("TrainingPlanData");
-			trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(trainingPlanInJson);
+            trainingPlan = _sessionTrainingPlan;
 		}
 
-        // Utworzenie zmiennej sesji zawierającej id ćwiczeń
-		if (HttpContext.Session.GetString("Exercises") is null ||
-			HttpContext.Session.GetString("Exercises").Length == 0)
+		if (_sessionExercises.IsNullOrEmpty())
         {
-            HttpContext.Session.SetString("Exercises", JsonConvert.SerializeObject(new List<TrainingPlanExerciseCreateVM>()));
+			_sessionExercises = new();
 		}
 
 		return View(trainingPlan);
@@ -93,24 +93,26 @@ public class TrainingPlanController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [ClearSessionStrings]
-    public async Task<IActionResult> Create(TrainingPlan trainingPlan)
+    public async Task<IActionResult> Create(TrainingPlan tp)
     {
-        TrainingPlan trainingPlan1 = GetTrainingPlanSessionData();
+        TrainingPlan trainingPlan = _sessionTrainingPlan;
+		trainingPlan.CreateTrainingDaysString();
 
-        trainingPlan1.CreateTrainingDaysString();
+        if (trainingPlan.Creator is null)
+        {
+            trainingPlan.Creator = _sessionUsername;
+        }
 
-        // Do refaktoryzacji
-
-        await _trainingPlanService.CreateAsync<APIResponse>(trainingPlan1);
+        await _trainingPlanService.CreateAsync<APIResponse>(trainingPlan);
 
         var apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
-        TrainingPlan? trainingPlanDb = DeserializeApiResult<List<TrainingPlan>>(apiResponse.Result)
-						                  .Where(tp => tp.Title == trainingPlan1.Title && tp.Creator == trainingPlan1.Creator)
-						                  .FirstOrDefault();
-
+        TrainingPlan? trainingPlanDb = DeserializeResult<List<TrainingPlan>>(apiResponse.Result)
+						              .Where(tp => tp.Title == trainingPlan.Title && tp.Creator == trainingPlan.Creator)
+						              .FirstOrDefault();
+        // Błąd wczytywania danych nowego planu treningowego z bazy
         int id = trainingPlanDb.Id;
 
-        foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan1.Exercises)
+        foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
         {
             await _trainingPlanExerciseService.InsertAsync<APIResponse>(new TrainingPlanExerciseCreateDTO()
             {
@@ -131,9 +133,7 @@ public class TrainingPlanController : Controller
 	public async Task<IActionResult> Show(int id)
     {
 		var apiResponse = await _trainingPlanService.GetAsync<APIResponse>(id);
-
-		//var trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(Convert.ToString(trainingPlanApiResponse.Result));
-		var trainingPlan = DeserializeApiResult<TrainingPlan>(apiResponse.Result);
+		var trainingPlan = DeserializeResult<TrainingPlan>(apiResponse.Result);
         trainingPlan.CreateTrainingDaysDict();
 
 		List<TrainingPlanExerciseCreateVM> exercises = new();
@@ -142,15 +142,23 @@ public class TrainingPlanController : Controller
 		foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
         {
 			var apiResponse2 = await _exerciseService.GetAsync<APIResponse>(trainingPlanExercise.EId);
-            TrainingPlanExerciseCreateVM exercise = JsonConvert.DeserializeObject<TrainingPlanExerciseCreateVM>(Convert.ToString(apiResponse2.Result));
+            TrainingPlanExerciseCreateVM exercise = DeserializeResult<TrainingPlanExerciseCreateVM>(apiResponse2.Result);
             exercises.Add(exercise);
 		}
 
-        string exercisesInJson = JsonConvert.SerializeObject(exercises);
-        HttpContext.Session.SetString("Exercises", exercisesInJson);
+        _sessionExercises = exercises;
 
 
 		return View(trainingPlan);
+    }
+
+    public async Task<IActionResult> DeleteTrainingPlan(int id)
+    {
+        await _trainingPlanService.DeleteAsync<APIResponse>(id);
+
+        TempData["success"] = "Usunięto plan treningowy";
+
+        return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> ExerciseSelectionAsync() =>
@@ -159,7 +167,7 @@ public class TrainingPlanController : Controller
 
     public IActionResult IncrementExerciseSeries(int id)
     {
-		TrainingPlan trainingPlan = GetTrainingPlanSessionData();
+		TrainingPlan trainingPlan = _sessionTrainingPlan;
 
         foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
         {
@@ -173,14 +181,14 @@ public class TrainingPlanController : Controller
             }
         }
 
-        SaveTrainingPlanSessionData(trainingPlan);
+		_sessionTrainingPlan = trainingPlan;
 
 		return RedirectToAction("Create");
 	}
 
     public IActionResult DecrementExerciseSeries(int id)
     {
-		TrainingPlan trainingPlan = GetTrainingPlanSessionData();
+		TrainingPlan trainingPlan = _sessionTrainingPlan;
 
 		foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
 		{
@@ -207,14 +215,13 @@ public class TrainingPlanController : Controller
 						trainingPlanExercise.Reps = trainingPlanExercise.Reps.Substring(0, trainingPlanExercise.Reps.Length-1);
 						trainingPlanExercise.Weights = trainingPlanExercise.Weights.Substring(0, trainingPlanExercise.Weights.Length-1);
 					}
-
 				}
 				
 				break;
 			}
 		}
 
-		SaveTrainingPlanSessionData(trainingPlan);
+		_sessionTrainingPlan = trainingPlan;
 
 		return RedirectToAction("Create");
 	}
@@ -226,7 +233,7 @@ public class TrainingPlanController : Controller
         int seriesId = int.Parse(seriesPosition);
         string[] repsAndWeights = values.Split(';');
 
-		TrainingPlan trainingPlan = GetTrainingPlanSessionData();
+		TrainingPlan trainingPlan = _sessionTrainingPlan;
 
 		foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
 		{
@@ -253,37 +260,33 @@ public class TrainingPlanController : Controller
 					trainingPlanExercise.Weights = trainingPlanExercise.Weights.Substring(0, trainingPlanExercise.Weights.Length - 1);
 				}
 
-				//trainingPlanExercise.Reps += ";" + values[0];
-    //            trainingPlanExercise.Weights += ";" + values[1];
-
 				break;
 			}
 		}
 
-        SaveTrainingPlanSessionData(trainingPlan);
+        _sessionTrainingPlan = trainingPlan;
 
-		return Ok("Test");
+		return Ok();
     }
 
 	public async Task<IActionResult> AddExerciseId(int id)
     {
-        string exercisesInJson = HttpContext.Session.GetString("Exercises");
-        List<TrainingPlanExerciseCreateVM> exercises = JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(exercisesInJson);
+        List<TrainingPlanExerciseCreateVM> exercises = _sessionExercises;
 
         if (exercises is null)
         {
             exercises = new();
         }
 
-        TrainingPlan trainingPlan = GetTrainingPlanSessionData();
+        TrainingPlan trainingPlan = _sessionTrainingPlan;
 
         var apiResponse = await _exerciseService.GetAsync<APIResponse>(id);
 		if (apiResponse is not null && apiResponse.IsSuccess)
 		{
-			TrainingPlanExerciseCreateVM exercise = JsonConvert.DeserializeObject<TrainingPlanExerciseCreateVM>(Convert.ToString(apiResponse.Result));
+			TrainingPlanExerciseCreateVM exercise = DeserializeResult<TrainingPlanExerciseCreateVM>(apiResponse.Result);
 		    exercises.Add(exercise);
 
-			HttpContext.Session.SetString("Exercises", JsonConvert.SerializeObject(exercises));
+			_sessionExercises = exercises;
 
             if (trainingPlan.Exercises is null)
             {
@@ -293,31 +296,30 @@ public class TrainingPlanController : Controller
             trainingPlan.Exercises.Add(new()
             {
                 EId = exercise.Id,
-                Series = 3,
-                Reps = "4;4;4",
-                Weights = "80;80;80"
+                Series = 1,
+                Reps = "4",
+                Weights = "80"
             });
 
-            SaveTrainingPlanSessionData(trainingPlan);
+            _sessionTrainingPlan = trainingPlan;
         }
 
-        //TrainingPlan trainingPlan = GetTrainingPlanSessionData();
 		return RedirectToAction("Create");
 	}
 
 
     public IActionResult SaveTitleData(string title)
     {
-        TrainingPlan trainingPlan = GetTrainingPlanSessionData();
+        TrainingPlan trainingPlan = _sessionTrainingPlan;
         trainingPlan.Title = title;
-        SaveTrainingPlanSessionData(trainingPlan);
+        _sessionTrainingPlan = trainingPlan;
         return Ok();
     }
 
     public IActionResult SaveTrainigDaysData(string day)
     {
-        TrainingPlan trainingPlan = GetTrainingPlanSessionData();
-        if (trainingPlan.TrainingDaysDict[day])
+		TrainingPlan trainingPlan = _sessionTrainingPlan;
+		if (trainingPlan.TrainingDaysDict[day])
         {
 			trainingPlan.TrainingDaysDict[day] = false;
 		}
@@ -325,29 +327,20 @@ public class TrainingPlanController : Controller
         {
             trainingPlan.TrainingDaysDict[day] = true;
         }
-		
-        SaveTrainingPlanSessionData(trainingPlan);
 
-        return Ok();
+		_sessionTrainingPlan = trainingPlan;
+
+		return Ok();
     }
 
     public IActionResult SaveNotesData(string notes)
     {
-        TrainingPlan trainingPlan = GetTrainingPlanSessionData();
+        TrainingPlan trainingPlan = _sessionTrainingPlan;
         trainingPlan.Notes = notes;
-        SaveTrainingPlanSessionData(trainingPlan);
+		_sessionTrainingPlan = trainingPlan;
         return Ok();
     }
 
-	private void SaveTrainingPlanSessionData(TrainingPlan trainingPlan)
-    {
-		string trainingPlanInJson = JsonConvert.SerializeObject(trainingPlan);
-        HttpContext.Session.SetString("TrainingPlanData", trainingPlanInJson);	
-    }
-
-    private TrainingPlan GetTrainingPlanSessionData() =>
-		JsonConvert.DeserializeObject<TrainingPlan>(HttpContext.Session.GetString("TrainingPlanData"));
-
-    private T DeserializeApiResult<T>(object apiResponseResult) =>
+    private T DeserializeResult<T>(object apiResponseResult) =>
         JsonConvert.DeserializeObject<T>(Convert.ToString(apiResponseResult));
 }

@@ -55,6 +55,10 @@ body {
     background-color: #E62143;
 }
 
+.button-orange {
+    background-color: #FFC107;
+}
+
 .row .t-plan-size {
     max-width: 400px;
     min-width: 300px;

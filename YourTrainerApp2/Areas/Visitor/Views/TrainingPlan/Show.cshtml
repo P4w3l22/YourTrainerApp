@@ -45,32 +45,6 @@
 			</div>
 			<div class="m-2">
 				<div class="row d-flex justify-content-center">
-
-					@* @foreach (ExerciseTrainingPlan exercise in Model.Exercises)
-					{
-						<div class="card m-2" style="width: fit-content; height: fit-content;">
-							<div class="card-header">
-								<img src="\@exercise.ExerciseData.ImgPath1" alt="Alternate Text" style="max-width: 400px;"/>
-							</div>
-							<div class="card-body" style="height: 85%">
-								<h5 class="card-title text-center">@exercise.ExerciseData.Name</h5>
-								<hr />
-								<ol id="ol_1">
-									@{
-										var exerciseWeightsList = exercise.Weights.Split(';');
-										var exerciseRepsList = exercise.Reps.Split(';');
-									}
-									@for (int i = 0; i < exerciseRepsList.Count(); i++)
-									{
-										<li>seria:
-											<p class="value1" style="display: inline-block">@exerciseRepsList[i] powtórzeń</p>
-										</li>
-									}
-
-								</ol>
-							</div>
-						</div>
-					} *@
 					@for (int i = 0; i < exercises.Count(); i++)
 					{
 						<div class="card m-2 p-0" style="width: 300px; height: fit-content;">
@@ -89,7 +63,7 @@
 									{
 										<li>
 											seria:
-											<p class="value1" style="display: inline-block">@exerciseRepsList[j] x @exerciseWeightsList[j]</p>
+											<p class="value1" style="display: inline-block">@exerciseRepsList[j] x @exerciseWeightsList[j] kg</p>
 										</li>
 									}
 
@@ -103,7 +77,18 @@
 					<h6>Notatki do planu: </h6>
 					<p class="m-3">@Model.Notes</p>
 				</div>
-			
+
+				<div class="row text-center">
+					<div class="col-3"></div>
+					<div class="col-6">
+						<a class="btn button-red" 
+						   asp-area="Visitor" asp-controller="TrainingPlan" asp-action="DeleteTrainingPlan" asp-route-id="@Model.Id">
+						   Usuń plan
+					   </a>
+						<a class="btn button-orange">Edytuj plan</a>
+					</div>
+					<div class="col-3"></div>
+				</div>
 			</div>
 			</div>
 		</form>

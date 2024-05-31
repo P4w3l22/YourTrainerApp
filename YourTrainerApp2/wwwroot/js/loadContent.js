@@ -1,4 +1,4 @@
-﻿function loadContent(type) {
+﻿function loadContent(type, showButton='0') {
     $("#loader").show();
     $.ajax({
         url: '/Visitor/ExercisesSet/GetDynamicContent',
@@ -21,14 +21,6 @@
                     var cardHeader = document.createElement("div");
                     cardHeader.classList.add("card-header", "p-0");
                     cardHeader.id = "cardHeader" + subArray[2];
-
-
-                    var cardBtn = document.createElement("a");
-                    cardBtn.classList.add("btn", "cardBtn");
-                    cardBtn.style.borderRadius = "50px";
-                    cardBtn.style.backgroundColor = "#33C26F";
-                    cardBtn.href = "/Visitor/TrainingPlan/AddExerciseId/" + subArray[2]
-                    cardBtn.textContent = "Dodaj";
                     
 
                     var cardImg = document.createElement("img");
@@ -37,12 +29,6 @@
                     cardImg.style.width = "300px";
                     cardImg.style.height = "200.81px";
                     cardImg.style.overflow = "hidden";
-
-                    //var cardDelete = document.createElement("a");
-                    //cardDelete.classList.add("btn", "cardBtnDelete", "button-red");
-                    //cardBtn.style.borderRadius = "50px";
-                    //cardBtn.href = "/Visitor/TrainingPlan//" + subArray[2]
-
 
                     cardHeader.appendChild(cardImg);
 
@@ -67,7 +53,18 @@
                     cardTitle.appendChild(title);
 
                     cardBody.appendChild(cardTitle);
-                    cardBody.appendChild(cardBtn);
+
+                    if (showButton === '1') {
+                        var cardBtn = document.createElement("a");
+                        cardBtn.classList.add("btn", "cardBtn");
+                        cardBtn.style.borderRadius = "50px";
+                        cardBtn.style.backgroundColor = "#33C26F";
+                        cardBtn.href = "/Visitor/TrainingPlan/AddExerciseId/" + subArray[2]
+                        cardBtn.textContent = "Dodaj";
+
+                        cardBody.appendChild(cardBtn);
+                    }
+                    
 
                     card.appendChild(cardHeader);
                     card.appendChild(cardBody);
@@ -89,18 +86,3 @@
         }
     })
 }
-
-
-// $(document).ready(function () {
-// 	// $(".showButton").mouseenter(function () {
-// 	// 	$(this).find(".addButton").show();
-// 	// }).mouseleave(function () {
-// 	// 	$(this).find(".addButton").hide();
-// 	// });
-
-// $("#testDiv").mouseenter(function () {
-// 	$("#cardBtn1350").show();
-// }).mouseleave(function () {
-// 	$("#cardBtn1350").hide();
-// })
-// });
