@@ -40,6 +40,8 @@ public class TrainingPlan
 
     public void CreateTrainingDaysString()
     {
+        TrainingDays = string.Empty;
+
         foreach (KeyValuePair<string, bool> trainingDay in TrainingDaysDict)
         {
             TrainingDays += $"{trainingDay.Key}:" + (trainingDay.Value ? "1" : "0") + ";";

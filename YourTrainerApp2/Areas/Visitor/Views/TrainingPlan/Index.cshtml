@@ -11,7 +11,7 @@
 				 httpAcc.HttpContext.Session.GetString("Username").Length > 0)
 			{
 				<div>
-					<a asp-controller="TrainingPlan" asp-action="Create" asp-route-isCreating="@false" class="btn button-green">
+					<a asp-controller="TrainingPlan" asp-action="Upsert" asp-route-isCreating="@false" class="btn button-green">
 						Dodaj nowy plan
 					</a>
 				</div>

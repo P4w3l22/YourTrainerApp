@@ -78,17 +78,24 @@
 					<p class="m-3">@Model.Notes</p>
 				</div>
 
-				<div class="row text-center">
-					<div class="col-3"></div>
-					<div class="col-6">
-						<a class="btn button-red" 
-						   asp-area="Visitor" asp-controller="TrainingPlan" asp-action="DeleteTrainingPlan" asp-route-id="@Model.Id">
-						   Usuń plan
-					   </a>
-						<a class="btn button-orange">Edytuj plan</a>
+				@if (httpAcc.HttpContext.Session.GetString("Username") is not null && httpAcc.HttpContext.Session.GetString("Username").Length > 0)
+				{
+					<div class="row text-center">
+						<div class="col-3"></div>
+						<div class="col-6">
+							<a class="btn button-red"
+								asp-area="Visitor" asp-controller="TrainingPlan" asp-action="DeleteTrainingPlan" asp-route-id="@Model.Id">
+								Usuń plan
+							</a>
+							<a class="btn button-orange"
+								asp-area="Visitor" asp-controller="TrainingPlan" asp-action="UpdateTrainingPlan" asp-route-id="@Model.Id">
+								Edytuj plan
+							</a>
+						</div>
+						<div class="col-3"></div>
 					</div>
-					<div class="col-3"></div>
-				</div>
+				}
+				
 			</div>
 			</div>
 		</form>

@@ -43,14 +43,10 @@ public class TrainingPlanController : Controller
     {
         var apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
 
-		if (_sessionUsername is null ||
-			_sessionUsername.Length == 0)
-        {
-			_sessionUsername = "admin";
-        }
+        bool isNotUsernameSet = _sessionUsername is null || _sessionUsername.Length == 0;
 
         var trainingPlans = DeserializeResult<List<TrainingPlan>>(apiResponse.Result)
-                           .Where(tp => tp.Creator == _sessionUsername)
+                           .Where(tp => tp.Creator == (isNotUsernameSet ? "admin@gmail.com" : _sessionUsername))
                            .ToList();
 
         if (_sessionExercises is not null)
@@ -62,12 +58,15 @@ public class TrainingPlanController : Controller
     }
 
     [HttpGet]
-    public IActionResult Create(bool isCreating = true)
+    public IActionResult Upsert(bool isCreating = true)
     {
         if (!isCreating)
         {
 			_sessionExercises = new();
+            _sessionTrainingPlan = new();
 		}
+
+        // TODO: zablokować możliwość 
 
         TrainingPlan trainingPlan = new();
         trainingPlan.Creator = _sessionUsername;
@@ -93,45 +92,95 @@ public class TrainingPlanController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [ClearSessionStrings]
-    public async Task<IActionResult> Create(TrainingPlan tp)
+    public async Task<IActionResult> Upsert(TrainingPlan tp)
     {
+        APIResponse apiResponse = new();
+        TrainingPlan? trainingPlanDb = new();
         TrainingPlan trainingPlan = _sessionTrainingPlan;
-		trainingPlan.CreateTrainingDaysString();
+
+        int id = 0;
+
+        trainingPlan.CreateTrainingDaysString();
 
         if (trainingPlan.Creator is null)
         {
             trainingPlan.Creator = _sessionUsername;
         }
 
-        await _trainingPlanService.CreateAsync<APIResponse>(trainingPlan);
-
-        var apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
-        TrainingPlan? trainingPlanDb = DeserializeResult<List<TrainingPlan>>(apiResponse.Result)
-						              .Where(tp => tp.Title == trainingPlan.Title && tp.Creator == trainingPlan.Creator)
-						              .FirstOrDefault();
-        // Błąd wczytywania danych nowego planu treningowego z bazy
-        int id = trainingPlanDb.Id;
-
-        foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
+        if (trainingPlan.Id == 0)
         {
-            await _trainingPlanExerciseService.InsertAsync<APIResponse>(new TrainingPlanExerciseCreateDTO()
+            await _trainingPlanService.CreateAsync<APIResponse>(trainingPlan);
+            apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
+            trainingPlanDb = DeserializeResult<List<TrainingPlan>>(apiResponse.Result)
+                            .Where(tp => tp.Title == trainingPlan.Title && tp.Creator == trainingPlan.Creator)
+                            .FirstOrDefault();
+
+            id = trainingPlanDb.Id;
+
+            foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
             {
-                TPId = id,
-                EId = trainingPlanExercise.EId,
-                Series = trainingPlanExercise.Series,
-                Reps = trainingPlanExercise.Reps,
-                Weights = trainingPlanExercise.Weights
-            });
+                await _trainingPlanExerciseService.InsertAsync<APIResponse>(new TrainingPlanExerciseCreateDTO()
+                {
+                    TPId = id,
+                    EId = trainingPlanExercise.EId,
+                    Series = trainingPlanExercise.Series,
+                    Reps = trainingPlanExercise.Reps,
+                    Weights = trainingPlanExercise.Weights
+                });
+            }
+
+            TempData["success"] = "Dodano plan!";
+
+            return RedirectToAction("Index");
         }
+        else
+        {
+            await _trainingPlanService.UpdateAsync<APIResponse>(trainingPlan);
 
-		TempData["success"] = "Dodano plan!";
+            apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
+            trainingPlanDb = DeserializeResult<List<TrainingPlan>>(apiResponse.Result)
+                            .Where(tp => tp.Title == trainingPlan.Title && tp.Creator == trainingPlan.Creator)
+                            .FirstOrDefault();
 
-		return RedirectToAction("Index");
-	}
+            id = trainingPlanDb.Id;
 
-	//[ClearSessionStrings]
+            foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
+            {
+                if (trainingPlanExercise.Id == 0)
+                {
+                    await _trainingPlanExerciseService.InsertAsync<APIResponse>(new TrainingPlanExerciseCreateDTO()
+                    {
+                        TPId = id,
+                        EId = trainingPlanExercise.EId,
+                        Series = trainingPlanExercise.Series,
+                        Reps = trainingPlanExercise.Reps,
+                        Weights = trainingPlanExercise.Weights
+                    });
+                }
+                else
+                {
+                    await _trainingPlanExerciseService.UpdateAsync<APIResponse>(new TrainingPlanExerciseUpdateDTO()
+                    {
+                        Id = trainingPlanExercise.Id,
+                        TPId = id,
+                        EId = trainingPlanExercise.EId,
+                        Series = trainingPlanExercise.Series,
+                        Reps = trainingPlanExercise.Reps,
+                        Weights = trainingPlanExercise.Weights
+                    });
+                }
+            }
+
+            TempData["success"] = "Zaktualizowano plan!";
+
+            return RedirectToAction("Index");
+        }
+    }
+
 	public async Task<IActionResult> Show(int id)
     {
+        _sessionTrainingPlan = new();
+
 		var apiResponse = await _trainingPlanService.GetAsync<APIResponse>(id);
 		var trainingPlan = DeserializeResult<TrainingPlan>(apiResponse.Result);
         trainingPlan.CreateTrainingDaysDict();
@@ -141,18 +190,19 @@ public class TrainingPlanController : Controller
 
 		foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
         {
-			var apiResponse2 = await _exerciseService.GetAsync<APIResponse>(trainingPlanExercise.EId);
-            TrainingPlanExerciseCreateVM exercise = DeserializeResult<TrainingPlanExerciseCreateVM>(apiResponse2.Result);
+			apiResponse = await _exerciseService.GetAsync<APIResponse>(trainingPlanExercise.EId);
+            TrainingPlanExerciseCreateVM exercise = DeserializeResult<TrainingPlanExerciseCreateVM>(apiResponse.Result);
             exercises.Add(exercise);
 		}
 
         _sessionExercises = exercises;
-
+        _sessionTrainingPlan = trainingPlan;
 
 		return View(trainingPlan);
     }
 
-    public async Task<IActionResult> DeleteTrainingPlan(int id)
+	[ClearSessionStrings]
+	public async Task<IActionResult> DeleteTrainingPlan(int id)
     {
         await _trainingPlanService.DeleteAsync<APIResponse>(id);
 
@@ -160,6 +210,10 @@ public class TrainingPlanController : Controller
 
         return RedirectToAction("Index");
     }
+
+    public IActionResult UpdateTrainingPlan() =>
+        RedirectToAction("Upsert");
+
 
     public async Task<IActionResult> ExerciseSelectionAsync() =>
 		View();
@@ -183,7 +237,7 @@ public class TrainingPlanController : Controller
 
 		_sessionTrainingPlan = trainingPlan;
 
-		return RedirectToAction("Create");
+		return RedirectToAction("Upsert");
 	}
 
     public IActionResult DecrementExerciseSeries(int id)
@@ -223,7 +277,7 @@ public class TrainingPlanController : Controller
 
 		_sessionTrainingPlan = trainingPlan;
 
-		return RedirectToAction("Create");
+		return RedirectToAction("Upsert");
 	}
 
     [HttpGet]
@@ -304,7 +358,7 @@ public class TrainingPlanController : Controller
             _sessionTrainingPlan = trainingPlan;
         }
 
-		return RedirectToAction("Create");
+		return RedirectToAction("Upsert");
 	}
 
 
