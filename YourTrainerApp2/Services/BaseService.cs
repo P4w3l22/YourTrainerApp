@@ -62,6 +62,11 @@ internal class APICommunication
 		var client = httpClient.CreateClient("ExerciseAPI");
 		HttpResponseMessage message = null;
 
+		if (!string.IsNullOrEmpty(request.Token))
+		{
+			client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.Token);
+		}
+
 		message = await GetAPIResponse(client, GetRequest(request));
 
 		var apiContent = await message.Content.ReadAsStringAsync();

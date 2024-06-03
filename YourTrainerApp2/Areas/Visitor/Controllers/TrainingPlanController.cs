@@ -66,12 +66,9 @@ public class TrainingPlanController : Controller
             _sessionTrainingPlan = new();
 		}
 
-        // TODO: zablokować możliwość 
-
         TrainingPlan trainingPlan = new();
         trainingPlan.Creator = _sessionUsername;
 
-        // Przyporządkowywanie do zmiennej sesji planu treningowego lub odczytywanie go jeśli jest ustawiony
 		if (_sessionTrainingPlan is null)
 		{
 			_sessionTrainingPlan = trainingPlan;
@@ -137,12 +134,10 @@ public class TrainingPlanController : Controller
         {
             await _trainingPlanService.UpdateAsync<APIResponse>(trainingPlan);
 
-            apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
-            trainingPlanDb = DeserializeResult<List<TrainingPlan>>(apiResponse.Result)
-                            .Where(tp => tp.Title == trainingPlan.Title && tp.Creator == trainingPlan.Creator)
-                            .FirstOrDefault();
+			id = trainingPlan.Id;
 
-            id = trainingPlanDb.Id;
+            apiResponse = await _trainingPlanExerciseService.GetAllAsync<APIResponse>(id);
+            
 
             foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
             {
@@ -214,11 +209,9 @@ public class TrainingPlanController : Controller
     public IActionResult UpdateTrainingPlan() =>
         RedirectToAction("Upsert");
 
-
     public async Task<IActionResult> ExerciseSelectionAsync() =>
 		View();
     
-
     public IActionResult IncrementExerciseSeries(int id)
     {
 		TrainingPlan trainingPlan = _sessionTrainingPlan;
@@ -240,7 +233,25 @@ public class TrainingPlanController : Controller
 		return RedirectToAction("Upsert");
 	}
 
-    public IActionResult DecrementExerciseSeries(int id)
+    public async Task<IActionResult> DeleteExercise(int listPosition)
+    {
+        TrainingPlan trainingPlan = _sessionTrainingPlan;
+        List<TrainingPlanExerciseCreateVM> exercises = _sessionExercises;
+
+        var id = trainingPlan.Exercises[listPosition].Id;
+
+        await _trainingPlanExerciseService.DeleteAsync<APIResponse>(id);
+
+        trainingPlan.Exercises.RemoveAt(listPosition);
+        exercises.RemoveAt(listPosition);
+
+        _sessionTrainingPlan = trainingPlan;
+        _sessionExercises = exercises;
+
+        return RedirectToAction("Upsert");
+    }
+
+	public IActionResult DecrementExerciseSeries(int id)
     {
 		TrainingPlan trainingPlan = _sessionTrainingPlan;
 

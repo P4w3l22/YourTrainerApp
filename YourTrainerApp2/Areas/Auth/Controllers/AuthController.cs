@@ -1,5 +1,7 @@
 ﻿using System.Net;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NuGet.Protocol.Plugins;
@@ -38,6 +40,13 @@ public class AuthController : Controller
         if (apiResponse is not null && apiResponse.IsSuccess)
         {
             LoginResponse loginResponse = JsonConvert.DeserializeObject<LoginResponse>(Convert.ToString(apiResponse.Result));
+            
+            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            identity.AddClaim(new Claim(ClaimTypes.Name, loginResponse.User.UserName));
+            identity.AddClaim(new Claim(ClaimTypes.Role, loginResponse.User.Role));
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
             SetSessionStrings(loginResponse.Token, loginResponse.User.UserName);
 
             TempData["success"] = "Zalogowano!";
@@ -95,6 +104,9 @@ public class AuthController : Controller
         return RedirectToAction("Index", "Home", new { area = "Visitor" });
     }
 
-    public IActionResult AccessDenied() =>
-        View();
+    public IActionResult AccessDenied()
+    {
+        TempData["error"] = "Błąd dostępu";
+        return RedirectToAction("Login", "Auth");
+    }
 }

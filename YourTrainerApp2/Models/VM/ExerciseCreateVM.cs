@@ -47,7 +47,7 @@ public class ExerciseCreateVM
         new SelectListItem
         {
             Text = "Brak",
-            Value = ""
+            Value = "none"
         },
         new SelectListItem
         {

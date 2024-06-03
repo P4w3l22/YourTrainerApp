@@ -5,6 +5,7 @@ using YourTrainerApp.Models;
 using YourTrainerApp.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using YourTrainerApp.Attributes;
+using YourTrainer_Utility;
 
 namespace YourTrainerApp.Areas.Admin.Controllers;
 
@@ -44,7 +45,7 @@ public class ExerciseAdminController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreatePOST(ExerciseCreateVM exerciseCreated)
 	{
-		var apiResponse = await _exerciseService.CreateAsync<APIResponse>(exerciseCreated.Exercise);
+		var apiResponse = await _exerciseService.CreateAsync<APIResponse>(exerciseCreated.Exercise, HttpContext.Session.GetString(StaticDetails.SessionToken));
 
 		if (ModelState.IsValid)
 		{
@@ -68,8 +69,8 @@ public class ExerciseAdminController : Controller
 		return View(exerciseVM);
 	}
 
-
-    [AdminSessionCheck]
+	[Authorize(Roles = "admin")]
+	[AdminSessionCheck]
     public async Task<IActionResult> Update(int id)
 	{
 
@@ -94,7 +95,7 @@ public class ExerciseAdminController : Controller
 		return View(exerciseCreateLists);
 	}
 
-
+	[Authorize(Roles = "admin")]
 	[AdminSessionCheck]
     [HttpPost, ActionName("Update")]
 	public async Task<IActionResult> UpdatePOST(ExerciseCreateVM exerciseUpdated)
@@ -104,9 +105,18 @@ public class ExerciseAdminController : Controller
 			return NotFound();
 		}
 
-        await _exerciseService.UpdateAsync<APIResponse>(exerciseUpdated.Exercise);
-        TempData["success"] = "Zaktualizowano ćwiczenie!";
-        return RedirectToAction("Index");
+        var apiResponse = await _exerciseService.UpdateAsync<APIResponse>(exerciseUpdated.Exercise, HttpContext.Session.GetString(StaticDetails.SessionToken));
+
+		if (apiResponse is not null)
+		{
+			TempData["success"] = "Zaktualizowano ćwiczenie!";
+		}
+		else
+		{
+			TempData["error"] = "Wystąpił problem z aktualizacją ćwiczenia";
+		}
+
+		return RedirectToAction("Index");
 	}
 
 
@@ -135,7 +145,7 @@ public class ExerciseAdminController : Controller
     [HttpPost, ActionName("Delete")]
 	public async Task<IActionResult> DeletePOST(int id)
 	{
-		await _exerciseService.DeleteAsync<APIResponse>(id);
+		await _exerciseService.DeleteAsync<APIResponse>(id, HttpContext.Session.GetString(StaticDetails.SessionToken));
         TempData["success"] = "Usunięto ćwiczenie!";
         return RedirectToAction("Index");
 	}

@@ -78,7 +78,7 @@ public class ExercisesAPIController : ControllerBase
     }
 
     [HttpPost]
-		[Authorize(Roles = "admin")]
+	[Authorize(Roles = "admin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -114,12 +114,11 @@ public class ExercisesAPIController : ControllerBase
         }
 
         return _response;
-
     }
 
-		[HttpPut]
-		[Authorize(Roles = "admin")]
-		[ProducesResponseType(StatusCodes.Status201Created)]
+	[HttpPut]
+	[Authorize(Roles = "admin")]
+	[ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<APIResponse>> UpdateExercise([FromBody] ExerciseUpdateDTO exerciseUpdate)
     {
@@ -143,9 +142,8 @@ public class ExercisesAPIController : ControllerBase
             _response.IsSuccess = false;
             _response.Errors = new List<string>() { ex.ToString() };
         }
+
         return _response;
-        
-        
     }
 
     [HttpDelete]

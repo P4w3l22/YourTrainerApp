@@ -30,15 +30,26 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(100);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-})
-.AddAuthentication(options =>
-{
-    options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-})
-.AddCookie(options =>
-{
-    options.LogoutPath = "/Auth/Logout"; // Œcie¿ka wylogowania
-}); ;
+});
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.HttpOnly = true;
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.LoginPath = "/Auth/Login";
+        options.AccessDeniedPath = "/Auth/AccessDenied";
+        options.SlidingExpiration = true;
+    });
+
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//})
+//.AddCookie(options =>
+//{
+//    options.LogoutPath = "/Auth/Logout"; // Œcie¿ka wylogowania
+//}); ;
 
 var app = builder.Build();
 
@@ -52,9 +63,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();
 
 app.UseAuthorization();
-app.UseAuthentication();
 
 app.UseSession();
 
