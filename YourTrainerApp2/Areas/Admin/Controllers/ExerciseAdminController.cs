@@ -34,8 +34,8 @@ public class ExerciseAdminController : Controller
 		return View(exerciseList);
 	}
 
-
-    [AdminSessionCheck]
+	//[Authorize(Roles = "admin")]
+	[AdminSessionCheck]
     public IActionResult Create() =>
 		View(new ExerciseCreateVM());
 

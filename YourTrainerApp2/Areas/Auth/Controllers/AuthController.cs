@@ -106,7 +106,8 @@ public class AuthController : Controller
 
     public IActionResult AccessDenied()
     {
-        TempData["error"] = "Błąd dostępu";
-        return RedirectToAction("Login", "Auth");
+        return View();
+        //TempData["error"] = "Błąd dostępu";
+        //return RedirectToAction("Login");
     }
 }

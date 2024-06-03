@@ -6,6 +6,7 @@ using YourTrainerApp.Models;
 using YourTrainerApp.Models.VM;
 using YourTrainerApp.Attributes;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 
 namespace YourTrainerApp.Areas.Visistor.Controllers;
 
@@ -57,7 +58,9 @@ public class TrainingPlanController : Controller
         return View(trainingPlans);
     }
 
+    //[Authorize(Roles = "admin")]
     [HttpGet]
+    //[AdminSessionCheck]
     public IActionResult Upsert(bool isCreating = true)
     {
         if (!isCreating)

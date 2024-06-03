@@ -1,17 +1,15 @@
 ﻿@using YourTrainerApp.Models.VM
 @model ExerciseCreateVM
 
-
-
-<div class="card shadow border-0 my-4">
-	<div class="card-header bg-secondary bg-gradient m-lg-0 py-3">
+<div class="my-4">
+	<div class="py-3">
 		<div class="row">
 			<div class="col-12 text-center">
 				<h2 class="text-white py-2">Aktualizuj ćwiczenie</h2>
 			</div>
 		</div>
 	</div>
-	<div class="card-body p-4">
+	<div class="p-4">
 		<form method="post" asp-action="Update">
 			<div class="border p-3 mt-4">
 				<input asp-for="Exercise.Id" hidden />
