@@ -29,10 +29,8 @@
     <Folder Include="Areas\Auth\Data\" />
     <Folder Include="Areas\GymMember\Data\" />
     <Folder Include="Areas\GymMember\Models\" />
-    <Folder Include="Areas\Trainer\Controllers\" />
     <Folder Include="Areas\Trainer\Data\" />
     <Folder Include="Areas\Trainer\Models\" />
-    <Folder Include="Areas\Trainer\Views\" />
     <Folder Include="Areas\Visitor\Data\" />
     <Folder Include="Controllers\" />
   </ItemGroup>

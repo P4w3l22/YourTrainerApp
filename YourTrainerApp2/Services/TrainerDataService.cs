@@ -4,52 +4,48 @@ using YourTrainerApp.Services.IServices;
 
 namespace YourTrainerApp.Services;
 
-public class ExerciseService : BaseService, IExerciseService
+public class TrainerDataService : BaseService, ITrainerDataService
 {
 	private string APIUrl;
-    public ExerciseService(IHttpClientFactory client, IConfiguration configuration) : base(client)
-    {
+	public TrainerDataService(IHttpClientFactory client, IConfiguration configuration) : base(client)
+	{
 		APIUrl = configuration.GetValue<string>("ServiceUrls:ExerciseAPI");
-    }
+	}
 
 	public Task<T> GetAllAsync<T>() =>
 		SendAsync<T>(new APIRequest()
 		{
 			ApiType = StaticDetails.ApiType.GET,
-			Url = APIUrl + "/api/ExerciseAPI/"
+			Url = APIUrl + "/api/TrainerData/"
 		});
 
 	public Task<T> GetAsync<T>(int id) =>
 		SendAsync<T>(new APIRequest()
 		{
 			ApiType = StaticDetails.ApiType.GET,
-			Url = APIUrl + "/api/ExerciseAPI/" + id
+			Url = APIUrl + "/api/TrainerData/" + id
 		});
 
-	public Task<T> CreateAsync<T>(Exercise exercise, string token) =>
+	public Task<T> CreateAsync<T>(TrainerDataModel trainerData) =>
 		SendAsync<T>(new APIRequest()
 		{
 			ApiType = StaticDetails.ApiType.POST,
-			Url = APIUrl + "/api/ExerciseAPI/",
-			Data = exercise,
-			Token = token
+			Url = APIUrl + "/api/TrainerData/",
+			Data = trainerData
 		});
 
-	public Task<T> UpdateAsync<T>(Exercise exercise, string token) =>
+	public Task<T> UpdateAsync<T>(TrainerDataModel trainerData) =>
 		SendAsync<T>(new APIRequest()
 		{
 			ApiType = StaticDetails.ApiType.PUT,
-			Url = APIUrl + "/api/ExerciseAPI/",
-			Data = exercise,
-			Token = token
+			Url = APIUrl + "/api/TrainerData/",
+			Data = trainerData
 		});
 
-	public Task<T> DeleteAsync<T>(int id, string token) =>
+	public Task<T> DeleteAsync<T>(int id) =>
 		SendAsync<T>(new APIRequest()
 		{
 			ApiType = StaticDetails.ApiType.DELETE,
-			Url = APIUrl + "/api/ExerciseAPI/" + id,
-			Token = token
+			Url = APIUrl + "/api/TrainerData/" + id
 		});
-
 }

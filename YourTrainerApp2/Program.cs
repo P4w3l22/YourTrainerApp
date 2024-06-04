@@ -19,6 +19,9 @@ builder.Services.AddScoped<ITrainingPlanService, TrainingPlanService>();
 builder.Services.AddHttpClient<ITrainingPlanExerciseService, TrainingPlanExerciseService>();
 builder.Services.AddScoped<ITrainingPlanExerciseService, TrainingPlanExerciseService>();
 
+builder.Services.AddHttpClient<ITrainerDataService, TrainerDataService>();
+builder.Services.AddScoped<ITrainerDataService, TrainerDataService>();
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IHttpContextAccessor,  HttpContextAccessor>();
@@ -41,15 +44,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Auth/AccessDenied";
         options.SlidingExpiration = true;
     });
-
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-//})
-//.AddCookie(options =>
-//{
-//    options.LogoutPath = "/Auth/Logout"; // Œcie¿ka wylogowania
-//}); ;
 
 var app = builder.Build();
 

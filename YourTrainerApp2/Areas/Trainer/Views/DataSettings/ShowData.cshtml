@@ -1,0 +1,29 @@
+﻿@using YourTrainerApp.Models
+
+@model TrainerDataModel
+
+<div>
+	<form method="post">
+		<div class="container">
+			<div class="m-2">
+				<input class="form-control" type="number" asp-for="@Model.TrainerId" hidden />
+			</div>
+			<div class="m-2">
+				<label class="form-label" for="description">Twój opis</label>
+				<textarea class="form-control" name="description" type="text" asp-for="@Model.Description"></textarea>
+			</div>
+			<div class="m-2">
+				<label class="form-label" for="email">Email kontaktowy</label>
+				<input class="form-control" name="email" type="text" asp-for="@Model.Email" />
+			</div>
+			<div class="m-2">
+				<label class="form-label" for="phoneNumber">Numer telefonu</label>
+				<input class="form-control" name="phoneNumber" type="text" asp-for="@Model.PhoneNumber" />
+			</div>
+			<div class="m-2">
+				<label class="form-label" for="availability">Przyjmowanie nowych klientów (0: nie, 1: tak):</label>
+				<input class="form-control" name="availability" type="number" asp-for="@Model.Availability" />
+			</div>
+		</div>
+	</form>
+</div>

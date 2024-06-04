@@ -49,9 +49,7 @@ public class AuthController : Controller
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             
             SetSessionStrings(loginResponse.Token, loginResponse.User.UserName);
-
-            //string roleString = HttpContext.User.FindFirst(ClaimTypes.Role).Value;
-
+            HttpContext.Session.SetString("UserId", loginResponse.User.Id.ToString());
 
             TempData["success"] = "Zalogowano!";
             return RedirectToAction("Index", "Home", new { area = "Visitor" });

@@ -82,8 +82,20 @@
                                 </div>
                             </li>
                         }
-
-                        @if (httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken) is not null &&
+                        else if (httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken) is not null &&
+                                  userRole == "trainer")
+                        {
+                            <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
+                                <div style="padding-left: 10px; padding-right: 10px;">
+                                    <a class="nav-link text-dark" asp-area="Trainer" asp-controller="DataSettings" asp-action="ShowData">
+                                        <p style="color: #6F7172; margin-bottom: 0">
+                                            Twoje dane
+                                        </p>
+                                    </a>
+                                </div>
+                            </li>
+                        }
+                        else if (httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken) is not null &&
                              userRole == "admin")
                         {
                             <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
