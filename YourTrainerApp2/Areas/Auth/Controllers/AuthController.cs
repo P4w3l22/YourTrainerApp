@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -46,8 +47,11 @@ public class AuthController : Controller
             identity.AddClaim(new Claim(ClaimTypes.Role, loginResponse.User.Role));
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
+            
             SetSessionStrings(loginResponse.Token, loginResponse.User.UserName);
+
+            //string roleString = HttpContext.User.FindFirst(ClaimTypes.Role).Value;
+
 
             TempData["success"] = "Zalogowano!";
             return RedirectToAction("Index", "Home", new { area = "Visitor" });

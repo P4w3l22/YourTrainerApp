@@ -1,4 +1,5 @@
-﻿@using YourTrainer_Utility
+﻿@using System.IdentityModel.Tokens.Jwt
+@using YourTrainer_Utility
 @inject IHttpContextAccessor httpAcc
 
 
@@ -48,9 +49,42 @@
                                 </a>
                             </div>
                         </li>
+                        @{
+                            string userRole = string.Empty;
+                            
+                            if (httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken) is not null &&
+                                httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken).Length > 0)
+                            {
+                                var tokenHandler = new JwtSecurityTokenHandler();
+                                var roleClaim = tokenHandler.ReadJwtToken(httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken))
+                                .Claims.ToList().FirstOrDefault(c => c.Type == "role");
+                                
+                                if (roleClaim is not null)
+                                {
+                                    userRole = roleClaim.Value;
+                                }   
+                            }
+                            else
+                            {
+                                userRole = "brak danych";
+                            }
+                        }
+                        @if (httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken) is not null &&
+                             userRole == "gym member")
+                        {
+                            <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
+                                <div style="padding-left: 10px; padding-right: 10px;">
+                                    <a class="nav-link text-dark" asp-area="GymMember" asp-controller="TrainerContact" asp-action="Index">
+                                        <p style="color: #6F7172; margin-bottom: 0">
+                                            Trenerzy
+                                        </p>
+                                    </a>
+                                </div>
+                            </li>
+                        }
 
-                        @if (httpAcc.HttpContext.Session.GetString("Username") is not null &&
-                             httpAcc.HttpContext.Session.GetString("Username") == "admin@gmail.com")
+                        @if (httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken) is not null &&
+                             userRole == "admin")
                         {
                             <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
                                 <div style="padding-left: 10px; padding-right: 10px;">

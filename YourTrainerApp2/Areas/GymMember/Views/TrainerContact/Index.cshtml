@@ -1,0 +1,117 @@
+﻿
+@model List<string>
+
+<div class="container">
+	<div class="row">
+		<div class="col-4">
+			<div class="my-4 d-flex justify-content-center">
+				<label>Wybierz swojego trenera: </labe><br />
+				@foreach (string name in Model)
+				{
+					<div class="my-2">
+						<a class="btn button-green d-flex justify-content-between px-2" style="min-width: 180px"
+						   onclick="showTrainerData('@name')">
+							<div>
+								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+									<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+									<path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+								</svg>
+								@name
+							</div>
+							<div>
+								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
+									<path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z" />
+								</svg>
+							</div>
+						</a>
+					</div>
+				}
+			</div>
+		</div>
+		<div class="col-8">
+			<div class="my-5" style="background-color: #303030; border-radius: 40px;">
+				
+				<div class="d-flex justify-content-between p-4">
+					<div class="d-flex justify-content-between align-items-center">
+						<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+							<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+							<path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+						</svg>
+						<h5 class="ps-3" id="trainerName">Twoja matka</h5>
+					</div>
+					<div class="d-flex align-items-center">
+						<a class="btn button-green" style="border-radius:50px">
+							Dodaj trenera +
+						</a>
+					</div>
+				</div>
+			
+				<div class="d-flex justify-content-start px-4 py-1">
+					<a class="px-5 a-blank" href="#" onclick="showView(0)">O mnie</a>
+					<a class="px-5 a-blank" href="#" onclick="showView(1)">Opinie</a>
+					<a class="px-5 a-blank" href="#" onclick="showView(2)">Kontakt</a>
+				</div>
+				<hr style="width: 80%; 
+						   margin-left: auto; margin-right: auto;
+						   color: #37D477" />
+
+				<div class="text-center p-4 pb-5" id="trainerDescription">
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt 
+					ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
+					ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit 
+					in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat 
+					cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				</div>
+
+				<div class="text-center p-4 pb-5 justify-content-center" id="trainerOpinions" style="display: none">
+					@for (int i = 0; i < 5; i++)
+					{
+						<div class="px-1">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#37D477" class="bi bi-star" viewBox="0 0 16 16">
+								<path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z" />
+							</svg>
+						</div>
+					}
+				</div>
+
+				<div class="p-4 pb-5" id="trainerContactData" style="display: none">
+					<ul style="list-style: none">
+						<li>Telefon: 999 888 777</li>
+						<li>E-mail: trener@gmail.com</li>
+					</ul>
+				</div>
+
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@section Scripts {
+	<script>
+		function showView(id) {
+			var description = document.getElementById("trainerDescription");
+			var opinions = document.getElementById("trainerOpinions");
+			var contact = document.getElementById("trainerContactData");
+
+			const elements = [description, opinions, contact];
+
+			elements.forEach(function (item, index) {
+				if (index == id) {
+					item.style.display = "flex";
+				}
+				else {
+					item.style.display = "none";
+				}
+			})
+		}
+
+		function showTrainerData(name) {
+			var trainerName = document.getElementById("trainerName");
+			trainerName.innerText = name;
+
+			showView(0);
+		}
+	</script>
+}

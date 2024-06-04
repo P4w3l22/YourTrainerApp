@@ -40,6 +40,11 @@ body {
         border: 1px solid #303030;
     }
 
+.a-blank {
+    text-decoration: none;
+    color: white;
+}
+
 .a-green {
     text-decoration: none;
     color: #37D477;
