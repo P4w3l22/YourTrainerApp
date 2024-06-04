@@ -147,40 +147,40 @@ public class ExercisesAPIController : ControllerBase
     }
 
     [HttpDelete]
-		[Authorize(Roles = "admin")]
-		[HttpDelete("{id:int}", Name = "DeleteExercise")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status204NoContent)]
-		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<ActionResult<APIResponse>> DeleteExercise(int id)
+	[Authorize(Roles = "admin")]
+	[HttpDelete("{id:int}", Name = "DeleteExercise")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	public async Task<ActionResult<APIResponse>> DeleteExercise(int id)
+	{
+		try
 		{
-			try
-			{
-				if (id == 0) 
+			if (id == 0) 
             { 
                 return BadRequest(); 
             }
 
-				var exercise = await _data.GetExercise(id);
+			var exercise = await _data.GetExercise(id);
 
-				if (exercise == null) 
+			if (exercise == null) 
             { 
                 return NotFound(); 
             }
 
-				await _data.DeleteExercise(id);
-				_response.StatusCode = HttpStatusCode.NoContent;
-				_response.IsSuccess = true;
+			await _data.DeleteExercise(id);
+			_response.StatusCode = HttpStatusCode.NoContent;
+			_response.IsSuccess = true;
 
-				return Ok(_response);
-			}
-			catch (Exception ex)
-			{
-				_response.IsSuccess = false;
-				_response.Errors = new List<string>() { ex.ToString() };
-			}
-
-			return _response;
+			return Ok(_response);
 		}
+		catch (Exception ex)
+		{
+			_response.IsSuccess = false;
+			_response.Errors = new List<string>() { ex.ToString() };
+		}
+
+		return _response;
 	}
+}

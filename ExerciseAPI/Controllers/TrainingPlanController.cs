@@ -17,12 +17,12 @@ public class TrainingPlanController : Controller
 	private readonly ITrainingPlanData _data;
 	protected APIResponse _response;
 
-        public TrainingPlanController(IMapper mapper, ITrainingPlanData data)
-        {
+    public TrainingPlanController(IMapper mapper, ITrainingPlanData data)
+    {
 		_mapper = mapper;
 		_data = data;
 		_response = new();            
-        }
+    }
 
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK)]

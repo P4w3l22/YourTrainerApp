@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DbDataAccess.Data;
 
-public class TrainerData
+public class TrainerData : ITrainerData
 {
 	private readonly ISqlDataAccess _db;
 
@@ -22,11 +22,11 @@ public class TrainerData
 
 	public async Task<TrainerDataModel> GetTrainer(int id)
 	{
-		var exercise = await _db.GetData<TrainerDataModel, dynamic>("spTrainerData_Get", new { TrainerId = id });
-		return exercise.FirstOrDefault();
+		var trainers = await _db.GetData<TrainerDataModel, dynamic>("spTrainerData_Get", new { TrainerId = id });
+		return trainers.FirstOrDefault();
 	}
 
-	public async Task InsertExercise(TrainerDataModel trainerData) =>
+	public async Task InsertTrainerData(TrainerDataModel trainerData) =>
 		await _db.SaveData("spTrainerData_Insert", new
 		{
 			trainerData.TrainerId,
@@ -36,7 +36,7 @@ public class TrainerData
 			trainerData.Availability
 		});
 
-	public async Task UpdateExercise(TrainerDataModel trainerData) =>
+	public async Task UpdateTrainerData(TrainerDataModel trainerData) =>
 		await _db.SaveData("spTrainerData_Update", new
 		{
 			trainerData.TrainerId,
@@ -46,6 +46,6 @@ public class TrainerData
 			trainerData.Availability
 		});
 
-	public async Task DeleteExercise(int id) =>
+	public async Task DeleteTrainerData(int id) =>
 		await _db.SaveData("spTrainerData_Delete", new { TrainerId = id });
 }
