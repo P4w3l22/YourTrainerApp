@@ -31,5 +31,20 @@ public class DataSettingsController : Controller
         }
 
         return View(trainerData);
-	} 
+	}
+
+    [HttpPost]
+    public async Task<IActionResult> ShowData(TrainerDataModel trainerData)
+    {
+        if (trainerData is null)
+        {
+            TempData["error"] = "Wypełnij poprawnie dane";
+            return View(new TrainerDataModel());
+        }
+
+        await _trainerDataService.CreateAsync<APIResponse>(trainerData);
+
+        TempData["success"] = "Zapisano zmiany";
+        return RedirectToAction("Index", "Home", new { Area = "Visitor" });
+    }
 }

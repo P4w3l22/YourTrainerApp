@@ -30,9 +30,11 @@ public class TrainerData : ITrainerData
 		await _db.SaveData("spTrainerData_Insert", new
 		{
 			trainerData.TrainerId,
+			trainerData.TrainerName,
 			trainerData.Description,
 			trainerData.Email,
 			trainerData.PhoneNumber,
+			trainerData.Rate,
 			trainerData.Availability
 		});
 
@@ -40,9 +42,11 @@ public class TrainerData : ITrainerData
 		await _db.SaveData("spTrainerData_Update", new
 		{
 			trainerData.TrainerId,
+			trainerData.TrainerName,
 			trainerData.Description,
 			trainerData.Email,
 			trainerData.PhoneNumber,
+			trainerData.Rate,
 			trainerData.Availability
 		});
 
