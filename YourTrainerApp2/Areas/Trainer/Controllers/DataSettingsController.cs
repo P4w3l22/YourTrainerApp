@@ -9,8 +9,11 @@ namespace YourTrainerApp.Areas.Trainer.Controllers;
 public class DataSettingsController : Controller
 {
 	private readonly ITrainerDataService _trainerDataService;
-    
-    private int _trainerId;
+
+    private int _trainerId
+    {
+        get => int.Parse(HttpContext.Session.GetString("UserId"));
+    }
 
 
 	public DataSettingsController(ITrainerDataService trainerDataService)
@@ -18,33 +21,49 @@ public class DataSettingsController : Controller
         _trainerDataService = trainerDataService;
     }
 
-    public async Task<IActionResult> ShowData()
-    {
-        _trainerId = int.Parse(HttpContext.Session.GetString("UserId"));
-
-        APIResponse apiResponse = await _trainerDataService.GetAsync<APIResponse>(_trainerId);
-        TrainerDataModel trainerData = JsonConvert.DeserializeObject<TrainerDataModel>(Convert.ToString(apiResponse.Result));
-
-        if (trainerData is null)
-        {
-            return View(new TrainerDataModel());
-        }
-
-        return View(trainerData);
-	}
+    [HttpGet]
+    public async Task<IActionResult> ShowData() =>
+        await TrainerDataIsPresent() ? View(await GetTrainerDataFromDb()) : View(GetTrainerDataDefault());
 
     [HttpPost]
     public async Task<IActionResult> ShowData(TrainerDataModel trainerData)
     {
-        if (trainerData is null)
+		if (await TrainerDataIsPresent())
         {
-            TempData["error"] = "Wypełnij poprawnie dane";
-            return View(new TrainerDataModel());
+            await _trainerDataService.UpdateAsync<APIResponse>(trainerData);
         }
+        else
+        {
+			await _trainerDataService.CreateAsync<APIResponse>(trainerData);
+		}
 
-        await _trainerDataService.CreateAsync<APIResponse>(trainerData);
-
-        TempData["success"] = "Zapisano zmiany";
-        return RedirectToAction("Index", "Home", new { Area = "Visitor" });
+		TempData["success"] = "Zapisano zmiany";
+        return RedirectToAction("ShowData");
     }
+
+    public async Task<IActionResult> ClearData()
+    {
+        APIResponse apiResponse = await _trainerDataService.DeleteAsync<APIResponse>(_trainerId);
+
+        return RedirectToAction("ShowData");
+    }
+
+    private async Task<bool> TrainerDataIsPresent()
+    {
+		APIResponse apiResponse = await _trainerDataService.GetAsync<APIResponse>(_trainerId);
+        return apiResponse.Result is not null;
+	}
+
+    private async Task<TrainerDataModel> GetTrainerDataFromDb()
+    {
+		APIResponse apiResponse = await _trainerDataService.GetAsync<APIResponse>(_trainerId);
+		return JsonConvert.DeserializeObject<TrainerDataModel>(Convert.ToString(apiResponse.Result));
+	}
+
+    private TrainerDataModel GetTrainerDataDefault() =>
+        new TrainerDataModel()
+		{
+			TrainerId = _trainerId,
+			Email = HttpContext.Session.GetString("Username")
+		};
 }

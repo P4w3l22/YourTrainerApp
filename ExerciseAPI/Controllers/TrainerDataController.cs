@@ -147,7 +147,7 @@ public class TrainerDataController : Controller
 		return _response;
 	}
 
-	[HttpDelete]
+	[HttpDelete("{id:int}")]
 	//[Authorize(Roles = "trainer")]
 	//[HttpDelete("{id:int}", Name = "DeleteExercise")]
 	[ProducesResponseType(StatusCodes.Status200OK)]

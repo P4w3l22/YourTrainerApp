@@ -26,10 +26,16 @@
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainingPlanExercise_Update.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spLocalUsers_Get.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spLocalUsers_Insert.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainerData_GetAll.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainerData_Get.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainerData_Insert.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainerData_Update.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainerData_Delete.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/Exercises.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/TrainingPlans.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/TrainingPlanExercises.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/LocalUsers.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/TrainersData.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Triggers/fill_sequence_after_insert.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Triggers/update_sequence_after_delete.sql" />
             </array>
