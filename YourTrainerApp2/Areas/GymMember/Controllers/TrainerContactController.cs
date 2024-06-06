@@ -21,9 +21,6 @@ public class TrainerContactController : Controller
 
 		List<TrainerDataModel> trainersData = JsonConvert.DeserializeObject<List<TrainerDataModel>>(Convert.ToString(apiResponse.Result));
 
-
-        List<string> names = new() { "Paweł", "Kacper", "Michał", "Piotr", "Patryk", "Szymon" };
-
 		return View(trainersData);
 	}
 
@@ -32,9 +29,9 @@ public class TrainerContactController : Controller
 		return View();
 	}
 
-	public IActionResult AddTrainer() 
-	{ 
-		return View(); 
+	public void AddTrainer(int id) 
+	{
+		string test = "Test";
 	}
 
 	public IActionResult TrainerSelection()

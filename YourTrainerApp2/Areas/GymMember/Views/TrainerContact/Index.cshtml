@@ -9,7 +9,7 @@
 				{
 					<div class="my-2">
 						<a class="btn button-green d-flex justify-content-between px-2" style="min-width: 180px"
-						   onclick="showTrainerData('@trainerDataModel.TrainerName', '@trainerDataModel.Description')">
+						   onclick="showTrainerData('@trainerDataModel.TrainerName', '@trainerDataModel.Description', '@trainerDataModel.Rate', '@trainerDataModel.Email --- @trainerDataModel.PhoneNumber', '@trainerDataModel.TrainerId')">
 							<div>
 								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
 									<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
@@ -28,8 +28,7 @@
 			</div>
 		</div>
 		<div class="col-8">
-			<div class="my-5" style="background-color: #303030; border-radius: 40px;">
-				
+			<div id="trainerData" class="my-5" style="background-color: #303030; border-radius: 40px;" hidden>
 				<div class="d-flex justify-content-between p-4">
 					<div class="d-flex justify-content-between align-items-center">
 						<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
@@ -39,7 +38,8 @@
 						<h5 class="ps-3" id="trainerName">Nazwa trenera</h5>
 					</div>
 					<div class="d-flex align-items-center">
-						<a class="btn button-green" style="border-radius:50px">
+						<a id="addTrainer" class="btn button-green" style="border-radius:50px"
+						   asp-area="GymMember" asp-controller="TrainerContact" asp-action="AddTrainer">
 							Dodaj trenera +
 						</a>
 					</div>
@@ -54,15 +54,11 @@
 						   margin-left: auto; margin-right: auto;
 						   color: #37D477" />
 
-				<div class="text-center p-4 pb-5" id="trainerDescription">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt 
-					ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
-					ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit 
-					in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat 
-					cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+				<div class="p-4 pb-5 justify-content-center" id="trainerDescription">
+					<p>test</p>
 				</div>
 
-				<div class="text-center p-4 pb-5 justify-content-center" id="trainerOpinions" style="display: none">
+				<div class="p-4 pb-5 justify-content-center" id="trainerOpinions" style="display: none">
 					@for (int i = 0; i < 5; i++)
 					{
 						<div class="px-1">
@@ -73,7 +69,7 @@
 					}
 				</div>
 
-				<div class="p-4 pb-5" id="trainerContactData" style="display: none">
+				<div class="p-4 pb-5 justify-content-center" id="trainerContactData" style="display: none">
 					<ul style="list-style: none">
 						<li>Telefon: 999 888 777</li>
 						<li>E-mail: trener@gmail.com</li>
@@ -106,17 +102,35 @@
 			})
 		}
 
-		function showTrainerData(name, description) {
+		function showTrainerData(name, description, opinions, contact, trainerId) {
+			document.getElementById("trainerData").removeAttribute("hidden");
 			var trainerName = document.getElementById("trainerName");
 			trainerName.innerText = name;
 
-			var description = document.getElementById("trainerDescription");
-			var opinions = document.getElementById("trainerOpinions");
-			var contact = document.getElementById("trainerContactData");
+			var descriptionTag = document.getElementById("trainerDescription");
+			var opinionsTag = document.getElementById("trainerOpinions");
+			var contactTag = document.getElementById("trainerContactData");
 
-			description.innerText = description;
+			descriptionTag.innerText = description;
+
+			opinionsTag.innerHTML = opinions + '/5';
+
+			contactTag.innerText = contact;
 
 			showView(0);
+
+
+			var addTrainer = document.getElementById("addTrainer");
+			addTrainer.href = "/GymMember/TrainerContact/AddTrainer/" + trainerId;
+
+			// var cardBtn = document.createElement("a");
+			// cardBtn.classList.add("btn", "cardBtn");
+			// cardBtn.style.borderRadius = "50px";
+			// cardBtn.style.backgroundColor = "#33C26F";
+			// cardBtn.href = "/Visitor/TrainingPlan/AddExerciseId/" + subArray[2]
+			// cardBtn.textContent = "Dodaj";
+
+
 		}
 	</script>
 }
