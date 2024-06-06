@@ -28,6 +28,9 @@
 				<input class="form-control" name="rate" type="number" value="3" asp-for="@Model.Rate" hidden/>
 			</div>
 			<div class="m-2">
+				<input class="form-control" name="rate" type="text" value="0" asp-for="@Model.MembersId" hidden />
+			</div>
+			<div class="m-2">
 				<label class="form-label" for="availability">Przyjmowanie nowych klientów (0: nie, 1: tak):</label>
 				<input id="availability" class="form-control" name="availability" type="number" asp-for="@Model.Availability" disabled />
 			</div>

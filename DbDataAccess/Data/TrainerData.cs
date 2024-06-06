@@ -35,6 +35,7 @@ public class TrainerData : ITrainerData
 			trainerData.Email,
 			trainerData.PhoneNumber,
 			trainerData.Rate,
+			trainerData.MembersId,
 			trainerData.Availability
 		});
 
@@ -47,6 +48,7 @@ public class TrainerData : ITrainerData
 			trainerData.Email,
 			trainerData.PhoneNumber,
 			trainerData.Rate,
+			trainerData.MembersId,
 			trainerData.Availability
 		});
 
