@@ -1,16 +1,16 @@
 ﻿@using YourTrainerApp.Models
 
-@model TrainerDataModel
+@model MemberDataModel
 
 <div>
 	<form method="post">
 		<div class="container">
 			<div class="m-2">
-				<input class="form-control" type="number" asp-for="@Model.TrainerId" hidden />
+				<input class="form-control" type="number" asp-for="@Model.MemberId" hidden />
 			</div>
 			<div class="m-2">
-				<label class="form-label" for="trainerName">Imię</label>
-				<input id="trainerName" class="form-control" name="trainerName" type="text" asp-for="@Model.TrainerName" disabled/>
+				<label class="form-label" for="memberName">Imię</label>
+				<input id="memberName" class="form-control" name="memberName" type="text" asp-for="@Model.MemberName" disabled />
 			</div>
 			<div class="m-2">
 				<label class="form-label" for="description">Twój opis</label>
@@ -25,19 +25,15 @@
 				<input id="phoneNumber" class="form-control" name="phoneNumber" type="text" asp-for="@Model.PhoneNumber" disabled />
 			</div>
 			<div class="m-2">
-				<input class="form-control" name="rate" type="number" value="3" asp-for="@Model.Rate" hidden/>
+				<input class="form-control" name="trainersId" type="text" value="0" asp-for="@Model.TrainersId" hidden />
 			</div>
 			<div class="m-2">
-				<input class="form-control" name="membersId" type="text" value="0" asp-for="@Model.MembersId" hidden />
-			</div>
-			<div class="m-2">
-				<label class="form-label" for="availability">Przyjmowanie nowych klientów (0: nie, 1: tak):</label>
-				<input id="availability" class="form-control" name="availability" type="number" asp-for="@Model.Availability" disabled />
+				<input id="trainersPlan" class="form-control" name="trainersPlan" type="text" value="0" asp-for="@Model.TrainersPlan" hidden />
 			</div>
 			<div class="d-flex justify-content-between">
 				<div class="btn-group">
-					<button id="submitButton" class="btn button-green" type="submit" asp-area="Trainer" asp-controller="DataSettings" asp-action="ShowData" hidden>Zatwierdź</button>
-					<a id="clearButton" class="btn button-red" asp-area="Trainer" asp-controller="DataSettings" asp-action="ClearData" hidden>Wyczyść</a>
+					<button id="submitButton" class="btn button-green" type="submit" asp-area="GymMember" asp-controller="DataSettings" asp-action="ShowData" hidden>Zatwierdź</button>
+					<a id="clearButton" class="btn button-red" asp-area="GymMember" asp-controller="DataSettings" asp-action="ClearData" hidden>Wyczyść</a>
 				</div>
 				<div>
 					<button id="editButton" type="button" class="btn button-orange" onclick="enableInputs()">Edycja</button>
@@ -51,11 +47,11 @@
 @section Scripts {
 	<script>
 		function enableInputs() {
-			document.getElementById("trainerName").removeAttribute("disabled");
+			document.getElementById("memberName").removeAttribute("disabled");
 			document.getElementById("description").removeAttribute("disabled");
 			document.getElementById("email").removeAttribute("disabled");
 			document.getElementById("phoneNumber").removeAttribute("disabled");
-			document.getElementById("availability").removeAttribute("disabled");
+			// document.getElementById("trainersPlan").removeAttribute("disabled");
 
 			document.getElementById("submitButton").removeAttribute("hidden");
 			document.getElementById("clearButton").removeAttribute("hidden");
@@ -64,11 +60,11 @@
 		}
 
 		function disableInputs() {
-			document.getElementById("trainerName").setAttribute("disabled", "disabled");
+			document.getElementById("memberName").setAttribute("disabled", "disabled");
 			document.getElementById("description").setAttribute("disabled", "disabled");
 			document.getElementById("email").setAttribute("disabled", "disabled");
 			document.getElementById("phoneNumber").setAttribute("disabled", "disabled");
-			document.getElementById("availability").setAttribute("disabled", "disabled");
+			// document.getElementById("trainersPlan").setAttribute("disabled", "disabled");
 
 			document.getElementById("submitButton").setAttribute("hidden", "hidden");
 			document.getElementById("clearButton").setAttribute("hidden", "hidden");

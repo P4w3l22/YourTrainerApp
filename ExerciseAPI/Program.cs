@@ -78,6 +78,7 @@ builder.Services.AddScoped<IExerciseData, ExerciseData>();
 builder.Services.AddScoped<ITrainingPlanData, TrainingPlanData>();
 builder.Services.AddScoped<ILocalUserData, LocalUserData>();
 builder.Services.AddScoped<ITrainerData, TrainerData>();
+builder.Services.AddScoped<IMemberData, MemberData>();
 
 var app = builder.Build();
 

@@ -22,6 +22,9 @@ builder.Services.AddScoped<ITrainingPlanExerciseService, TrainingPlanExerciseSer
 builder.Services.AddHttpClient<ITrainerDataService, TrainerDataService>();
 builder.Services.AddScoped<ITrainerDataService, TrainerDataService>();
 
+builder.Services.AddHttpClient<IMemberDataService, MemberDataService>();
+builder.Services.AddScoped<IMemberDataService, MemberDataService>();
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IHttpContextAccessor,  HttpContextAccessor>();

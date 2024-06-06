@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Newtonsoft.Json;
 using YourTrainerApp.Models;
 using YourTrainerApp.Services.IServices;
@@ -9,10 +10,16 @@ namespace YourTrainerApp.Areas.GymMember.Controllers;
 public class TrainerContactController : Controller
 {
 	private readonly ITrainerDataService _trainerDataService;
+	private readonly IMemberDataService _memberDataService;
+	private int _memberId
+	{
+		get => int.Parse(HttpContext.Session.GetString("UserId"));
+	}
 
-    public TrainerContactController(ITrainerDataService trainerDataService)
+    public TrainerContactController(ITrainerDataService trainerDataService, IMemberDataService memberDataService)
     {
 		_trainerDataService = trainerDataService;
+		_memberDataService = memberDataService;
     }
 
     public async Task<IActionResult> Index()
@@ -29,9 +36,38 @@ public class TrainerContactController : Controller
 		return View();
 	}
 
-	public void AddTrainer(int id) 
+	public async Task<IActionResult> AddTrainer(int id) 
 	{
-		string test = "Test";
+		APIResponse apiResponse = await _trainerDataService.GetAsync<APIResponse>(id);
+		TrainerDataModel trainerData = JsonConvert.DeserializeObject<TrainerDataModel>(Convert.ToString(apiResponse.Result));
+
+		if (trainerData.MembersId == "0")
+		{
+			trainerData.MembersId = _memberId.ToString();
+		}
+        else
+        {
+			trainerData.MembersId += ";" + _memberId.ToString();
+		}
+
+		await _trainerDataService.UpdateAsync<APIResponse>(trainerData);
+
+
+		apiResponse = await _memberDataService.GetAsync<APIResponse>(_memberId);
+		MemberDataModel memberData = JsonConvert.DeserializeObject<MemberDataModel>(Convert.ToString(apiResponse.Result));
+
+		if (memberData.TrainersId == "0")
+		{
+			memberData.TrainersId = id.ToString();
+		}
+		else
+		{
+			memberData.TrainersId += ";" + id.ToString();
+		}
+
+		await _memberDataService.UpdateAsync<APIResponse>(memberData);
+
+		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
 
 	public IActionResult TrainerSelection()
@@ -43,7 +79,5 @@ public class TrainerContactController : Controller
 	{
 		return View();
 	}
-
-
 
 }

@@ -91,6 +91,12 @@
     <Build Include="dbo\StoredProcedures\spTrainerData_Insert.sql" />
     <Build Include="dbo\StoredProcedures\spTrainerData_Update.sql" />
     <Build Include="dbo\StoredProcedures\spTrainerData_Delete.sql" />
+    <Build Include="dbo\Tables\MembersData.sql" />
+    <Build Include="dbo\StoredProcedures\spMemberData_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spMemberData_Get.sql" />
+    <Build Include="dbo\StoredProcedures\spMemberData_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spMemberData_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spMemberData_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
