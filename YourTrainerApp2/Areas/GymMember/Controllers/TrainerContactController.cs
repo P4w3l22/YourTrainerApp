@@ -22,13 +22,28 @@ public class TrainerContactController : Controller
 		_memberDataService = memberDataService;
     }
 
-    public async Task<IActionResult> Index()
+	public async Task<IActionResult> Index()
 	{
+		MemberDataModel memberData = await GetMemberDataFromDb();
+
+		if (memberData.TrainersId is not null && memberData.TrainersId != "0")
+		{
+			return RedirectToAction("TrainerDetails", "TrainerContact", new { Area = "GymMember", id = int.Parse(memberData.TrainersId) });
+		}
+
 		APIResponse apiResponse = await _trainerDataService.GetAllAsync<APIResponse>();
 
 		List<TrainerDataModel> trainersData = JsonConvert.DeserializeObject<List<TrainerDataModel>>(Convert.ToString(apiResponse.Result));
 
 		return View(trainersData);
+	}
+
+	public async Task<IActionResult> TrainerDetails(int id)
+	{
+		TrainerDataModel trainerData = await GetTrainerDataFromDb(id);
+
+
+		return View(trainerData);
 	}
 
 	public IActionResult TrainerMessages()
@@ -80,4 +95,15 @@ public class TrainerContactController : Controller
 		return View();
 	}
 
+	private async Task<MemberDataModel> GetMemberDataFromDb()
+	{
+		APIResponse apiResponse = await _memberDataService.GetAsync<APIResponse>(_memberId);
+		return JsonConvert.DeserializeObject<MemberDataModel>(Convert.ToString(apiResponse.Result));
+	}
+
+	private async Task<TrainerDataModel> GetTrainerDataFromDb(int id)
+	{
+		APIResponse apiResponse = await _trainerDataService.GetAsync<APIResponse>(id);
+		return JsonConvert.DeserializeObject<TrainerDataModel>(Convert.ToString(apiResponse.Result));
+	}
 }

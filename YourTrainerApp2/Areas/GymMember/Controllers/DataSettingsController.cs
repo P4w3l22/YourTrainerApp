@@ -29,6 +29,16 @@ public class DataSettingsController : Controller
 	[HttpPost]
 	public async Task<IActionResult> ShowData(MemberDataModel memberData)
 	{
+		if (memberData.TrainersId is null)
+		{
+			memberData.TrainersId = "0";
+		}
+
+		if (memberData.TrainersPlan is null)
+		{
+			memberData.TrainersPlan = "0";
+		}
+
 		if (await MemberDataIsPresent())
 		{
 			await _memberDataService.UpdateAsync<APIResponse>(memberData);
