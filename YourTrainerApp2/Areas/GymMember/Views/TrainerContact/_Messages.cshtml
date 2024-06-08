@@ -2,6 +2,7 @@
 
 
 <div class="container" style="max-width: 700px">
+	<p class="d-flex justify-content-center">Chat</p>
 	<div class="p-3" style="background-color: #303030 ;border-radius: 30px 30px 0 0;">
 		<div class="col-6 d-flex justify-content-center align-items-center">
 			<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
@@ -11,13 +12,44 @@
 			<h5 class="ms-2 mb-0">Nazwa trenera</h5>
 		</div>
 	</div>
-	<div class="p-3 container-fluid h-100 d-flex flex-column" style="min-height: 500px; background-color: #202020; border-radius: 0 0 30px 30px">
-		<div id="contentMessages" class="half-height bg-primary text-white d-flex justify-content-center align-items-center">
-			test góra
+	<div class="p-3 container-fluid d-flex flex-column" style="min-height: 500px; background-color: #202020; border-radius: 0 0 30px 30px">
+		<div id="contentMessages" class="p-3" style="overflow: auto; height: 400px">
+			<div class="content" style="height: 300px">
+			@for (int i = 0; i < 5; i++)
+			{
+				if (i%2 == 0) {
+
+				}
+				<div class="d-flex @(i%2 == 0 ? "justify-content-start" : "justify-content-end")">
+					<div class="d-flex" style="background-color: #303030; border-radius: 20px; width: fit-content; max-width:200px">
+						<p class="m-2 mx-3">treść wiadomościewtrhwhh hhhhhhhhhhhhhhhhh hhhhhhh</p>
+					</div>
+				</div>
+				<br />
+			}
+			</div>
 		</div>
 
-		<div id="textSendingSection" class="half-height bg-success text-white d-flex justify-content-center align-items-end">
-			test dół
+		<div id="textSendingSection" class="mt-auto p-3">
+			<div class="m-0 d-flex">
+				<input class="form-control" 
+				       style="border: 1px solid #37D477; background-color: inherit; color: white; border-radius: 50px;" 
+					   placeholder="Aa"/>
+				<button class="btn">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#37D477" class="bi bi-send" viewBox="0 0 16 16">
+						<path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+					</svg>
+				</button>
+			</div>
 		</div>
 	</div>
 </div>
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			var scrollableDiv = $('#contentMessages');
+			scrollableDiv.scrollTop(scrollableDiv[0].scrollHeight);
+		});
+	</script>
+}

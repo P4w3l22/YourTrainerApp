@@ -82,3 +82,19 @@ ul.no-dots {
     color: #22CE00;
     border: 1px solid #22CE00;
 }
+
+.star-rating {
+    font-size: 2rem;
+    display: inline-block;
+}
+
+.star {
+    cursor: pointer;
+    color: lightgray;
+    transition: color 0.2s;
+}
+
+    .star.hover,
+    .star.active {
+        color: gold;
+    }

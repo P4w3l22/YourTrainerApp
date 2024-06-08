@@ -1,0 +1,98 @@
+﻿
+
+<div class="container">
+	<p class="d-flex justify-content-center">Przypisane plany</p>
+	<div class="my-2 d-flex justify-content-center">
+		<a class="btn button-green d-flex justify-content-between align-items-center px-2" style="width: 500px; border-radius: 15px">
+			<div>
+				<p class="mb-0" style="font-size: 26px;">FBW</p>
+			</div>
+			<div>
+				<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
+					<path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z" />
+				</svg>
+			</div>
+		</a>
+	</div>
+
+
+	<div>
+        <div id="test">
+            TTTTT
+        </div>
+		<div class="star-rating">
+			<span class="star" data-value="1" style="color: red">&#9733;</span>
+            <span class="star" data-value="2" style="color: red">&#9733;</span>
+            <span class="star" data-value="3" style="color: red">&#9733;</span>
+            <span class="star" data-value="4" style="color: red">&#9733;</span>
+            <span class="star" data-value="5" style="color: red">&#9733;</span>
+		</div>
+	</div>
+
+
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("test").style.color = "red";
+    </script>
+}
+
+@*
+@section Scripts {
+    <script>
+        document.getElementById("test").style.color = "red";
+    </script>
+	 <script>
+		document.addEventListener('DOMContentLoaded', function() {
+        const stars = document.querySelectorAll('.star');
+    
+        stars.forEach(star => {
+            star.addEventListener('mouseover', handleMouseOver(this));
+            star.addEventListener('mouseout', handleMouseOut);
+            star.addEventListener('click', handleClick(this));
+        });
+    
+        function handleMouseOver(event) {
+            const value = event.target.getAttribute('data-value');
+            highlightStars(value);
+        }
+    
+        function handleMouseOut() {
+            resetStars();
+        }
+    
+        function handleClick(event) {
+            const value = event.target.getAttribute('data-value');
+            setActiveStars(value);
+        }
+    
+        function highlightStars(value) {
+            stars.forEach(star => {
+                if (star.getAttribute('data-value') <= value) {
+                    star.classList.add('hover');
+                } else {
+                    star.classList.remove('hover');
+                }
+            });
+        }
+    
+        function resetStars() {
+            stars.forEach(star => {
+                star.classList.remove('hover');
+            });
+        }
+    
+        function setActiveStars(value) {
+            stars.forEach(star => {
+                if (star.getAttribute('data-value') <= value) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+    });
+
+	</script> 
+}*@
