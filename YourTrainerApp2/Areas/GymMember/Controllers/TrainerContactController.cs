@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using YourTrainerApp.Models;
 using YourTrainerApp.Services.IServices;
@@ -26,7 +27,7 @@ public class TrainerContactController : Controller
 	{
 		MemberDataModel memberData = await GetMemberDataFromDb();
 
-		if (memberData.TrainersId is not null && memberData.TrainersId != "0")
+		if (!memberData.TrainersId.IsNullOrEmpty() && memberData.TrainersId != "0")
 		{
 			return RedirectToAction("TrainerDetails", "TrainerContact", new { Area = "GymMember", id = int.Parse(memberData.TrainersId) });
 		}
@@ -56,14 +57,18 @@ public class TrainerContactController : Controller
 		APIResponse apiResponse = await _trainerDataService.GetAsync<APIResponse>(id);
 		TrainerDataModel trainerData = JsonConvert.DeserializeObject<TrainerDataModel>(Convert.ToString(apiResponse.Result));
 
-		if (trainerData.MembersId == "0")
+		if (trainerData.MembersId == "0" || trainerData.MembersId.IsNullOrEmpty())
 		{
 			trainerData.MembersId = _memberId.ToString();
 		}
         else
         {
-			trainerData.MembersId += ";" + _memberId.ToString();
-		}
+			bool memberExists = Array.Exists(trainerData.MembersId.Split(";"), memberId => memberId == _memberId.ToString());
+			if (!memberExists)
+			{
+                trainerData.MembersId += ";" + _memberId.ToString();
+            }
+        }
 
 		await _trainerDataService.UpdateAsync<APIResponse>(trainerData);
 
@@ -71,14 +76,18 @@ public class TrainerContactController : Controller
 		apiResponse = await _memberDataService.GetAsync<APIResponse>(_memberId);
 		MemberDataModel memberData = JsonConvert.DeserializeObject<MemberDataModel>(Convert.ToString(apiResponse.Result));
 
-		if (memberData.TrainersId == "0")
+		if (memberData.TrainersId == "0" || memberData.TrainersId.IsNullOrEmpty())
 		{
 			memberData.TrainersId = id.ToString();
 		}
 		else
 		{
-			memberData.TrainersId += ";" + id.ToString();
-		}
+            bool trainerExists = Array.Exists(memberData.TrainersId.Split(";"), trainerId => trainerId == id.ToString());
+			if (!trainerExists)
+			{
+                memberData.TrainersId += ";" + id.ToString();
+            }
+        }
 
 		await _memberDataService.UpdateAsync<APIResponse>(memberData);
 
@@ -93,6 +102,29 @@ public class TrainerContactController : Controller
 	public IActionResult AssignedTrainingPlan()
 	{
 		return View();
+	}
+
+	public async Task<IActionResult> DeleteTrainerAsync()
+	{
+		APIResponse apiResponse = await _memberDataService.GetAsync<APIResponse>(_memberId);
+		MemberDataModel memberData = JsonConvert.DeserializeObject<MemberDataModel>(Convert.ToString(apiResponse.Result));
+
+		int trainerId = int.Parse(memberData.TrainersId);
+		memberData.TrainersId = "";
+
+		await _memberDataService.UpdateAsync<APIResponse>(memberData);
+
+
+		apiResponse = await _trainerDataService.GetAsync<APIResponse>(trainerId);
+		TrainerDataModel trainerData = JsonConvert.DeserializeObject<TrainerDataModel>(Convert.ToString(apiResponse.Result));
+
+		List<string> membersIdTrainer = trainerData.MembersId.Split(";").ToList();
+		membersIdTrainer.RemoveAll(id => id == _memberId.ToString());
+		trainerData.MembersId = String.Join(";", membersIdTrainer);
+
+		await _trainerDataService.UpdateAsync<APIResponse>(trainerData);
+
+		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
 
 	private async Task<MemberDataModel> GetMemberDataFromDb()
