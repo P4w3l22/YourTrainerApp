@@ -3,7 +3,7 @@
 AS
 BEGIN
 
-	UPDATE [dbo].[spTrainerClientContact_SetAsRead]
+	UPDATE [dbo].[TrainerClientContact]
 	SET IsRead = 1 
 	WHERE Id = @Id;
 

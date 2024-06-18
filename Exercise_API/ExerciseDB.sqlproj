@@ -98,10 +98,9 @@
     <Build Include="dbo\StoredProcedures\spMemberData_Insert.sql" />
     <Build Include="dbo\StoredProcedures\spMemberData_Update.sql" />
     <Build Include="dbo\Tables\TrainerClientContact.sql" />
-    <Build Include="dbo\StoredProcedures\spTrainerClientContact_GetNewMessages.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainerClientContact_GetMessages.sql" />
     <Build Include="dbo\StoredProcedures\spTrainerClientContact_SendMessage.sql" />
     <Build Include="dbo\StoredProcedures\spTrainerClientContact_SetAsRead.sql" />
-    <Build Include="dbo\StoredProcedures\spTrainerClientContact_GetMessagesHistory.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />

@@ -12,5 +12,13 @@
 
 		public static string SessionToken = "JWTToken";
 
+		public enum MessageType
+		{
+			Text,
+			TrainingPlan,
+			Report,
+			ConfirmClient,
+			Resignation
+		}
 	}
 }
