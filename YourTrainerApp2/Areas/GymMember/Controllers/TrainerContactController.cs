@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using YourTrainer_Utility;
+using YourTrainerApp.Areas.GymMember.Models;
 using YourTrainerApp.Models;
 using YourTrainerApp.Services.IServices;
 
@@ -12,20 +15,22 @@ public class TrainerContactController : Controller
 {
 	private readonly ITrainerDataService _trainerDataService;
 	private readonly IMemberDataService _memberDataService;
+	private readonly ITrainerClientContactService _trainerClientContactService;
 	private int _memberId
 	{
 		get => int.Parse(HttpContext.Session.GetString("UserId"));
 	}
 
-    public TrainerContactController(ITrainerDataService trainerDataService, IMemberDataService memberDataService)
+    public TrainerContactController(ITrainerDataService trainerDataService, IMemberDataService memberDataService, ITrainerClientContactService trainerClientContactService)
     {
 		_trainerDataService = trainerDataService;
 		_memberDataService = memberDataService;
-    }
+		_trainerClientContactService = trainerClientContactService;
+	}
 
 	public async Task<IActionResult> Index()
 	{
-		MemberDataModel memberData = await GetMemberDataFromDb();
+		MemberDataModel memberData = await GetMemberData();
 
 		if (!memberData.TrainersId.IsNullOrEmpty() && memberData.TrainersId != "0")
 		{
@@ -41,15 +46,17 @@ public class TrainerContactController : Controller
 
 	public async Task<IActionResult> TrainerDetails(int id)
 	{
-		TrainerDataModel trainerData = await GetTrainerDataFromDb(id);
+		TrainerContact trainerContact = new();
+		trainerContact.TrainerData = await SetTrainerData(id);
+		trainerContact.MessagesWithTrainer = await SetMessagesWithTrainer(id);
 
-
-		return View(trainerData);
+		return View(trainerContact);
 	}
 
-	public IActionResult TrainerMessages()
+	public async Task<IActionResult> TrainerMessages()
 	{
-		return View();
+		
+		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
 
 	public async Task<IActionResult> AddTrainer(int id) 
@@ -127,15 +134,25 @@ public class TrainerContactController : Controller
 		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
 
-	private async Task<MemberDataModel> GetMemberDataFromDb()
+	private async Task<MemberDataModel> GetMemberData()
 	{
 		APIResponse apiResponse = await _memberDataService.GetAsync<APIResponse>(_memberId);
 		return JsonConvert.DeserializeObject<MemberDataModel>(Convert.ToString(apiResponse.Result));
 	}
 
-	private async Task<TrainerDataModel> GetTrainerDataFromDb(int id)
+	private async Task<TrainerDataModel> SetTrainerData(int id)
 	{
 		APIResponse apiResponse = await _trainerDataService.GetAsync<APIResponse>(id);
 		return JsonConvert.DeserializeObject<TrainerDataModel>(Convert.ToString(apiResponse.Result));
+	}
+    private async Task<List<TrainerClientContact>> SetMessagesWithTrainer(int trainerId)
+    {
+		APIResponse apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(_memberId, StaticDetails.MessageType.Text.ToString());
+		List<TrainerClientContact> memberMessages = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
+    
+		apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(trainerId, StaticDetails.MessageType.Text.ToString());
+		List<TrainerClientContact> trainerMessages = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
+
+		return memberMessages.Concat(trainerMessages).OrderBy(m => m.SendDateTime).ToList();
 	}
 }

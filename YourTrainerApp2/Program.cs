@@ -25,6 +25,9 @@ builder.Services.AddScoped<ITrainerDataService, TrainerDataService>();
 builder.Services.AddHttpClient<IMemberDataService, MemberDataService>();
 builder.Services.AddScoped<IMemberDataService, MemberDataService>();
 
+builder.Services.AddHttpClient<ITrainerClientContactService, TrainerClientContactService>();
+builder.Services.AddScoped<ITrainerClientContactService, TrainerClientContactService>();
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IHttpContextAccessor,  HttpContextAccessor>();
