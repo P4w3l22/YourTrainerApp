@@ -23,13 +23,13 @@ public class TrainerClientContactController : ControllerBase
         this._response = new();
     }
 
-    [HttpGet("{ReceiverId:int}/{MessageType}")]
+    [HttpGet("{SenderId:int}/{ReceiverId:int}/{MessageType}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<APIResponse>> GetMessages(int ReceiverId, string MessageType)
+    public async Task<ActionResult<APIResponse>> GetMessages(int SenderId, int ReceiverId, string MessageType)
     {
         try
         {
-            IEnumerable<TrainerClientContact> messages = await _data.GetMessages(ReceiverId, MessageType);
+            IEnumerable<TrainerClientContact> messages = await _data.GetMessages(SenderId, ReceiverId, MessageType);
             _response.Result = _mapper.Map<List<TrainerClientContact>>(messages);
             _response.StatusCode = HttpStatusCode.OK;
             return Ok(_response);

@@ -20,6 +20,7 @@ public class TrainerContactController : Controller
 	{
 		get => int.Parse(HttpContext.Session.GetString("UserId"));
 	}
+	private int _trainerId;
 
     public TrainerContactController(ITrainerDataService trainerDataService, IMemberDataService memberDataService, ITrainerClientContactService trainerClientContactService)
     {
@@ -34,7 +35,8 @@ public class TrainerContactController : Controller
 
 		if (!memberData.TrainersId.IsNullOrEmpty() && memberData.TrainersId != "0")
 		{
-			return RedirectToAction("TrainerDetails", "TrainerContact", new { Area = "GymMember", id = int.Parse(memberData.TrainersId) });
+			_trainerId = int.Parse(memberData.TrainersId);
+			return RedirectToAction("TrainerDetails", "TrainerContact", new { Area = "GymMember", id = _trainerId });
 		}
 
 		APIResponse apiResponse = await _trainerDataService.GetAllAsync<APIResponse>();
@@ -56,6 +58,26 @@ public class TrainerContactController : Controller
 	public async Task<IActionResult> TrainerMessages()
 	{
 		
+		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
+	}
+
+	public async Task<IActionResult> SendMessage(string newMessage)
+	{
+		MemberDataModel memberData = await GetMemberData();
+		_trainerId = int.Parse(memberData.TrainersId);
+
+		if (!string.IsNullOrEmpty(newMessage))
+		{
+			TrainerClientContact messageToSend = new()
+			{
+				Id = 0,
+				SenderId = _memberId,
+				ReceiverId = _trainerId,
+				MessageType = StaticDetails.MessageType.Text.ToString(),
+				MessageContent = newMessage
+			};
+			APIResponse apiResponse = await _trainerClientContactService.SendMessageAsync<APIResponse>(messageToSend);
+		}
 		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
 
@@ -147,10 +169,10 @@ public class TrainerContactController : Controller
 	}
     private async Task<List<TrainerClientContact>> SetMessagesWithTrainer(int trainerId)
     {
-		APIResponse apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(_memberId, StaticDetails.MessageType.Text.ToString());
+		APIResponse apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(trainerId, _memberId, StaticDetails.MessageType.Text.ToString());
 		List<TrainerClientContact> memberMessages = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
     
-		apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(trainerId, StaticDetails.MessageType.Text.ToString());
+		apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(_memberId, trainerId, StaticDetails.MessageType.Text.ToString());
 		List<TrainerClientContact> trainerMessages = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
 
 		return memberMessages.Concat(trainerMessages).OrderBy(m => m.SendDateTime).ToList();

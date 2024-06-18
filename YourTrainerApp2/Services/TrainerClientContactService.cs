@@ -12,11 +12,11 @@ public class TrainerClientContactService : BaseService, ITrainerClientContactSer
 		APIUrl = configuration.GetValue<string>("ServiceUrls:ExerciseAPI");
 	}
 
-	public Task<T> GetMessagesAsync<T>(int receiverId, string messageType) =>
+	public Task<T> GetMessagesAsync<T>(int senderId, int receiverId, string messageType) =>
 		SendAsync<T>(new APIRequest()
 		{
 			ApiType = StaticDetails.ApiType.GET,
-			Url = APIUrl + "/api/TrainerClientContact/" + receiverId + "/" + messageType
+			Url = APIUrl + "/api/TrainerClientContact/" + senderId + "/" + receiverId + "/" + messageType
 		});
 
 	public Task<T> SendMessageAsync<T>(TrainerClientContact trainerClientContactSend) =>

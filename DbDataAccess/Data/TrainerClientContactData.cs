@@ -17,8 +17,13 @@ public class TrainerClientContactData : ITrainerClientContactData
 		_db = db;
 	}
 
-	public async Task<IEnumerable<TrainerClientContact>> GetMessages(int receiverId, string messageType) =>
-		await _db.GetData<TrainerClientContact, dynamic>("spTrainerClientContact_GetMessages", new { ReceiverId = receiverId, MessageType = messageType });
+	public async Task<IEnumerable<TrainerClientContact>> GetMessages(int senderId, int receiverId, string messageType) =>
+		await _db.GetData<TrainerClientContact, dynamic>("spTrainerClientContact_GetMessages", new 
+		{ 
+			SenderId = senderId,
+			ReceiverId = receiverId, 
+			MessageType = messageType 
+		});
 
 	public async Task SendMessage(TrainerClientContact trainerClientContact) =>
 		await _db.SaveData("spTrainerClientContact_SendMessage", new

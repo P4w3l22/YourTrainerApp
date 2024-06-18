@@ -25,7 +25,7 @@
             <a class="btn button-red" asp-area="GymMember" asp-controller="TrainerContact" asp-action="DeleteTrainer">Usuń</a>
 		</div>
 	</div>
-	<div id="messages" class="container" hidden>
+	<div id="messages" class="container" @* hidden *@>
 		<div class="container">
 			<partial name="_Messages" />
 		</div>
@@ -39,6 +39,29 @@
 	@* <script>
 		document.getElementById("test").style.color = "red";
 	</script> *@
+	<script>
+		function saveNewMessage() {
+			var message = document.getElementById("newMessage").value;
+
+			var data = {
+				newMessage: message
+			};
+			var action = "SendMessage";
+
+			$.ajax({
+				type: 'POST',
+				url: '/GymMember/TrainerContact/' + action,
+				data: data,
+				success: function (response) {
+					location.reload();
+					console.log("Dane zapisane do sesji.");
+				},
+				error: function (response) {
+					console.log("Wystąpił błąd podczas zapisywania danych do sesji.");
+				}
+			});
+		}
+	</script>
 	<script>
 		$('#messagesShow').click(function () {
 			$('#messages').removeAttr('hidden');

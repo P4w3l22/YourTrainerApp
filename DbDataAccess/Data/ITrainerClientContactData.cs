@@ -1,11 +1,10 @@
 ﻿using DbDataAccess.Models;
 
-namespace DbDataAccess.Data
+namespace DbDataAccess.Data;
+
+public interface ITrainerClientContactData
 {
-	public interface ITrainerClientContactData
-	{
-		Task<IEnumerable<TrainerClientContact>> GetMessages(int receiverId, string messageType);
-		Task SendMessage(TrainerClientContact trainerClientContact);
-		Task SetAsRead(int id);
-	}
+	Task<IEnumerable<TrainerClientContact>> GetMessages(int senderId, int receiverId, string messageType);
+	Task SendMessage(TrainerClientContact trainerClientContact);
+	Task SetAsRead(int id);
 }

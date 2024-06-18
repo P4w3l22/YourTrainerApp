@@ -18,13 +18,7 @@
 			<div class="content" style="height: 300px">
 			@foreach (TrainerClientContact message in Model.MessagesWithTrainer)
 			{
-				@* <div class="d-flex @(i%2 == 0 ? "justify-content-start" : "justify-content-end")">
-					<div class="d-flex" style="background-color: #303030; border-radius: 20px; width: fit-content; max-width:200px">
-						<p class="m-2 mx-3"></p>
-					</div>
-				</div>
-				<br /> *@
-				<div class="d-flex justify-content-start">
+				<div class="d-flex @(message.SenderId == Model.TrainerData.TrainerId ? "justify-content-start" : "justify-content-end")">
 					<div class="d-flex" style="background-color: #303030; border-radius: 20px; width: fit-content; max-width:200px">
 						<p class="m-2 mx-3">@message.MessageContent</p>
 					</div>
@@ -36,14 +30,19 @@
 
 		<div id="textSendingSection" class="mt-auto p-3">
 			<div class="m-0 d-flex">
+				@{
+					string newMessage = "testtt";
+				}
 				<input class="form-control" 
+					   name="newMessage"
+					   id="newMessage"
 				       style="border: 1px solid #37D477; background-color: inherit; color: white; border-radius: 50px;" 
 					   placeholder="Aa"/>
-				<button class="btn">
+				<a class="btn" onclick="saveNewMessage()">
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#37D477" class="bi bi-send" viewBox="0 0 16 16">
 						<path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
 					</svg>
-				</button>
+				</a>
 			</div>
 		</div>
 	</div>
@@ -53,10 +52,12 @@
 </div>
 
 @section Scripts {
+
 	<script>
 		$(document).ready(function () {
 			var scrollableDiv = $('#contentMessages');
 			scrollableDiv.scrollTop(scrollableDiv[0].scrollHeight);
 		});
 	</script>
+	
 }
