@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using YourTrainer_App.Areas.Trainer.Models;
 using YourTrainer_App.Services.APIServices.IServices;
@@ -7,15 +6,15 @@ using YourTrainer_Utility;
 using YourTrainerApp.Areas.GymMember.Models;
 using YourTrainerApp.Models;
 
-namespace YourTrainer_App.Repository.DataRepository;
+namespace YourTrainer_App.Services.DataServices;
 
-public class TrainerClientDataRepository : ITrainerClientDataRepository
+public class TrainerClientDataService : ITrainerClientDataService
 {
 	private readonly ITrainerDataService _trainerDataService;
 	private readonly IMemberDataService _memberDataService;
 	private readonly ITrainerClientContactService _trainerClientContactService;
 
-	public TrainerClientDataRepository(ITrainerDataService trainerDataService, IMemberDataService memberDataService, ITrainerClientContactService trainerClientContactService)
+	public TrainerClientDataService(ITrainerDataService trainerDataService, IMemberDataService memberDataService, ITrainerClientContactService trainerClientContactService)
 	{
 		_trainerDataService = trainerDataService;
 		_memberDataService = memberDataService;

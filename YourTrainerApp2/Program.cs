@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using YourTrainer_App.Services.APIServices;
 using YourTrainer_App.Services.APIServices.IServices;
-using YourTrainer_App.Repository.DataRepository;
+using YourTrainer_App.Services.DataServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +29,7 @@ builder.Services.AddScoped<IMemberDataService, MemberDataService>();
 builder.Services.AddHttpClient<ITrainerClientContactService, TrainerClientContactService>();
 builder.Services.AddScoped<ITrainerClientContactService, TrainerClientContactService>();
 
-builder.Services.AddScoped<ITrainerClientDataRepository, TrainerClientDataRepository>();
+builder.Services.AddScoped<ITrainerClientDataService, TrainerClientDataService>();
 
 builder.Services.AddHttpContextAccessor();
 

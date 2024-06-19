@@ -2,8 +2,8 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using YourTrainer_App.Areas.Trainer.Models;
-using YourTrainer_App.Repository.DataRepository;
 using YourTrainer_App.Services.APIServices.IServices;
+using YourTrainer_App.Services.DataServices;
 using YourTrainer_Utility;
 using YourTrainerApp.Models;
 
@@ -12,12 +12,12 @@ namespace YourTrainer_App.Areas.Trainer.Controllers;
 [Area("Trainer")]
 public class ClientContactController : Controller
 {
-	private readonly ITrainerClientDataRepository _trainerClientDataRepository;
+	private readonly ITrainerClientDataService _trainerClientDataService;
 	private int _trainerId => int.Parse(HttpContext.Session.GetString("UserId"));
 
-	public ClientContactController(ITrainerClientDataRepository trainerClientDataRepository)
+	public ClientContactController(ITrainerClientDataService trainerClientDataService)
 	{
-		_trainerClientDataRepository = trainerClientDataRepository;
+		_trainerClientDataService = trainerClientDataService;
 	}
 
 	public IActionResult Index()
@@ -27,14 +27,14 @@ public class ClientContactController : Controller
 
 	public async Task<IActionResult> ClientsDetails()
 	{
-		List<ClientContact> clientsContact = await _trainerClientDataRepository.GetClientsDetails(_trainerId);
+		List<ClientContact> clientsContact = await _trainerClientDataService.GetClientsDetails(_trainerId);
 
         return View(clientsContact);
 	}
 
 	public async Task<IActionResult> SendMessage(string newMessage, int memberId)
 	{
-		await _trainerClientDataRepository.SendMessage(newMessage, _trainerId, memberId);
+		await _trainerClientDataService.SendMessage(newMessage, _trainerId, memberId);
 
 		return RedirectToAction("Index");
 	}
