@@ -10,12 +10,7 @@ namespace YourTrainerApp.Areas.GymMember.Controllers;
 public class DataSettingsController : Controller
 {
 	private readonly IMemberDataService _memberDataService;
-
-	private int _memberId
-	{
-		get => int.Parse(HttpContext.Session.GetString("UserId"));
-	}
-
+	private int _memberId => int.Parse(HttpContext.Session.GetString("UserId"));
 
 	public DataSettingsController(IMemberDataService memberDataService)
 	{

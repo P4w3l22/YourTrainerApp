@@ -50,6 +50,8 @@ public class TrainingPlanController : Controller
                            .Where(tp => tp.Creator == (isNotUsernameSet ? "admin@gmail.com" : _sessionUsername))
                            .ToList();
 
+        // List<TrainingPlan> trainingPlans = await _trainingPlanDataService.GetTrainingPlans(_sessionUsername);
+
         if (_sessionExercises is not null)
         {
             _sessionExercises = new();
@@ -129,7 +131,9 @@ public class TrainingPlanController : Controller
                 });
             }
 
-            TempData["success"] = "Dodano plan!";
+			// await _trainingPlanDataService.CreateTrainingPlan(trainingPlan);
+
+			TempData["success"] = "Dodano plan!";
 
             return RedirectToAction("Index");
         }
@@ -169,7 +173,9 @@ public class TrainingPlanController : Controller
                 }
             }
 
-            TempData["success"] = "Zaktualizowano plan!";
+			// await _trainingPlanDataService.UpdateTrainingPlan(trainingPlan);
+
+			TempData["success"] = "Zaktualizowano plan!";
 
             return RedirectToAction("Index");
         }
@@ -196,6 +202,9 @@ public class TrainingPlanController : Controller
         _sessionExercises = exercises;
         _sessionTrainingPlan = trainingPlan;
 
+		//_sessionExercises = await _trainingPlanDataService.GetTrainingPlanExercises(trainingPlan.Exercises);
+		//_sessionTrainingPlan = await _trainingPlanDataService.GetTrainingPlan(id);
+
 		return View(trainingPlan);
     }
 
@@ -204,7 +213,9 @@ public class TrainingPlanController : Controller
     {
         await _trainingPlanService.DeleteAsync<APIResponse>(id);
 
-        TempData["success"] = "Usunięto plan treningowy";
+		// await _trainingPlanDataService.DeleteTrainingPlan(id);
+
+		TempData["success"] = "Usunięto plan treningowy";
 
         return RedirectToAction("Index");
     }
@@ -233,6 +244,8 @@ public class TrainingPlanController : Controller
 
 		_sessionTrainingPlan = trainingPlan;
 
+		// _sessionTrainingPlan = await _trainingPlanDataService.IncrementExerciseSeriesAndGetTrainingPlan(_sessionTrainingPlan, id);
+
 		return RedirectToAction("Upsert");
 	}
 
@@ -249,7 +262,8 @@ public class TrainingPlanController : Controller
         exercises.RemoveAt(listPosition);
 
         _sessionTrainingPlan = trainingPlan;
-        _sessionExercises = exercises;
+		// _sessionTrainingPlan = await _trainingPlanDataService.DeleteExerciseAndGetTrainingPlan(_sessionTrainingPlan, listPosition);
+		_sessionExercises = exercises;
 
         return RedirectToAction("Upsert");
     }
@@ -290,6 +304,8 @@ public class TrainingPlanController : Controller
 		}
 
 		_sessionTrainingPlan = trainingPlan;
+
+		// _sessionTrainingPlan = await _trainingPlanDataService.DecrementExerciseSeriesAndGetTrainingPlan(_sessionTrainingPlan, id);
 
 		return RedirectToAction("Upsert");
 	}
@@ -334,6 +350,8 @@ public class TrainingPlanController : Controller
 
         _sessionTrainingPlan = trainingPlan;
 
+		// _sessionTrainingPlan = await _trainingPlanDataService.SaveRepsWeightsAndGetTrainingPlan(_sessionTrainingPlan, values, exerciseId, seriesPosition);
+
 		return Ok();
     }
 
@@ -372,6 +390,10 @@ public class TrainingPlanController : Controller
             _sessionTrainingPlan = trainingPlan;
         }
 
+		// _sessionTrainingPlan = await _trainingPlanDataService.AddExerciseAndGetTrainingPlan(_sessionTrainingPlan, id);
+		// _sessionExercises = await _trainingPlanDataService.AddExerciseAndGetExercisesList(_sessionExercises, id);
+
+
 		return RedirectToAction("Upsert");
 	}
 
@@ -381,7 +403,8 @@ public class TrainingPlanController : Controller
         TrainingPlan trainingPlan = _sessionTrainingPlan;
         trainingPlan.Title = title;
         _sessionTrainingPlan = trainingPlan;
-        return Ok();
+		// _sessionTrainingPlan = await _trainingPlanDataService.SaveTitleAndGetTrainingPlan(_sessionTrainingPlan, title);
+		return Ok();
     }
 
     public IActionResult SaveTrainigDaysData(string day)
@@ -398,6 +421,8 @@ public class TrainingPlanController : Controller
 
 		_sessionTrainingPlan = trainingPlan;
 
+		// _sessionTrainingPlan = await _trainingPlanDataService.SaveTrainingDaysAndGetTrainingPlan(_sessionTrainingPlan, day);
+
 		return Ok();
     }
 
@@ -406,7 +431,8 @@ public class TrainingPlanController : Controller
         TrainingPlan trainingPlan = _sessionTrainingPlan;
         trainingPlan.Notes = notes;
 		_sessionTrainingPlan = trainingPlan;
-        return Ok();
+		// _sessionTrainingPlan = await _trainingPlanDataService.SaveNotesAndGetTrainingPlan(_sessionTrainingPlan, notes);
+		return Ok();
     }
 
     private T DeserializeResult<T>(object apiResponseResult) =>

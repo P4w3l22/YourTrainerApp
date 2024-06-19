@@ -31,6 +31,7 @@ builder.Services.AddScoped<ITrainerClientContactService, TrainerClientContactSer
 
 builder.Services.AddScoped<ITrainerClientDataService, TrainerClientDataService>();
 
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IHttpContextAccessor,  HttpContextAccessor>();
