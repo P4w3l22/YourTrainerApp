@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using YourTrainer_App.Services.APIServices;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_App.Services.DataServices;
+using YourTrainer_App.Areas.Visitor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,8 @@ builder.Services.AddHttpClient<ITrainerClientContactService, TrainerClientContac
 builder.Services.AddScoped<ITrainerClientContactService, TrainerClientContactService>();
 
 builder.Services.AddScoped<ITrainerClientDataService, TrainerClientDataService>();
+
+builder.Services.AddScoped<ITrainingPlanDataService, TrainingPlanDataService>();
 
 
 builder.Services.AddHttpContextAccessor();

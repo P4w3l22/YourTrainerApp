@@ -7,13 +7,13 @@ using YourTrainerApp.Models.VM;
 
 namespace YourTrainer_App.Areas.Visitor.Services;
 
-public class TrainingPlanDataService
+public class TrainingPlanDataService : ITrainingPlanDataService
 {
 	private readonly ITrainingPlanService _trainingPlanService;
 	private readonly ITrainingPlanExerciseService _trainingPlanExerciseService;
 	private readonly IExerciseService _exerciseService;
 
-    public TrainingPlanDataService(ITrainingPlanService trainingPlanService, ITrainingPlanExerciseService trainingPlanExerciseService, IExerciseService exerciseService)
+	public TrainingPlanDataService(ITrainingPlanService trainingPlanService, ITrainingPlanExerciseService trainingPlanExerciseService, IExerciseService exerciseService)
 	{
 		_trainingPlanService = trainingPlanService;
 		_trainingPlanExerciseService = trainingPlanExerciseService;
@@ -38,21 +38,45 @@ public class TrainingPlanDataService
 		await CreateTrainingPlanExercises(trainingPlan.Exercises, trainingPlan.Title, trainingPlan.Creator);
 	}
 
-		private async Task<int> GetTrainingPlanId(string title, string creator)
+	private async Task<int> GetTrainingPlanId(string title, string creator)
+	{
+		APIResponse apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
+		TrainingPlan trainingPlanDb = JsonConvert.DeserializeObject<List<TrainingPlan>>(Convert.ToString(apiResponse.Result))
+						.Where(tp => tp.Title == title && tp.Creator == creator)
+						.FirstOrDefault();
+		return trainingPlanDb.Id;
+	}
+
+	// ujednolicić insert z create
+	private async Task CreateTrainingPlanExercises(List<TrainingPlanExercise> trainingPlanExercises, string title, string creator)
+	{
+		int id = await GetTrainingPlanId(title, creator);
+
+		foreach (TrainingPlanExercise trainingPlanExercise in trainingPlanExercises)
 		{
-			APIResponse apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
-			TrainingPlan trainingPlanDb = JsonConvert.DeserializeObject<List<TrainingPlan>>(Convert.ToString(apiResponse.Result))
-							.Where(tp => tp.Title == title && tp.Creator == creator)
-							.FirstOrDefault();
-			return trainingPlanDb.Id;
+			await _trainingPlanExerciseService.InsertAsync<APIResponse>(new TrainingPlanExerciseCreateDTO()
+			{
+				TPId = id,
+				EId = trainingPlanExercise.EId,
+				Series = trainingPlanExercise.Series,
+				Reps = trainingPlanExercise.Reps,
+				Weights = trainingPlanExercise.Weights
+			});
 		}
+	}
 
-		// ujednolicić insert z create
-		private async Task CreateTrainingPlanExercises(List<TrainingPlanExercise> trainingPlanExercises, string title, string creator)
+	public async Task UpdateTrainingPlan(TrainingPlan trainingPlan)
+	{
+		await _trainingPlanService.UpdateAsync<APIResponse>(trainingPlan);
+
+		await UpdateTrainingPlanExercises(trainingPlan.Exercises, trainingPlan.Id);
+	}
+
+	private async Task UpdateTrainingPlanExercises(List<TrainingPlanExercise> trainingPlanExercises, int id)
+	{
+		foreach (TrainingPlanExercise trainingPlanExercise in trainingPlanExercises)
 		{
-			int id = await GetTrainingPlanId(title, creator);
-
-			foreach (TrainingPlanExercise trainingPlanExercise in trainingPlanExercises)
+			if (trainingPlanExercise.Id == 0)
 			{
 				await _trainingPlanExerciseService.InsertAsync<APIResponse>(new TrainingPlanExerciseCreateDTO()
 				{
@@ -63,51 +87,27 @@ public class TrainingPlanDataService
 					Weights = trainingPlanExercise.Weights
 				});
 			}
-		}
-
-	public async Task UpdateTrainingPlan(TrainingPlan trainingPlan)
-	{
-		await _trainingPlanService.UpdateAsync<APIResponse>(trainingPlan);
-
-		await UpdateTrainingPlanExercises(trainingPlan.Exercises, trainingPlan.Id);
-	}
-
-		private async Task UpdateTrainingPlanExercises(List<TrainingPlanExercise> trainingPlanExercises, int id)
-		{
-			foreach (TrainingPlanExercise trainingPlanExercise in trainingPlanExercises)
+			else
 			{
-				if (trainingPlanExercise.Id == 0)
+				await _trainingPlanExerciseService.UpdateAsync<APIResponse>(new TrainingPlanExerciseUpdateDTO()
 				{
-					await _trainingPlanExerciseService.InsertAsync<APIResponse>(new TrainingPlanExerciseCreateDTO()
-					{
-						TPId = id,
-						EId = trainingPlanExercise.EId,
-						Series = trainingPlanExercise.Series,
-						Reps = trainingPlanExercise.Reps,
-						Weights = trainingPlanExercise.Weights
-					});
-				}
-				else
-				{
-					await _trainingPlanExerciseService.UpdateAsync<APIResponse>(new TrainingPlanExerciseUpdateDTO()
-					{
-						Id = trainingPlanExercise.Id,
-						TPId = id,
-						EId = trainingPlanExercise.EId,
-						Series = trainingPlanExercise.Series,
-						Reps = trainingPlanExercise.Reps,
-						Weights = trainingPlanExercise.Weights
-					});
-				}
+					Id = trainingPlanExercise.Id,
+					TPId = id,
+					EId = trainingPlanExercise.EId,
+					Series = trainingPlanExercise.Series,
+					Reps = trainingPlanExercise.Reps,
+					Weights = trainingPlanExercise.Weights
+				});
 			}
 		}
+	}
 
 	public async Task<TrainingPlan> GetTrainingPlan(int id)
 	{
 		APIResponse apiResponse = await _trainingPlanService.GetAsync<APIResponse>(id);
 		TrainingPlan trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(Convert.ToString(apiResponse.Result));
-		trainingPlan.CreateTrainingDaysString();
-		
+		trainingPlan.CreateTrainingDaysDict();
+
 		return trainingPlan;
 	}
 
@@ -122,11 +122,11 @@ public class TrainingPlanDataService
 		return exercises;
 	}
 
-		private async Task<TrainingPlanExerciseCreateVM> GetExercise(int exerciseId)
-		{
-			APIResponse apiResponse = await _exerciseService.GetAsync<APIResponse>(exerciseId);
-			return JsonConvert.DeserializeObject<TrainingPlanExerciseCreateVM>(Convert.ToString(apiResponse.Result));
-		}
+	private async Task<TrainingPlanExerciseCreateVM> GetExercise(int exerciseId)
+	{
+		APIResponse apiResponse = await _exerciseService.GetAsync<APIResponse>(exerciseId);
+		return JsonConvert.DeserializeObject<TrainingPlanExerciseCreateVM>(Convert.ToString(apiResponse.Result));
+	}
 
 	public async Task DeleteTrainingPlan(int id)
 	{
@@ -276,5 +276,31 @@ public class TrainingPlanDataService
 		}
 
 		return exercises;
+	}
+
+	public TrainingPlan SaveTitleAndGetTrainingPlan(TrainingPlan trainingPlan, string title)
+	{
+		trainingPlan.Title = title;
+		return trainingPlan;
+	}
+
+	public TrainingPlan SaveTrainingDaysAndGetTrainingPlan(TrainingPlan trainingPlan, string day)
+	{
+		if (trainingPlan.TrainingDaysDict[day])
+		{
+			trainingPlan.TrainingDaysDict[day] = false;
+		}
+		else
+		{
+			trainingPlan.TrainingDaysDict[day] = true;
+		}
+
+		return trainingPlan;
+	}
+
+	public TrainingPlan SaveNotesAndGetTrainingPlan(TrainingPlan trainingPlan, string notes)
+	{
+		trainingPlan.Notes = notes;
+		return trainingPlan;
 	}
 }

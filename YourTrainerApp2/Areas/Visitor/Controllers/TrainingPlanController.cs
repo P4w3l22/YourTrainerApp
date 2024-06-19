@@ -7,15 +7,14 @@ using YourTrainerApp.Attributes;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using YourTrainer_App.Services.APIServices.IServices;
+using YourTrainer_App.Areas.Visitor.Services;
 
 namespace YourTrainerApp.Areas.Visistor.Controllers;
 
 [Area("Visitor")]
 public class TrainingPlanController : Controller
 {
-    private readonly ITrainingPlanService _trainingPlanService;
-    private readonly ITrainingPlanExerciseService _trainingPlanExerciseService;
-    private readonly IExerciseService _exerciseService;
+    private readonly ITrainingPlanDataService _trainingPlanDataService;
     
     private string? _sessionUsername 
     {
@@ -33,24 +32,16 @@ public class TrainingPlanController : Controller
 		set => HttpContext.Session.SetString("Exercises", JsonConvert.SerializeObject(value));
 	}
 
-	public TrainingPlanController(ITrainingPlanService trainingPlanService, ITrainingPlanExerciseService trainingPlanExerciseService, IExerciseService exerciseService)
+	public TrainingPlanController(ITrainingPlanDataService trainingPlanDataService)
 	{
-        _trainingPlanService = trainingPlanService;
-		_trainingPlanExerciseService = trainingPlanExerciseService;
-		_exerciseService = exerciseService;
+        _trainingPlanDataService = trainingPlanDataService;
 	}
+
+    // BŁĄD PRZY EDYTOWANIU - USUNIĘTE ĆWICZENIA NIE SĄ ZAPISYWANE
 
     public async Task<IActionResult> Index()
     {
-        var apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
-
-        bool isNotUsernameSet = _sessionUsername is null || _sessionUsername.Length == 0;
-
-        var trainingPlans = DeserializeResult<List<TrainingPlan>>(apiResponse.Result)
-                           .Where(tp => tp.Creator == (isNotUsernameSet ? "admin@gmail.com" : _sessionUsername))
-                           .ToList();
-
-        // List<TrainingPlan> trainingPlans = await _trainingPlanDataService.GetTrainingPlans(_sessionUsername);
+        List<TrainingPlan> trainingPlans = await _trainingPlanDataService.GetUserTrainingPlans(_sessionUsername);
 
         if (_sessionExercises is not null)
         {
@@ -111,27 +102,7 @@ public class TrainingPlanController : Controller
 
         if (trainingPlan.Id == 0)
         {
-            await _trainingPlanService.CreateAsync<APIResponse>(trainingPlan);
-            apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
-            trainingPlanDb = DeserializeResult<List<TrainingPlan>>(apiResponse.Result)
-                            .Where(tp => tp.Title == trainingPlan.Title && tp.Creator == trainingPlan.Creator)
-                            .FirstOrDefault();
-
-            id = trainingPlanDb.Id;
-
-            foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
-            {
-                await _trainingPlanExerciseService.InsertAsync<APIResponse>(new TrainingPlanExerciseCreateDTO()
-                {
-                    TPId = id,
-                    EId = trainingPlanExercise.EId,
-                    Series = trainingPlanExercise.Series,
-                    Reps = trainingPlanExercise.Reps,
-                    Weights = trainingPlanExercise.Weights
-                });
-            }
-
-			// await _trainingPlanDataService.CreateTrainingPlan(trainingPlan);
+			await _trainingPlanDataService.CreateTrainingPlan(trainingPlan);
 
 			TempData["success"] = "Dodano plan!";
 
@@ -139,41 +110,7 @@ public class TrainingPlanController : Controller
         }
         else
         {
-            await _trainingPlanService.UpdateAsync<APIResponse>(trainingPlan);
-
-			id = trainingPlan.Id;
-
-            apiResponse = await _trainingPlanExerciseService.GetAllAsync<APIResponse>(id);
-            
-
-            foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
-            {
-                if (trainingPlanExercise.Id == 0)
-                {
-                    await _trainingPlanExerciseService.InsertAsync<APIResponse>(new TrainingPlanExerciseCreateDTO()
-                    {
-                        TPId = id,
-                        EId = trainingPlanExercise.EId,
-                        Series = trainingPlanExercise.Series,
-                        Reps = trainingPlanExercise.Reps,
-                        Weights = trainingPlanExercise.Weights
-                    });
-                }
-                else
-                {
-                    await _trainingPlanExerciseService.UpdateAsync<APIResponse>(new TrainingPlanExerciseUpdateDTO()
-                    {
-                        Id = trainingPlanExercise.Id,
-                        TPId = id,
-                        EId = trainingPlanExercise.EId,
-                        Series = trainingPlanExercise.Series,
-                        Reps = trainingPlanExercise.Reps,
-                        Weights = trainingPlanExercise.Weights
-                    });
-                }
-            }
-
-			// await _trainingPlanDataService.UpdateTrainingPlan(trainingPlan);
+			await _trainingPlanDataService.UpdateTrainingPlan(trainingPlan);
 
 			TempData["success"] = "Zaktualizowano plan!";
 
@@ -184,38 +121,20 @@ public class TrainingPlanController : Controller
 	public async Task<IActionResult> Show(int id)
     {
         _sessionTrainingPlan = new();
+        TrainingPlan trainingPlan = await _trainingPlanDataService.GetTrainingPlan(id);
 
-		var apiResponse = await _trainingPlanService.GetAsync<APIResponse>(id);
-		var trainingPlan = DeserializeResult<TrainingPlan>(apiResponse.Result);
-        trainingPlan.CreateTrainingDaysDict();
-
-		List<TrainingPlanExerciseCreateVM> exercises = new();
-
-
-		foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
-        {
-			apiResponse = await _exerciseService.GetAsync<APIResponse>(trainingPlanExercise.EId);
-            TrainingPlanExerciseCreateVM exercise = DeserializeResult<TrainingPlanExerciseCreateVM>(apiResponse.Result);
-            exercises.Add(exercise);
-		}
-
-        _sessionExercises = exercises;
+        _sessionExercises = await _trainingPlanDataService.GetTrainingPlanExercises(trainingPlan.Exercises);
         _sessionTrainingPlan = trainingPlan;
 
-		//_sessionExercises = await _trainingPlanDataService.GetTrainingPlanExercises(trainingPlan.Exercises);
-		//_sessionTrainingPlan = await _trainingPlanDataService.GetTrainingPlan(id);
-
-		return View(trainingPlan);
+        return View(trainingPlan);
     }
 
 	[ClearSessionStrings]
 	public async Task<IActionResult> DeleteTrainingPlan(int id)
     {
-        await _trainingPlanService.DeleteAsync<APIResponse>(id);
+        await _trainingPlanDataService.DeleteTrainingPlan(id);
 
-		// await _trainingPlanDataService.DeleteTrainingPlan(id);
-
-		TempData["success"] = "Usunięto plan treningowy";
+        TempData["success"] = "Usunięto plan treningowy";
 
         return RedirectToAction("Index");
     }
@@ -228,41 +147,18 @@ public class TrainingPlanController : Controller
     
     public IActionResult IncrementExerciseSeries(int id)
     {
-		TrainingPlan trainingPlan = _sessionTrainingPlan;
-
-        foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
-        {
-            if (trainingPlanExercise.EId == id)
-            {
-                trainingPlanExercise.Series++;
-                trainingPlanExercise.Reps += ";4";
-                trainingPlanExercise.Weights += ";80";
-
-                break;
-            }
-        }
-
-		_sessionTrainingPlan = trainingPlan;
-
-		// _sessionTrainingPlan = await _trainingPlanDataService.IncrementExerciseSeriesAndGetTrainingPlan(_sessionTrainingPlan, id);
+		_sessionTrainingPlan = _trainingPlanDataService.IncrementExerciseSeriesAndGetTrainingPlan(_sessionTrainingPlan, id);
 
 		return RedirectToAction("Upsert");
 	}
 
     public async Task<IActionResult> DeleteExercise(int listPosition)
     {
-        TrainingPlan trainingPlan = _sessionTrainingPlan;
         List<TrainingPlanExerciseCreateVM> exercises = _sessionExercises;
 
-        var id = trainingPlan.Exercises[listPosition].Id;
-
-        await _trainingPlanExerciseService.DeleteAsync<APIResponse>(id);
-
-        trainingPlan.Exercises.RemoveAt(listPosition);
         exercises.RemoveAt(listPosition);
 
-        _sessionTrainingPlan = trainingPlan;
-		// _sessionTrainingPlan = await _trainingPlanDataService.DeleteExerciseAndGetTrainingPlan(_sessionTrainingPlan, listPosition);
+		_sessionTrainingPlan = await _trainingPlanDataService.DeleteExerciseAndGetTrainingPlan(_sessionTrainingPlan, listPosition);
 		_sessionExercises = exercises;
 
         return RedirectToAction("Upsert");
@@ -270,42 +166,7 @@ public class TrainingPlanController : Controller
 
 	public IActionResult DecrementExerciseSeries(int id)
     {
-		TrainingPlan trainingPlan = _sessionTrainingPlan;
-
-		foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
-		{
-			if (trainingPlanExercise.EId == id)
-			{
-                if (trainingPlanExercise.Series > 0)
-                {
-                    trainingPlanExercise.Series--;
-
-                    string[] reps = trainingPlanExercise.Reps.Split(";");
-                    string[] weights = trainingPlanExercise.Weights.Split(";");
-
-                    trainingPlanExercise.Reps = "";
-                    trainingPlanExercise.Weights = "";
-
-                    for (int i = 0; i < trainingPlanExercise.Series; i++)
-                    {
-                        trainingPlanExercise.Reps += reps[i] + ';';
-                        trainingPlanExercise.Weights += weights[i] + ';';
-					}
-
-                    if (trainingPlanExercise.Weights.Length > 0)
-                    {
-						trainingPlanExercise.Reps = trainingPlanExercise.Reps.Substring(0, trainingPlanExercise.Reps.Length-1);
-						trainingPlanExercise.Weights = trainingPlanExercise.Weights.Substring(0, trainingPlanExercise.Weights.Length-1);
-					}
-				}
-				
-				break;
-			}
-		}
-
-		_sessionTrainingPlan = trainingPlan;
-
-		// _sessionTrainingPlan = await _trainingPlanDataService.DecrementExerciseSeriesAndGetTrainingPlan(_sessionTrainingPlan, id);
+		_sessionTrainingPlan = _trainingPlanDataService.DecrementExerciseSeriesAndGetTrainingPlan(_sessionTrainingPlan, id);
 
 		return RedirectToAction("Upsert");
 	}
@@ -313,85 +174,15 @@ public class TrainingPlanController : Controller
     [HttpGet]
     public IActionResult SaveRepsAndWeightsData(string values, string exerciseId, string seriesPosition)
     {
-        int id = int.Parse(exerciseId);
-        int seriesId = int.Parse(seriesPosition);
-        string[] repsAndWeights = values.Split(';');
-
-		TrainingPlan trainingPlan = _sessionTrainingPlan;
-
-		foreach (TrainingPlanExercise trainingPlanExercise in trainingPlan.Exercises)
-		{
-			if (trainingPlanExercise.EId == id)
-			{
-				string[] reps = trainingPlanExercise.Reps.Split(";");
-				string[] weights = trainingPlanExercise.Weights.Split(";");
-
-                trainingPlanExercise.Reps = "";
-                trainingPlanExercise.Weights = "";
-
-				reps[seriesId] = repsAndWeights[0].ToString();
-				weights[seriesId] = repsAndWeights[1].ToString(); 
-
-				for (int i = 0; i < trainingPlanExercise.Series; i++)
-				{
-					trainingPlanExercise.Reps += reps[i] + ';';
-					trainingPlanExercise.Weights += weights[i] + ';';
-				}
-
-				if (trainingPlanExercise.Weights.Length > 0)
-				{
-					trainingPlanExercise.Reps = trainingPlanExercise.Reps.Substring(0, trainingPlanExercise.Reps.Length - 1);
-					trainingPlanExercise.Weights = trainingPlanExercise.Weights.Substring(0, trainingPlanExercise.Weights.Length - 1);
-				}
-
-				break;
-			}
-		}
-
-        _sessionTrainingPlan = trainingPlan;
-
-		// _sessionTrainingPlan = await _trainingPlanDataService.SaveRepsWeightsAndGetTrainingPlan(_sessionTrainingPlan, values, exerciseId, seriesPosition);
+		_sessionTrainingPlan = _trainingPlanDataService.SaveRepsWeightsAndGetTrainingPlan(_sessionTrainingPlan, values, exerciseId, seriesPosition);
 
 		return Ok();
     }
 
 	public async Task<IActionResult> AddExerciseId(int id)
     {
-        List<TrainingPlanExerciseCreateVM> exercises = _sessionExercises;
-
-        if (exercises is null)
-        {
-            exercises = new();
-        }
-
-        TrainingPlan trainingPlan = _sessionTrainingPlan;
-
-        var apiResponse = await _exerciseService.GetAsync<APIResponse>(id);
-		if (apiResponse is not null && apiResponse.IsSuccess)
-		{
-			TrainingPlanExerciseCreateVM exercise = DeserializeResult<TrainingPlanExerciseCreateVM>(apiResponse.Result);
-		    exercises.Add(exercise);
-
-			_sessionExercises = exercises;
-
-            if (trainingPlan.Exercises is null)
-            {
-                trainingPlan.Exercises = new();
-            }
-
-            trainingPlan.Exercises.Add(new()
-            {
-                EId = exercise.Id,
-                Series = 1,
-                Reps = "4",
-                Weights = "80"
-            });
-
-            _sessionTrainingPlan = trainingPlan;
-        }
-
-		// _sessionTrainingPlan = await _trainingPlanDataService.AddExerciseAndGetTrainingPlan(_sessionTrainingPlan, id);
-		// _sessionExercises = await _trainingPlanDataService.AddExerciseAndGetExercisesList(_sessionExercises, id);
+		 _sessionTrainingPlan = await _trainingPlanDataService.AddExerciseAndGetTrainingPlan(_sessionTrainingPlan, id);
+		 _sessionExercises = await _trainingPlanDataService.AddExerciseAndGetExercisesList(_sessionExercises, id);
 
 
 		return RedirectToAction("Upsert");
@@ -400,41 +191,20 @@ public class TrainingPlanController : Controller
 
     public IActionResult SaveTitleData(string title)
     {
-        TrainingPlan trainingPlan = _sessionTrainingPlan;
-        trainingPlan.Title = title;
-        _sessionTrainingPlan = trainingPlan;
-		// _sessionTrainingPlan = await _trainingPlanDataService.SaveTitleAndGetTrainingPlan(_sessionTrainingPlan, title);
-		return Ok();
+        _sessionTrainingPlan = _trainingPlanDataService.SaveTitleAndGetTrainingPlan(_sessionTrainingPlan, title);
+        return Ok();
     }
 
     public IActionResult SaveTrainigDaysData(string day)
     {
-		TrainingPlan trainingPlan = _sessionTrainingPlan;
-		if (trainingPlan.TrainingDaysDict[day])
-        {
-			trainingPlan.TrainingDaysDict[day] = false;
-		}
-        else
-        {
-            trainingPlan.TrainingDaysDict[day] = true;
-        }
-
-		_sessionTrainingPlan = trainingPlan;
-
-		// _sessionTrainingPlan = await _trainingPlanDataService.SaveTrainingDaysAndGetTrainingPlan(_sessionTrainingPlan, day);
+		_sessionTrainingPlan = _trainingPlanDataService.SaveTrainingDaysAndGetTrainingPlan(_sessionTrainingPlan, day);
 
 		return Ok();
     }
 
     public IActionResult SaveNotesData(string notes)
     {
-        TrainingPlan trainingPlan = _sessionTrainingPlan;
-        trainingPlan.Notes = notes;
-		_sessionTrainingPlan = trainingPlan;
-		// _sessionTrainingPlan = await _trainingPlanDataService.SaveNotesAndGetTrainingPlan(_sessionTrainingPlan, notes);
-		return Ok();
+        _sessionTrainingPlan = _trainingPlanDataService.SaveNotesAndGetTrainingPlan(_sessionTrainingPlan, notes);
+        return Ok();
     }
-
-    private T DeserializeResult<T>(object apiResponseResult) =>
-        JsonConvert.DeserializeObject<T>(Convert.ToString(apiResponseResult));
 }
