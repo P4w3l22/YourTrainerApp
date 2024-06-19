@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using YourTrainer_App.Areas.Trainer.Models;
 using YourTrainer_App.Services.APIServices.IServices;
@@ -20,6 +21,64 @@ public class TrainerClientDataRepository : ITrainerClientDataRepository
 		_memberDataService = memberDataService;
 		_trainerClientContactService = trainerClientContactService;
 	}
+
+	public async Task AddTrainerClientCooperation(int trainerId, int memberId)
+	{
+		TrainerDataModel trainerData = await GetTrainerData(trainerId);
+
+		if (trainerData.MembersId == "0" || trainerData.MembersId.IsNullOrEmpty())
+		{
+			trainerData.MembersId = memberId.ToString();
+		}
+		else
+		{
+			bool memberExists = Array.Exists(trainerData.MembersId.Split(";"), mId => mId == memberId.ToString());
+			if (!memberExists)
+			{
+				trainerData.MembersId += ";" + memberId.ToString();
+			}
+		}
+
+		await _trainerDataService.UpdateAsync<APIResponse>(trainerData);
+
+		MemberDataModel memberData = await GetMemberData(memberId);
+
+		if (memberData is not null && memberData.TrainersId == "0" || memberData.TrainersId.IsNullOrEmpty())
+		{
+			memberData.TrainersId = trainerId.ToString();
+		}
+		else
+		{
+			bool trainerExists = Array.Exists(memberData.TrainersId.Split(";"), trainerId => trainerId == trainerId.ToString());
+			if (!trainerExists)
+			{
+				memberData.TrainersId += ";" + trainerId.ToString();
+			}
+		}
+
+		await _memberDataService.UpdateAsync<APIResponse>(memberData);
+	}
+
+
+
+	public async Task DeleteTrainerClientCooperation(int memberId)
+	{
+		MemberDataModel memberData = await GetMemberData(memberId);
+
+		int trainerId = int.Parse(memberData.TrainersId);
+		memberData.TrainersId = "";
+
+		await _memberDataService.UpdateAsync<APIResponse>(memberData);
+
+		TrainerDataModel trainerData = await GetTrainerData(trainerId);
+
+		List<string> membersIdTrainer = trainerData.MembersId.Split(";").ToList();
+		membersIdTrainer.RemoveAll(id => id == memberId.ToString());
+		trainerData.MembersId = String.Join(";", membersIdTrainer);
+
+		await _trainerDataService.UpdateAsync<APIResponse>(trainerData);
+	}
+
 
 	public async Task<TrainerContact> GetTrainerDetails(int trainerId, int memberId)
 	{
@@ -49,6 +108,22 @@ public class TrainerClientDataRepository : ITrainerClientDataRepository
 		return clientsContact;
 	}
 
+	public async Task SendMessage(string newMessage, int senderId, int receiverId)
+	{
+		if (!string.IsNullOrEmpty(newMessage))
+		{
+			TrainerClientContact messageToSend = new()
+			{
+				Id = 0,
+				SenderId = senderId,
+				ReceiverId = receiverId,
+				MessageType = StaticDetails.MessageType.Text.ToString(),
+				MessageContent = newMessage
+			};
+			await _trainerClientContactService.SendMessageAsync<APIResponse>(messageToSend);
+		}
+	}
+
 	private async Task<List<MemberDataModel>> GetClients(int trainerId)
 	{
 		TrainerDataModel trainerData = await GetTrainerData(trainerId);
@@ -64,7 +139,7 @@ public class TrainerClientDataRepository : ITrainerClientDataRepository
 		return clients;
 	}
 
-	private async Task<MemberDataModel> GetMemberData(int memberId)
+	public async Task<MemberDataModel> GetMemberData(int memberId)
 	{
 		APIResponse apiResponse = await _memberDataService.GetAsync<APIResponse>(memberId);
 		return JsonConvert.DeserializeObject<MemberDataModel>(Convert.ToString(apiResponse.Result));
@@ -75,6 +150,13 @@ public class TrainerClientDataRepository : ITrainerClientDataRepository
 		APIResponse apiResponse = await _trainerDataService.GetAsync<APIResponse>(trainerId);
 		return JsonConvert.DeserializeObject<TrainerDataModel>(Convert.ToString(apiResponse.Result));
 	}
+
+	public async Task<List<TrainerDataModel>> GetTrainersOptions()
+	{
+		APIResponse apiResponse = await _trainerDataService.GetAllAsync<APIResponse>();
+		return JsonConvert.DeserializeObject<List<TrainerDataModel>>(Convert.ToString(apiResponse.Result));
+	}
+
 	private async Task<List<TrainerClientContact>> GetSortedMessages(int trainerId, int memberId)
 	{
 		APIResponse apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(trainerId, memberId, StaticDetails.MessageType.Text.ToString());

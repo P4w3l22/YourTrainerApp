@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using YourTrainer_App.Areas.Trainer.Models;
+using YourTrainer_App.Repository.DataRepository;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_Utility;
 using YourTrainerApp.Models;
@@ -11,22 +12,13 @@ namespace YourTrainer_App.Areas.Trainer.Controllers;
 [Area("Trainer")]
 public class ClientContactController : Controller
 {
-	private readonly ITrainerDataService _trainerDataService;
-	private readonly IMemberDataService _memberDataService;
-	private readonly ITrainerClientContactService _trainerClientContactService;
-	private int _trainerId
-	{
-		get => int.Parse(HttpContext.Session.GetString("UserId"));
-	}
-	private int _memberId;
+	private readonly ITrainerClientDataRepository _trainerClientDataRepository;
+	private int _trainerId => int.Parse(HttpContext.Session.GetString("UserId"));
 
-	public ClientContactController(ITrainerDataService trainerDataService, IMemberDataService memberDataService, ITrainerClientContactService trainerClientContactService)
+	public ClientContactController(ITrainerClientDataRepository trainerClientDataRepository)
 	{
-		_trainerDataService = trainerDataService;
-		_memberDataService = memberDataService;
-		_trainerClientContactService = trainerClientContactService;
+		_trainerClientDataRepository = trainerClientDataRepository;
 	}
-
 
 	public IActionResult Index()
 	{
@@ -35,75 +27,15 @@ public class ClientContactController : Controller
 
 	public async Task<IActionResult> ClientsDetails()
 	{
-		List<ClientContact> clientsContact = new();
-
-		List<MemberDataModel> clients = await GetClients();
-
-        foreach (var client in clients)
-        {
-			clientsContact.Add(new()
-			{
-				ClientData = client,
-				MessagesWithClient = await GetMessagesWithClient(client.MemberId),
-				PlansToClient = new()
-			});
-        }
+		List<ClientContact> clientsContact = await _trainerClientDataRepository.GetClientsDetails(_trainerId);
 
         return View(clientsContact);
 	}
 
 	public async Task<IActionResult> SendMessage(string newMessage, int memberId)
 	{
-		if (!string.IsNullOrEmpty(newMessage))
-		{
-			TrainerClientContact messageToSend = new()
-			{
-				Id = 0,
-				SenderId = _trainerId,
-				ReceiverId = memberId,
-				MessageType = StaticDetails.MessageType.Text.ToString(),
-				MessageContent = newMessage
-			};
-			await _trainerClientContactService.SendMessageAsync<APIResponse>(messageToSend);
-		}
+		await _trainerClientDataRepository.SendMessage(newMessage, _trainerId, memberId);
+
 		return RedirectToAction("Index");
-	}
-
-	private async Task<List<MemberDataModel>> GetClients()
-	{
-		TrainerDataModel trainerData = await GetTrainerData();
-
-		List<string> clientsId = trainerData.MembersId.Split(';').ToList();
-		List<MemberDataModel> clients = new();
-
-		foreach (string clientId in clientsId)
-		{
-			clients.Add(await GetMemberData(int.Parse(clientId)));
-		}
-
-		return clients;
-	}
-
-	private async Task<TrainerDataModel> GetTrainerData()
-	{
-		APIResponse apiResponse = await _trainerDataService.GetAsync<APIResponse>(_trainerId);
-		return JsonConvert.DeserializeObject<TrainerDataModel>(Convert.ToString(apiResponse.Result));
-	}
-
-	private async Task<MemberDataModel> GetMemberData(int id)
-	{
-		APIResponse apiResponse = await _memberDataService.GetAsync<APIResponse>(id);
-		return JsonConvert.DeserializeObject<MemberDataModel>(Convert.ToString(apiResponse.Result));
-	}
-
-	private async Task<List<TrainerClientContact>> GetMessagesWithClient(int client)
-	{
-		APIResponse apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(client, _trainerId, StaticDetails.MessageType.Text.ToString());
-		List<TrainerClientContact> memberMessages = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
-
-		apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(_trainerId, client, StaticDetails.MessageType.Text.ToString());
-		List<TrainerClientContact> trainerMessages = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
-
-		return memberMessages.Concat(trainerMessages).OrderBy(m => m.SendDateTime).ToList();
 	}
 }

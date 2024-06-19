@@ -40,11 +40,12 @@
 		document.getElementById("test").style.color = "red";
 	</script> *@
 	<script>
-		function saveNewMessage() {
+		function saveNewMessage(id) {
 			var message = document.getElementById("newMessage").value;
 
 			var data = {
-				newMessage: message
+				newMessage: message,
+				trainerId: id
 			};
 			var action = "SendMessage";
 
