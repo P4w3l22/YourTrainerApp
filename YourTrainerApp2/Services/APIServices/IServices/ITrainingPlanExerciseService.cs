@@ -1,6 +1,6 @@
 ﻿using YourTrainerApp.Models.DTO;
 
-namespace YourTrainerApp.Services.IServices;
+namespace YourTrainer_App.Services.APIServices.IServices;
 
 public interface ITrainingPlanExerciseService
 {

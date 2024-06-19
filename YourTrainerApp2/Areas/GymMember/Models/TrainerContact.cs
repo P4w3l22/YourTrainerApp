@@ -2,8 +2,8 @@
 using Newtonsoft.Json;
 using YourTrainer_Utility;
 using YourTrainerApp.Models;
-using YourTrainerApp.Services;
-using YourTrainerApp.Services.IServices;
+using YourTrainer_App.Services.APIServices;
+using YourTrainer_App.Services.APIServices.IServices;
 
 namespace YourTrainerApp.Areas.GymMember.Models;
 

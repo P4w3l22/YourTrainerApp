@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using YourTrainerApp.Services.IServices;
 using YourTrainerApp.Models;
 using YourTrainerApp.Attributes;
+using YourTrainer_App.Services.APIServices.IServices;
 
 namespace YourTrainerApp.Areas.Admin.Controllers;
 

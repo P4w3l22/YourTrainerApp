@@ -2,10 +2,10 @@
 using Newtonsoft.Json;
 using YourTrainerApp.Models.VM;
 using YourTrainerApp.Models;
-using YourTrainerApp.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using YourTrainerApp.Attributes;
 using YourTrainer_Utility;
+using YourTrainer_App.Services.APIServices.IServices;
 
 namespace YourTrainerApp.Areas.Admin.Controllers;
 

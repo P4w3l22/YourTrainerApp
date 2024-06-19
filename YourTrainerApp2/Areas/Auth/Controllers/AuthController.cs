@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NuGet.Protocol.Plugins;
+using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_Utility;
 using YourTrainerApp.Areas.Admin.Models;
 using YourTrainerApp.Areas.Auth.Models;
 using YourTrainerApp.Models;
-using YourTrainerApp.Services.IServices;
 using LoginRequest = YourTrainerApp.Areas.Auth.Models.LoginRequest;
 using RegisterationRequest = YourTrainerApp.Areas.Auth.Models.RegisterationRequest;
 

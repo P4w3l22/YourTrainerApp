@@ -46,6 +46,30 @@
 
 @section Scripts {
 	<script>
+		function saveNewMessage(id) {
+			var message = document.getElementById("newMessage").value;
+
+			var data = {
+				newMessage: message,
+				memberId : id
+			};
+			var action = "SendMessage";
+
+			$.ajax({
+				type: 'POST',
+				url: '/Trainer/ClientContact/' + action,
+				data: data,
+				success: function (response) {
+					location.reload();
+					console.log("Dane zapisane do sesji.");
+				},
+				error: function (response) {
+					console.log("Wystąpił błąd podczas zapisywania danych do sesji.");
+				}
+			});
+		}
+	</script>
+	<script>
 		function showContext(id) {
 			if ($('#client_' + id).is('[hidden]')) {
 				$('#client_' + id).removeAttr('hidden');

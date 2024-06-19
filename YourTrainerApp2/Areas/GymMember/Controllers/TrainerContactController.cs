@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_Utility;
 using YourTrainerApp.Areas.GymMember.Models;
 using YourTrainerApp.Models;
-using YourTrainerApp.Services.IServices;
 
 namespace YourTrainerApp.Areas.GymMember.Controllers;
 
@@ -38,6 +38,7 @@ public class TrainerContactController : Controller
 
 		if (memberData is not null && !memberData.TrainersId.IsNullOrEmpty() && memberData.TrainersId != "0")
 		{
+			HttpContext.Session.SetString("MemberId", memberData.MemberId.ToString());
 			HttpContext.Session.SetString("TrainerId", memberData.TrainersId);
 			return RedirectToAction("TrainerDetails", "TrainerContact", new { Area = "GymMember", id = _trainerId });
 		}

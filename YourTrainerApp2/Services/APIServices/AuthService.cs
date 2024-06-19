@@ -1,17 +1,17 @@
-﻿using YourTrainer_Utility;
+﻿using YourTrainer_App.Services.APIServices.IServices;
+using YourTrainer_Utility;
 using YourTrainerApp.Areas.Auth.Models;
 using YourTrainerApp.Models;
-using YourTrainerApp.Services;
 using LoginRequest = YourTrainerApp.Areas.Auth.Models.LoginRequest;
 
 
-namespace YourTrainerApp.Services.IServices;
+namespace YourTrainer_App.Services.APIServices;
 
 public class AuthService : BaseService, IAuthService
 {
     private readonly IHttpClientFactory _clientFactory;
     private string APIUrl;
-    
+
     public AuthService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(clientFactory)
     {
         _clientFactory = clientFactory;

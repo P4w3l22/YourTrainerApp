@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using YourTrainerApp.Models.DTO;
-using YourTrainerApp.Services.IServices;
 using YourTrainerApp.Models;
 using YourTrainerApp.Models.VM;
 using YourTrainerApp.Attributes;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
+using YourTrainer_App.Services.APIServices.IServices;
 
 namespace YourTrainerApp.Areas.Visistor.Controllers;
 

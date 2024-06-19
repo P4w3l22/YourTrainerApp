@@ -2,9 +2,9 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using YourTrainer_App.Areas.Trainer.Models;
+using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_Utility;
 using YourTrainerApp.Models;
-using YourTrainerApp.Services.IServices;
 
 namespace YourTrainer_App.Areas.Trainer.Controllers;
 
@@ -50,6 +50,23 @@ public class ClientContactController : Controller
         }
 
         return View(clientsContact);
+	}
+
+	public async Task<IActionResult> SendMessage(string newMessage, int memberId)
+	{
+		if (!string.IsNullOrEmpty(newMessage))
+		{
+			TrainerClientContact messageToSend = new()
+			{
+				Id = 0,
+				SenderId = _trainerId,
+				ReceiverId = memberId,
+				MessageType = StaticDetails.MessageType.Text.ToString(),
+				MessageContent = newMessage
+			};
+			await _trainerClientContactService.SendMessageAsync<APIResponse>(messageToSend);
+		}
+		return RedirectToAction("Index");
 	}
 
 	private async Task<List<MemberDataModel>> GetClients()

@@ -1,6 +1,6 @@
 ﻿using YourTrainerApp.Areas.Auth.Models;
 
-namespace YourTrainerApp.Services.IServices;
+namespace YourTrainer_App.Services.APIServices.IServices;
 
 public interface IAuthService
 {

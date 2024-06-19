@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainerApp.Models;
-using YourTrainerApp.Services;
-using YourTrainerApp.Services.IServices;
+using YourTrainer_App.Services.APIServices;
 
 namespace YourTrainerApp.Areas.GymMember.Controllers;
 
