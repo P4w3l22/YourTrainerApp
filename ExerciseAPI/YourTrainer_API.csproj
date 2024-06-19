@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DbDataAccess\DbDataAccess.csproj" />
-    <ProjectReference Include="..\YourTrainerUtility\YourTrainerUtility.csproj" />
+    <ProjectReference Include="..\DbDataAccess\YourTrainer_DBDataAccess.csproj" />
+    <ProjectReference Include="..\YourTrainerUtility\YourTrainer_Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>

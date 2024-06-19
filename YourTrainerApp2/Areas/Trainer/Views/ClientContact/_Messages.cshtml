@@ -1,5 +1,5 @@
-﻿@using YourTrainerApp.Areas.GymMember.Models
-@model TrainerContact
+﻿@using YourTrainer_App.Areas.Trainer.Models
+@model ClientContact
 
 
 <div class="container" style="max-width: 700px">
@@ -10,15 +10,15 @@
 				<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
 				<path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
 			</svg>
-			<h5 class="ms-2 mb-0">Nazwa trenera</h5>
+			<h5 class="ms-2 mb-0">@Model.ClientData.MemberName</h5>
 		</div>
 	</div>
 	<div class="p-3 container-fluid d-flex flex-column" style="min-height: 500px; background-color: #202020; border-radius: 0 0 30px 30px">
 		<div id="contentMessages" class="p-3" style="overflow: auto; height: 400px">
 			<div class="content" style="height: 300px">
-			@foreach (TrainerClientContact message in Model.MessagesWithTrainer)
+			@foreach (TrainerClientContact message in Model.MessagesWithClient)
 			{
-				<div class="d-flex @(message.SenderId == Model.TrainerData.TrainerId ? "justify-content-start" : "justify-content-end")">
+				<div class="d-flex @(message.SenderId == Model.ClientData.MemberId ? "justify-content-start" : "justify-content-end")">
 					<div class="d-flex" style="background-color: #303030; border-radius: 20px; width: fit-content; max-width:200px">
 						<p class="m-2 mx-3">@message.MessageContent</p>
 					</div>

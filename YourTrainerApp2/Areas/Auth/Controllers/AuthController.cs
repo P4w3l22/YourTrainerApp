@@ -69,6 +69,8 @@ public class AuthController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterationRequestDTO registerRequest)
     {
+        // DODAĆ TE SAME RZECZY CO W LOGIN - ZACHOWYWANIE TOKENU
+
         if (registerRequest.RegisterationRequest.Password != registerRequest.ConfirmPassword)
         {
             ModelState.AddModelError("CustomError", "Hasła nie są identyczne");

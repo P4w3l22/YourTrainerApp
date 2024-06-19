@@ -14,7 +14,7 @@
 		<div class="col-6 d-flex justify-content-between">
 			@* TODO: dodać rozwijane menu przy zmniejszaniu się *@
 			<a id="messagesShow" class="a-green">Wiadomości</a>
-			<a class="a-green">Przypisane plany</a>
+			<a id="assignedPlansShow" class="a-green">Przypisane plany</a>
 			<a class="a-green">Oceń</a>
 			<a class="a-green">
 				<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
@@ -25,15 +25,15 @@
             <a class="btn button-red" asp-area="GymMember" asp-controller="TrainerContact" asp-action="DeleteTrainer">Usuń</a>
 		</div>
 	</div>
-	<div id="messages" class="container" @* hidden *@>
+	<div id="messages" class="container">
 		<div class="container">
 			<partial name="_Messages" />
 		</div>
 	</div>
-	<div class="container">
+	<div id="assignedPlans" class="container" hidden>
 		<partial name="_AssignedPlans" />
 	</div>
-</div>
+</div> 
 
 @section Scripts {
 	@* <script>
@@ -63,8 +63,13 @@
 		}
 	</script>
 	<script>
+		$('#assignedPlansShow').click(function () {
+			$('#assignedPlans').removeAttr('hidden');
+			$('#messages').attr("hidden", true);
+		});
 		$('#messagesShow').click(function () {
 			$('#messages').removeAttr('hidden');
+			$('#assignedPlans').attr("hidden", true);
 		});
 	</script>
     <script>

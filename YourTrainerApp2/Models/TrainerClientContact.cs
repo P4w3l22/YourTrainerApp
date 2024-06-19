@@ -10,4 +10,3 @@ public class TrainerClientContact
 	public int IsRead { get; set; }
 	public DateTime SendDateTime { get; set; }
 }
-

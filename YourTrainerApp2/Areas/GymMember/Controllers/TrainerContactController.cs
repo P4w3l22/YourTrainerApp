@@ -20,9 +20,12 @@ public class TrainerContactController : Controller
 	{
 		get => int.Parse(HttpContext.Session.GetString("UserId"));
 	}
-	private int _trainerId;
+	private int _trainerId
+	{
+		get => int.Parse(HttpContext.Session.GetString("TrainerId"));
+	}
 
-    public TrainerContactController(ITrainerDataService trainerDataService, IMemberDataService memberDataService, ITrainerClientContactService trainerClientContactService)
+	public TrainerContactController(ITrainerDataService trainerDataService, IMemberDataService memberDataService, ITrainerClientContactService trainerClientContactService)
     {
 		_trainerDataService = trainerDataService;
 		_memberDataService = memberDataService;
@@ -33,9 +36,9 @@ public class TrainerContactController : Controller
 	{
 		MemberDataModel memberData = await GetMemberData();
 
-		if (!memberData.TrainersId.IsNullOrEmpty() && memberData.TrainersId != "0")
+		if (memberData is not null && !memberData.TrainersId.IsNullOrEmpty() && memberData.TrainersId != "0")
 		{
-			_trainerId = int.Parse(memberData.TrainersId);
+			HttpContext.Session.SetString("TrainerId", memberData.TrainersId);
 			return RedirectToAction("TrainerDetails", "TrainerContact", new { Area = "GymMember", id = _trainerId });
 		}
 
@@ -49,8 +52,8 @@ public class TrainerContactController : Controller
 	public async Task<IActionResult> TrainerDetails(int id)
 	{
 		TrainerContact trainerContact = new();
-		trainerContact.TrainerData = await SetTrainerData(id);
-		trainerContact.MessagesWithTrainer = await SetMessagesWithTrainer(id);
+		trainerContact.TrainerData = await GetTrainerData(id);
+		trainerContact.MessagesWithTrainer = await GetMessagesWithTrainer(id);
 
 		return View(trainerContact);
 	}
@@ -63,8 +66,8 @@ public class TrainerContactController : Controller
 
 	public async Task<IActionResult> SendMessage(string newMessage)
 	{
-		MemberDataModel memberData = await GetMemberData();
-		_trainerId = int.Parse(memberData.TrainersId);
+		//MemberDataModel memberData = await GetMemberData();
+		//_trainerId = int.Parse(memberData.TrainersId);
 
 		if (!string.IsNullOrEmpty(newMessage))
 		{
@@ -83,8 +86,7 @@ public class TrainerContactController : Controller
 
 	public async Task<IActionResult> AddTrainer(int id) 
 	{
-		APIResponse apiResponse = await _trainerDataService.GetAsync<APIResponse>(id);
-		TrainerDataModel trainerData = JsonConvert.DeserializeObject<TrainerDataModel>(Convert.ToString(apiResponse.Result));
+		TrainerDataModel trainerData = await GetTrainerData(id);
 
 		if (trainerData.MembersId == "0" || trainerData.MembersId.IsNullOrEmpty())
 		{
@@ -101,11 +103,9 @@ public class TrainerContactController : Controller
 
 		await _trainerDataService.UpdateAsync<APIResponse>(trainerData);
 
+		MemberDataModel memberData = await GetMemberData();
 
-		apiResponse = await _memberDataService.GetAsync<APIResponse>(_memberId);
-		MemberDataModel memberData = JsonConvert.DeserializeObject<MemberDataModel>(Convert.ToString(apiResponse.Result));
-
-		if (memberData.TrainersId == "0" || memberData.TrainersId.IsNullOrEmpty())
+		if (memberData is not null && memberData.TrainersId == "0" || memberData.TrainersId.IsNullOrEmpty())
 		{
 			memberData.TrainersId = id.ToString();
 		}
@@ -135,17 +135,14 @@ public class TrainerContactController : Controller
 
 	public async Task<IActionResult> DeleteTrainerAsync()
 	{
-		APIResponse apiResponse = await _memberDataService.GetAsync<APIResponse>(_memberId);
-		MemberDataModel memberData = JsonConvert.DeserializeObject<MemberDataModel>(Convert.ToString(apiResponse.Result));
+		MemberDataModel memberData = await GetMemberData();
 
 		int trainerId = int.Parse(memberData.TrainersId);
 		memberData.TrainersId = "";
 
 		await _memberDataService.UpdateAsync<APIResponse>(memberData);
 
-
-		apiResponse = await _trainerDataService.GetAsync<APIResponse>(trainerId);
-		TrainerDataModel trainerData = JsonConvert.DeserializeObject<TrainerDataModel>(Convert.ToString(apiResponse.Result));
+		TrainerDataModel trainerData = await GetTrainerData(trainerId);
 
 		List<string> membersIdTrainer = trainerData.MembersId.Split(";").ToList();
 		membersIdTrainer.RemoveAll(id => id == _memberId.ToString());
@@ -162,12 +159,12 @@ public class TrainerContactController : Controller
 		return JsonConvert.DeserializeObject<MemberDataModel>(Convert.ToString(apiResponse.Result));
 	}
 
-	private async Task<TrainerDataModel> SetTrainerData(int id)
+	private async Task<TrainerDataModel> GetTrainerData(int id)
 	{
 		APIResponse apiResponse = await _trainerDataService.GetAsync<APIResponse>(id);
 		return JsonConvert.DeserializeObject<TrainerDataModel>(Convert.ToString(apiResponse.Result));
 	}
-    private async Task<List<TrainerClientContact>> SetMessagesWithTrainer(int trainerId)
+    private async Task<List<TrainerClientContact>> GetMessagesWithTrainer(int trainerId)
     {
 		APIResponse apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(trainerId, _memberId, StaticDetails.MessageType.Text.ToString());
 		List<TrainerClientContact> memberMessages = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));

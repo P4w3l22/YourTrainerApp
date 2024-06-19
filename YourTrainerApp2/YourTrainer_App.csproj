@@ -29,14 +29,13 @@
     <Folder Include="Areas\Auth\Data\" />
     <Folder Include="Areas\GymMember\Data\" />
     <Folder Include="Areas\Trainer\Data\" />
-    <Folder Include="Areas\Trainer\Models\" />
     <Folder Include="Areas\Visitor\Data\" />
     <Folder Include="Controllers\" />
   </ItemGroup>
 
   <ItemGroup>
     <!--<ProjectReference Include="..\DbDataAccess\DbDataAccess.csproj" />-->
-    <ProjectReference Include="..\YourTrainerUtility\YourTrainerUtility.csproj" />
+    <ProjectReference Include="..\YourTrainerUtility\YourTrainer_Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>
