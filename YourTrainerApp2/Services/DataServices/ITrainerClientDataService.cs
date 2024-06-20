@@ -6,9 +6,12 @@ namespace YourTrainer_App.Services.DataServices
 {
 	public interface ITrainerClientDataService
 	{
-		Task AddTrainerClientCooperation(int trainerId, int memberId);
+		Task SendCooperationProposal(int trainerId, int memberId);
+		Task AcceptCooperationProposal(int trainerId, int memberId, int proposalId);
+		Task RejectCooperationProposal(int trainerId, int memberId, int proposalId);
 		Task DeleteTrainerClientCooperation(int memberId);
 		Task<List<TrainerClientContact>> GetCooperationProposals(int trainerId);
+		Task<List<CooperationProposal>> GetCooperationProposalsData(int trainerId);
 		Task<List<ClientContact>> GetClientsDetails(int trainerId);
 		Task<MemberDataModel> GetMemberData(int memberId);
 		Task<TrainerContact> GetTrainerDetails(int trainerId, int memberId);

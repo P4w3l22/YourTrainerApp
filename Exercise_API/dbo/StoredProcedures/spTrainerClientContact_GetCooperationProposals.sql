@@ -6,6 +6,7 @@ BEGIN
 	SELECT *
 	FROM dbo.TrainerClientContact
 	WHERE ReceiverId = @ReceiverId AND
-		  MessageType = 'ConfirmClient';
+		  MessageType = 'ConfirmClient' AND
+		  IsRead = 0;
 
 END

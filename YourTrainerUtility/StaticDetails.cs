@@ -18,6 +18,8 @@
 			TrainingPlan,
 			Report,
 			ConfirmClient,
+			AcceptClient,
+			RejectClient,
 			Resignation
 		}
 	}

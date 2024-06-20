@@ -29,11 +29,42 @@ public class TrainerClientDataService : ITrainerClientDataService
 		return JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
 	}
 
-
-	public async Task AddTrainerClientCooperation(int trainerId, int memberId)
+	public async Task<List<CooperationProposal>> GetCooperationProposalsData(int trainerId)
 	{
-		await SendMessage("Współpraca", memberId, trainerId, MessageType.ConfirmClient.ToString());
+		List<TrainerClientContact> trainerCooperationProposals = await GetCooperationProposals(trainerId);
+		List<CooperationProposal> proposalsData = new();
 
+		foreach (TrainerClientContact proposal in trainerCooperationProposals)
+		{
+			proposalsData.Add(new()
+			{
+				Message = proposal,
+				ClientData = await GetMemberData(proposal.SenderId)
+			});
+		}
+
+		return proposalsData;
+	}
+
+	public async Task SendCooperationProposal(int trainerId, int memberId) =>
+		await SendMessage("Klient wysyła Ci prośbę o współpracę", memberId, trainerId, MessageType.ConfirmClient.ToString());
+
+
+	public async Task AcceptCooperationProposal(int trainerId, int memberId, int proposalId)
+	{
+		await _trainerClientContactService.SetAsReadAsync<APIResponse>(proposalId);
+		await AddTrainerClientCooperation(trainerId, memberId);
+		await SendMessage("Trener zaakceptował Twoją propozycję!", trainerId, memberId, MessageType.AcceptClient.ToString());
+	}
+
+	public async Task RejectCooperationProposal(int trainerId, int memberId, int proposalId)
+	{
+		await _trainerClientContactService.SetAsReadAsync<APIResponse>(proposalId);
+		await SendMessage("Trener odmówił współpracy", trainerId, memberId, MessageType.RejectClient.ToString());
+	}
+
+	private async Task AddTrainerClientCooperation(int trainerId, int memberId)
+	{
 		TrainerDataModel trainerData = await GetTrainerData(trainerId);
 
 		if (trainerData.MembersId == "0" || trainerData.MembersId.IsNullOrEmpty())
@@ -67,8 +98,8 @@ public class TrainerClientDataService : ITrainerClientDataService
 		}
 
 		await _memberDataService.UpdateAsync<APIResponse>(memberData);
-	}
 
+	}
 
 
 	public async Task DeleteTrainerClientCooperation(int memberId)
@@ -153,13 +184,17 @@ public class TrainerClientDataService : ITrainerClientDataService
 	private async Task<List<MemberDataModel>> GetClients(int trainerId)
 	{
 		TrainerDataModel trainerData = await GetTrainerData(trainerId);
-
-		List<string> clientsId = trainerData.MembersId.Split(';').ToList();
 		List<MemberDataModel> clients = new();
 
-		foreach (string clientId in clientsId)
+		if (trainerData.MembersId.Length > 0)
 		{
-			clients.Add(await GetMemberData(int.Parse(clientId)));
+			List<string> clientsId = trainerData.MembersId.Split(';').ToList();
+			
+
+			foreach (string clientId in clientsId)
+			{
+				clients.Add(await GetMemberData(int.Parse(clientId)));
+			}
 		}
 
 		return clients;

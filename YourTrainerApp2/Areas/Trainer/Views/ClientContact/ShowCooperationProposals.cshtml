@@ -1,0 +1,59 @@
+﻿@using YourTrainer_App.Areas.Trainer.Models
+@model List<CooperationProposal>
+
+<div class="container text-center">
+	<h4>Nowe propozycje współpracy</h4>
+	<div class="d-flex justify-content-center p-5">
+		@* @foreach (CooperationProposal proposal in Model) *@
+		@for (int i = 0; i < Model.Count(); i++)
+		{
+			<div>
+				<div class="m-3 px-4 py-4 d-flex align-items-center"
+					 style="background-color: #303030; border-radius: 30px; min-width: 500px"
+					 onclick="showContext('@Model[i].ClientData.MemberId')">
+					<div class="d-flex col-8 align-items-center">
+						<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+							<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+							<path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+						</svg>
+						<h5 class="ms-2">@Model[i].ClientData.MemberName</h5>
+					</div>
+				</div>
+
+				<div id="client_@Model[i].ClientData.MemberId" hidden>
+					<ul class="no-dots text-start">
+						<li>Opis: @Model[i].ClientData.Description</li>
+						<li>Email: @Model[i].ClientData.Email</li>
+						<li>Numer: @Model[i].ClientData.PhoneNumber</li>
+					</ul>
+					<div class="btn-group text-center">
+						<a class="btn button-red" 
+						   asp-area="Trainer" 
+						   asp-controller="ClientContact" 
+						   asp-action="RejectCooperationProposal"
+						   asp-route-proposalIndex="@i">Odmów</a>
+
+						<a class="btn button-green" 
+						   asp-area="Trainer"
+						   asp-controller="ClientContact"
+						   asp-action="AcceptCooperationProposal"
+						   asp-route-proposalIndex="@i">Zgoda</a>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		function showContext(id) {
+			if ($('#client_' + id).is('[hidden]')) {
+				$('#client_' + id).removeAttr('hidden');
+			}
+			else {
+				$('#client_' + id).attr("hidden", true);
+			}
+		}
+	</script>
+}

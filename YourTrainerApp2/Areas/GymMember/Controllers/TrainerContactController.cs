@@ -57,7 +57,7 @@ public class TrainerContactController : Controller
 
 	public async Task<IActionResult> AddTrainer(int id) 
 	{
-		await _trainerClientDataService.AddTrainerClientCooperation(id, _memberId);
+		await _trainerClientDataService.SendCooperationProposal(id, _memberId);
 		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
 
