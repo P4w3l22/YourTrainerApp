@@ -31,6 +31,17 @@ public class TrainingPlanDataService : ITrainingPlanDataService
 						   .ToList();
 	}
 
+	public List<int> GetPreviousTrainingPlanExercises(List<TrainingPlanExercise> trainingPlanExercises)
+	{
+		List<int> previousExercisesId = new();
+
+		foreach (TrainingPlanExercise exercise in trainingPlanExercises)
+		{
+			previousExercisesId.Add(exercise.Id);
+		}
+		return previousExercisesId;
+	}
+
 	public async Task CreateTrainingPlan(TrainingPlan trainingPlan)
 	{
 		await _trainingPlanService.CreateAsync<APIResponse>(trainingPlan);
@@ -65,17 +76,19 @@ public class TrainingPlanDataService : ITrainingPlanDataService
 		}
 	}
 
-	public async Task UpdateTrainingPlan(TrainingPlan trainingPlan)
+	public async Task UpdateTrainingPlan(TrainingPlan trainingPlan, List<int> previousExercusesId)
 	{
 		await _trainingPlanService.UpdateAsync<APIResponse>(trainingPlan);
 
-		await UpdateTrainingPlanExercises(trainingPlan.Exercises, trainingPlan.Id);
+		await UpdateTrainingPlanExercises(trainingPlan.Exercises, previousExercusesId, trainingPlan.Id);
 	}
 
-	private async Task UpdateTrainingPlanExercises(List<TrainingPlanExercise> trainingPlanExercises, int id)
+	private async Task UpdateTrainingPlanExercises(List<TrainingPlanExercise> trainingPlanExercises, List<int> previousExercisesId, int id)
 	{
+		// DODAĆ USUWANIE POPRZEDNICH REKORDÓW W BAZIE DANYCH
 		foreach (TrainingPlanExercise trainingPlanExercise in trainingPlanExercises)
 		{
+			
 			if (trainingPlanExercise.Id == 0)
 			{
 				await _trainingPlanExerciseService.InsertAsync<APIResponse>(new TrainingPlanExerciseCreateDTO()
@@ -89,6 +102,8 @@ public class TrainingPlanDataService : ITrainingPlanDataService
 			}
 			else
 			{
+				previousExercisesId.Remove(trainingPlanExercise.Id);
+
 				await _trainingPlanExerciseService.UpdateAsync<APIResponse>(new TrainingPlanExerciseUpdateDTO()
 				{
 					Id = trainingPlanExercise.Id,
@@ -98,6 +113,15 @@ public class TrainingPlanDataService : ITrainingPlanDataService
 					Reps = trainingPlanExercise.Reps,
 					Weights = trainingPlanExercise.Weights
 				});
+			}
+		}
+
+		if (previousExercisesId.Count > 0)
+		{
+			foreach (int exerciseId in previousExercisesId)
+			{
+				APIResponse apiResponse = await _trainingPlanExerciseService.DeleteAsync<APIResponse>(exerciseId);
+				string test = "test";
 			}
 		}
 	}
@@ -192,11 +216,17 @@ public class TrainingPlanDataService : ITrainingPlanDataService
 	{
 		var id = trainingPlan.Exercises[listPosition].Id;
 
-		await _trainingPlanExerciseService.DeleteAsync<APIResponse>(id);
+		//await _trainingPlanExerciseService.DeleteAsync<APIResponse>(id);
 
 		trainingPlan.Exercises.RemoveAt(listPosition);
 
 		return trainingPlan;
+	}
+
+	public List<TrainingPlanExerciseCreateVM> DeleteExerciseAndGetExercisesList(List<TrainingPlanExerciseCreateVM> exercises, int listPosition)
+	{
+		exercises.RemoveAt(listPosition);
+		return exercises;
 	}
 
 	public TrainingPlan SaveRepsWeightsAndGetTrainingPlan(TrainingPlan trainingPlan, string values, string exerciseId, string seriesPosition)

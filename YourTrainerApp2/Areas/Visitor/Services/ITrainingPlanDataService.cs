@@ -7,9 +7,11 @@ namespace YourTrainer_App.Areas.Visitor.Services
 	{
 		Task<List<TrainingPlanExerciseCreateVM>> AddExerciseAndGetExercisesList(List<TrainingPlanExerciseCreateVM> exercises, int id);
 		Task<TrainingPlan> AddExerciseAndGetTrainingPlan(TrainingPlan trainingPlan, int id);
+		List<int> GetPreviousTrainingPlanExercises(List<TrainingPlanExercise> trainingPlanExercises);
 		Task CreateTrainingPlan(TrainingPlan trainingPlan);
 		TrainingPlan DecrementExerciseSeriesAndGetTrainingPlan(TrainingPlan trainingPlan, int id);
 		Task<TrainingPlan> DeleteExerciseAndGetTrainingPlan(TrainingPlan trainingPlan, int listPosition);
+		List<TrainingPlanExerciseCreateVM> DeleteExerciseAndGetExercisesList(List<TrainingPlanExerciseCreateVM> exercises, int listPosition);
 		Task DeleteTrainingPlan(int id);
 		Task<TrainingPlan> GetTrainingPlan(int id);
 		Task<List<TrainingPlanExerciseCreateVM>> GetTrainingPlanExercises(List<TrainingPlanExercise> trainingPlanExercises);
@@ -19,6 +21,6 @@ namespace YourTrainer_App.Areas.Visitor.Services
 		TrainingPlan SaveRepsWeightsAndGetTrainingPlan(TrainingPlan trainingPlan, string values, string exerciseId, string seriesPosition);
 		TrainingPlan SaveTitleAndGetTrainingPlan(TrainingPlan trainingPlan, string title);
 		TrainingPlan SaveTrainingDaysAndGetTrainingPlan(TrainingPlan trainingPlan, string day);
-		Task UpdateTrainingPlan(TrainingPlan trainingPlan);
+		Task UpdateTrainingPlan(TrainingPlan trainingPlan, List<int> previousExercusesId);
 	}
 }

@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_App.Areas.Visitor.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace YourTrainerApp.Areas.Visistor.Controllers;
 
@@ -31,22 +32,22 @@ public class TrainingPlanController : Controller
 		get => JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(HttpContext.Session.GetString("Exercises") ?? JsonConvert.SerializeObject(new List<TrainingPlanExerciseCreateVM>()));
 		set => HttpContext.Session.SetString("Exercises", JsonConvert.SerializeObject(value));
 	}
+    private List<int>? _sessionPreviousExercises
+    {
+        get => JsonConvert.DeserializeObject<List<int>>(HttpContext.Session.GetString("PreviousExercises") ?? JsonConvert.SerializeObject(new List<int>()));
+        set => HttpContext.Session.SetString("PreviousExercises", JsonConvert.SerializeObject(value));
+	} 
 
 	public TrainingPlanController(ITrainingPlanDataService trainingPlanDataService)
 	{
         _trainingPlanDataService = trainingPlanDataService;
 	}
 
-    // BŁĄD PRZY EDYTOWANIU - USUNIĘTE ĆWICZENIA NIE SĄ ZAPISYWANE
-
     public async Task<IActionResult> Index()
     {
         List<TrainingPlan> trainingPlans = await _trainingPlanDataService.GetUserTrainingPlans(_sessionUsername);
 
-        if (_sessionExercises is not null)
-        {
-            _sessionExercises = new();
-		}
+        
 
         return View(trainingPlans);
     }
@@ -56,7 +57,12 @@ public class TrainingPlanController : Controller
     //[AdminSessionCheck]
     public IActionResult Upsert(bool isCreating = true)
     {
-        if (!isCreating)
+		if (_sessionTrainingPlan.Exercises.Count() > 0 && HttpContext.Session.GetString("PreviousExercises").IsNullOrEmpty())
+		{
+		    _sessionPreviousExercises = _trainingPlanDataService.GetPreviousTrainingPlanExercises(_sessionTrainingPlan.Exercises);
+		}
+
+		if (!isCreating)
         {
 			_sessionExercises = new();
             _sessionTrainingPlan = new();
@@ -87,11 +93,7 @@ public class TrainingPlanController : Controller
     [ClearSessionStrings]
     public async Task<IActionResult> Upsert(TrainingPlan tp)
     {
-        APIResponse apiResponse = new();
-        TrainingPlan? trainingPlanDb = new();
         TrainingPlan trainingPlan = _sessionTrainingPlan;
-
-        int id = 0;
 
         trainingPlan.CreateTrainingDaysString();
 
@@ -103,24 +105,22 @@ public class TrainingPlanController : Controller
         if (trainingPlan.Id == 0)
         {
 			await _trainingPlanDataService.CreateTrainingPlan(trainingPlan);
-
+            HttpContext.Session.SetString("PreviousExercises", "");
 			TempData["success"] = "Dodano plan!";
-
             return RedirectToAction("Index");
         }
         else
         {
-			await _trainingPlanDataService.UpdateTrainingPlan(trainingPlan);
+			await _trainingPlanDataService.UpdateTrainingPlan(trainingPlan, _sessionPreviousExercises);
+			HttpContext.Session.SetString("PreviousExercises", "");
 
 			TempData["success"] = "Zaktualizowano plan!";
-
             return RedirectToAction("Index");
         }
     }
 
 	public async Task<IActionResult> Show(int id)
     {
-        _sessionTrainingPlan = new();
         TrainingPlan trainingPlan = await _trainingPlanDataService.GetTrainingPlan(id);
 
         _sessionExercises = await _trainingPlanDataService.GetTrainingPlanExercises(trainingPlan.Exercises);
@@ -154,12 +154,8 @@ public class TrainingPlanController : Controller
 
     public async Task<IActionResult> DeleteExercise(int listPosition)
     {
-        List<TrainingPlanExerciseCreateVM> exercises = _sessionExercises;
-
-        exercises.RemoveAt(listPosition);
-
 		_sessionTrainingPlan = await _trainingPlanDataService.DeleteExerciseAndGetTrainingPlan(_sessionTrainingPlan, listPosition);
-		_sessionExercises = exercises;
+		_sessionExercises = _trainingPlanDataService.DeleteExerciseAndGetExercisesList(_sessionExercises, listPosition);
 
         return RedirectToAction("Upsert");
     }
