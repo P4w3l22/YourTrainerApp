@@ -55,17 +55,17 @@ public class TrainingPlanController : Controller
     //[Authorize(Roles = "admin")]
     [HttpGet]
     //[AdminSessionCheck]
-    public IActionResult Upsert(bool isCreating = true)
+    public IActionResult Upsert(bool isEditing = true)
     {
-		if (_sessionTrainingPlan.Exercises.Count() > 0 && HttpContext.Session.GetString("PreviousExercises").IsNullOrEmpty())
-		{
-		    _sessionPreviousExercises = _trainingPlanDataService.GetPreviousTrainingPlanExercises(_sessionTrainingPlan.Exercises);
-		}
-
-		if (!isCreating)
+        if (!isEditing)
         {
 			_sessionExercises = new();
             _sessionTrainingPlan = new();
+            _sessionPreviousExercises = new();
+		}
+		if (!_sessionTrainingPlan.Exercises.IsNullOrEmpty() && _sessionTrainingPlan.Exercises.Count() > 0 && _sessionPreviousExercises.IsNullOrEmpty())
+		{
+		    _sessionPreviousExercises = _trainingPlanDataService.GetPreviousTrainingPlanExercises(_sessionTrainingPlan.Exercises);
 		}
 
         TrainingPlan trainingPlan = new();
@@ -80,10 +80,6 @@ public class TrainingPlanController : Controller
             trainingPlan = _sessionTrainingPlan;
 		}
 
-		if (_sessionExercises.IsNullOrEmpty())
-        {
-			_sessionExercises = new();
-		}
 
 		return View(trainingPlan);
     }
@@ -105,19 +101,16 @@ public class TrainingPlanController : Controller
         if (trainingPlan.Id == 0)
         {
 			await _trainingPlanDataService.CreateTrainingPlan(trainingPlan);
-            HttpContext.Session.SetString("PreviousExercises", "");
 			TempData["success"] = "Dodano plan!";
-            return RedirectToAction("Index");
         }
         else
         {
 			await _trainingPlanDataService.UpdateTrainingPlan(trainingPlan, _sessionPreviousExercises);
-			HttpContext.Session.SetString("PreviousExercises", "");
-
 			TempData["success"] = "Zaktualizowano plan!";
-            return RedirectToAction("Index");
         }
-    }
+
+		return RedirectToAction("Index");
+	}
 
 	public async Task<IActionResult> Show(int id)
     {

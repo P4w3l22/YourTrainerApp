@@ -25,6 +25,9 @@ public class TrainerClientContactData : ITrainerClientContactData
 			MessageType = messageType 
 		});
 
+	public async Task<IEnumerable<TrainerClientContact>> GetCooperationProposals(int receiverId) =>
+		await _db.GetData<TrainerClientContact, dynamic>("spTrainerClientContact_GetCooperationProposals", new { ReceiverId = receiverId });
+
 	public async Task SendMessage(TrainerClientContact trainerClientContact) =>
 		await _db.SaveData("spTrainerClientContact_SendMessage", new
 		{

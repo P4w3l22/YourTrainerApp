@@ -42,7 +42,26 @@ public class TrainerClientContactController : ControllerBase
         return _response;
     }
 
-    [HttpPost]
+	[HttpGet("{ReceiverId:int}")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	public async Task<ActionResult<APIResponse>> GetCooperationProposals(int ReceiverId)
+	{
+		try
+		{
+			IEnumerable<TrainerClientContact> messages = await _data.GetCooperationProposals(ReceiverId);
+			_response.Result = _mapper.Map<List<TrainerClientContact>>(messages);
+			_response.StatusCode = HttpStatusCode.OK;
+			return Ok(_response);
+		}
+		catch (Exception ex)
+		{
+			_response.IsSuccess = false;
+			_response.Errors = new List<string> { ex.Message };
+		}
+		return _response;
+	}
+
+	[HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

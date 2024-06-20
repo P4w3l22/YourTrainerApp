@@ -22,6 +22,7 @@ public class TrainerContactController : Controller
 		_trainerClientDataService = trainerClientDataService;
 	}
 
+
 	public async Task<IActionResult> Index()
 	{
 		MemberDataModel memberData = await _trainerClientDataService.GetMemberData(_memberId);
@@ -32,41 +33,38 @@ public class TrainerContactController : Controller
 		}
 
 		List<TrainerDataModel> trainersData = await _trainerClientDataService.GetTrainersOptions();
-
 		return View(trainersData);
 	}
+
 
 	public async Task<IActionResult> TrainerDetails(int trainerId)
 	{
 		TrainerContact trainerContact = await _trainerClientDataService.GetTrainerDetails(trainerId, _memberId);
-
 		return View(trainerContact);
 	}
 
-	public async Task<IActionResult> TrainerMessages()
-	{
-		
-		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
-	}
+
+	public async Task<IActionResult> TrainerMessages() =>
+		RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
+	
 
 	public async Task<IActionResult> SendMessage(string newMessage, int trainerId)
 	{
 		await _trainerClientDataService.SendMessage(newMessage, _memberId, trainerId);
-
 		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
+
 
 	public async Task<IActionResult> AddTrainer(int id) 
 	{
 		await _trainerClientDataService.AddTrainerClientCooperation(id, _memberId);
-
 		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
+
 
 	public async Task<IActionResult> DeleteTrainerAsync()
 	{
 		await _trainerClientDataService.DeleteTrainerClientCooperation(_memberId);
-
 		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
 }

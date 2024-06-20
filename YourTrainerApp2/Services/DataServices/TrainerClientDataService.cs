@@ -5,6 +5,7 @@ using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_Utility;
 using YourTrainerApp.Areas.GymMember.Models;
 using YourTrainerApp.Models;
+using static YourTrainer_Utility.StaticDetails;
 
 namespace YourTrainer_App.Services.DataServices;
 
@@ -21,8 +22,18 @@ public class TrainerClientDataService : ITrainerClientDataService
 		_trainerClientContactService = trainerClientContactService;
 	}
 
+
+	public async Task<List<TrainerClientContact>> GetCooperationProposals(int trainerId)
+	{
+		APIResponse apiResponse = await _trainerClientContactService.GetCooperationProposals<APIResponse>(trainerId);
+		return JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
+	}
+
+
 	public async Task AddTrainerClientCooperation(int trainerId, int memberId)
 	{
+		await SendMessage("Współpraca", memberId, trainerId, MessageType.ConfirmClient.ToString());
+
 		TrainerDataModel trainerData = await GetTrainerData(trainerId);
 
 		if (trainerData.MembersId == "0" || trainerData.MembersId.IsNullOrEmpty())
@@ -116,7 +127,23 @@ public class TrainerClientDataService : ITrainerClientDataService
 				Id = 0,
 				SenderId = senderId,
 				ReceiverId = receiverId,
-				MessageType = StaticDetails.MessageType.Text.ToString(),
+				MessageType = MessageType.Text.ToString(),
+				MessageContent = newMessage
+			};
+			await _trainerClientContactService.SendMessageAsync<APIResponse>(messageToSend);
+		}
+	}
+
+	private async Task SendMessage(string newMessage, int senderId, int receiverId, string messageType)
+	{
+		if (!string.IsNullOrEmpty(newMessage))
+		{
+			TrainerClientContact messageToSend = new()
+			{
+				Id = 0,
+				SenderId = senderId,
+				ReceiverId = receiverId,
+				MessageType = messageType,
 				MessageContent = newMessage
 			};
 			await _trainerClientContactService.SendMessageAsync<APIResponse>(messageToSend);

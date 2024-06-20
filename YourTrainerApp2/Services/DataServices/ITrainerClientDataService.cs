@@ -8,6 +8,7 @@ namespace YourTrainer_App.Services.DataServices
 	{
 		Task AddTrainerClientCooperation(int trainerId, int memberId);
 		Task DeleteTrainerClientCooperation(int memberId);
+		Task<List<TrainerClientContact>> GetCooperationProposals(int trainerId);
 		Task<List<ClientContact>> GetClientsDetails(int trainerId);
 		Task<MemberDataModel> GetMemberData(int memberId);
 		Task<TrainerContact> GetTrainerDetails(int trainerId, int memberId);

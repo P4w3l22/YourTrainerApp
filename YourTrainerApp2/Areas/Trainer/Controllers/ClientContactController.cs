@@ -20,8 +20,10 @@ public class ClientContactController : Controller
 		_trainerClientDataService = trainerClientDataService;
 	}
 
-	public IActionResult Index()
+	public async Task<IActionResult> Index()
 	{
+		List<TrainerClientContact> trainerCooperationProposals = await _trainerClientDataService.GetCooperationProposals(_trainerId);
+
 		return RedirectToAction("ClientsDetails");
 	}
 

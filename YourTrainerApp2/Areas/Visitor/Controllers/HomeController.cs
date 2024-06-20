@@ -17,8 +17,8 @@ public class HomeController : Controller
 
     public HomeController(IHttpClientFactory client, ILogger<HomeController> logger)
     {
-			_client = client;
-			_logger = logger;
+		_client = client;
+		_logger = logger;
     }
 
     public async Task<IActionResult> Index()
