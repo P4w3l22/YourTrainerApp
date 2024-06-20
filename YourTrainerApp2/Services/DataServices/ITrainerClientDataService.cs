@@ -7,6 +7,7 @@ namespace YourTrainer_App.Services.DataServices
 	public interface ITrainerClientDataService
 	{
 		Task SendCooperationProposal(int trainerId, int memberId);
+		Task<string> GetCooperationProposalResponse(int memberId);
 		Task AcceptCooperationProposal(int trainerId, int memberId, int proposalId);
 		Task RejectCooperationProposal(int trainerId, int memberId, int proposalId);
 		Task DeleteTrainerClientCooperation(int memberId);

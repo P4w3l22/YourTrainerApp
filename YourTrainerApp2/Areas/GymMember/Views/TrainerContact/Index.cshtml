@@ -1,4 +1,8 @@
 ﻿@model List<TrainerDataModel>
+@inject IHttpContextAccessor httpAcc
+
+
+
 
 <div class="container">
 	<div class="row">
@@ -37,11 +41,23 @@
 						</svg>
 						<h5 class="ps-3" id="trainerName">Nazwa trenera</h5>
 					</div>
+					@{
+						bool isWaitingForAnAnswer = httpAcc.HttpContext.Session.GetString("WaitingForAnAnswer") == "True";
+					}
 					<div class="d-flex align-items-center">
-						<a id="addTrainer" class="btn button-green" style="border-radius:50px"
-						   asp-area="GymMember" asp-controller="TrainerContact" asp-action="AddTrainer">
-							Dodaj trenera +
-						</a>
+						@if (httpAcc.HttpContext.Session.GetString("WaitingForAnAnswer") != "True")
+						{
+							<a id="addTrainer" class="btn button-green" style="border-radius:50px"
+							    asp-area="GymMember" asp-controller="TrainerContact" asp-action="AddTrainer">
+								Dodaj trenera +
+							</a>
+						}
+						else
+						{
+							<button class="btn button-green" disabled title="Oczekuj na odpowiedź od trenera">
+								Dodaj trenera
+							</button>
+						}
 					</div>
 				</div>
 			

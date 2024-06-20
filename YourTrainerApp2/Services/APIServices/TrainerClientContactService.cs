@@ -19,11 +19,11 @@ public class TrainerClientContactService : BaseService, ITrainerClientContactSer
             Url = APIUrl + "/api/TrainerClientContact/" + senderId + "/" + receiverId + "/" + messageType
         });
 
-	public Task<T> GetCooperationProposals<T>(int receiverId) =>
+	public Task<T> GetCooperationProposals<T>(int receiverId, string messageType) =>
 		SendAsync<T>(new APIRequest()
 		{
 			ApiType = StaticDetails.ApiType.GET,
-			Url = APIUrl + "/api/TrainerClientContact/" + receiverId
+			Url = APIUrl + "/api/TrainerClientContact/" + receiverId + "/" + messageType
 		});
 
 	public Task<T> SendMessageAsync<T>(TrainerClientContact trainerClientContactSend) =>

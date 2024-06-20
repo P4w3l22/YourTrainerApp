@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using YourTrainer_App.Areas.Trainer.Models;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_Utility;
@@ -25,7 +26,7 @@ public class TrainerClientDataService : ITrainerClientDataService
 
 	public async Task<List<TrainerClientContact>> GetCooperationProposals(int trainerId)
 	{
-		APIResponse apiResponse = await _trainerClientContactService.GetCooperationProposals<APIResponse>(trainerId);
+		APIResponse apiResponse = await _trainerClientContactService.GetCooperationProposals<APIResponse>(trainerId, MessageType.ConfirmClient.ToString());
 		return JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
 	}
 
@@ -46,8 +47,35 @@ public class TrainerClientDataService : ITrainerClientDataService
 		return proposalsData;
 	}
 
-	public async Task SendCooperationProposal(int trainerId, int memberId) =>
+	public async Task SendCooperationProposal(int trainerId, int memberId)
+	{
+		MemberDataModel memberData = await GetMemberData(memberId);
+		memberData.TrainersId = "-1";
+		await _memberDataService.UpdateAsync<APIResponse>(memberData);
+
 		await SendMessage("Klient wysyła Ci prośbę o współpracę", memberId, trainerId, MessageType.ConfirmClient.ToString());
+	}
+
+	public async Task<string> GetCooperationProposalResponse(int memberId)
+	{
+		APIResponse apiResponse = await _trainerClientContactService.GetCooperationProposals<APIResponse>(memberId, MessageType.AcceptClient.ToString());
+		TrainerClientContact accepted = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result)).LastOrDefault();
+
+		apiResponse = await _trainerClientContactService.GetCooperationProposals<APIResponse>(memberId, MessageType.RejectClient.ToString());
+		TrainerClientContact rejected = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result)).LastOrDefault();
+
+		if (accepted is not null)
+		{
+			await _trainerClientContactService.SetAsReadAsync<APIResponse>(accepted.Id);
+			return "Accepted";
+		}
+		if (rejected is not null)
+		{
+			await _trainerClientContactService.SetAsReadAsync<APIResponse>(rejected.Id);
+			return "Rejected";
+		}
+		return "NoResponse";
+	}
 
 
 	public async Task AcceptCooperationProposal(int trainerId, int memberId, int proposalId)
@@ -59,6 +87,10 @@ public class TrainerClientDataService : ITrainerClientDataService
 
 	public async Task RejectCooperationProposal(int trainerId, int memberId, int proposalId)
 	{
+		MemberDataModel memberData = await GetMemberData(memberId);
+		memberData.TrainersId = "";
+		await _memberDataService.UpdateAsync<APIResponse>(memberData);
+
 		await _trainerClientContactService.SetAsReadAsync<APIResponse>(proposalId);
 		await SendMessage("Trener odmówił współpracy", trainerId, memberId, MessageType.RejectClient.ToString());
 	}
@@ -84,7 +116,7 @@ public class TrainerClientDataService : ITrainerClientDataService
 
 		MemberDataModel memberData = await GetMemberData(memberId);
 
-		if (memberData is not null && memberData.TrainersId == "0" || memberData.TrainersId.IsNullOrEmpty())
+		if (memberData is not null && (memberData.TrainersId == "0" || memberData.TrainersId == "-1" || memberData.TrainersId.IsNullOrEmpty()))
 		{
 			memberData.TrainersId = trainerId.ToString();
 		}

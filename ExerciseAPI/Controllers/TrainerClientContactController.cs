@@ -42,13 +42,13 @@ public class TrainerClientContactController : ControllerBase
         return _response;
     }
 
-	[HttpGet("{ReceiverId:int}")]
+	[HttpGet("{receiverId:int}/{messageType}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
-	public async Task<ActionResult<APIResponse>> GetCooperationProposals(int ReceiverId)
+	public async Task<ActionResult<APIResponse>> GetCooperationProposals(int receiverId, string messageType)
 	{
 		try
 		{
-			IEnumerable<TrainerClientContact> messages = await _data.GetCooperationProposals(ReceiverId);
+			IEnumerable<TrainerClientContact> messages = await _data.GetCooperationProposals(receiverId, messageType);
 			_response.Result = _mapper.Map<List<TrainerClientContact>>(messages);
 			_response.StatusCode = HttpStatusCode.OK;
 			return Ok(_response);
