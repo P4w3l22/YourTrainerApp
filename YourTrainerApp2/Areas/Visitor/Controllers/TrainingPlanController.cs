@@ -16,7 +16,6 @@ namespace YourTrainerApp.Areas.Visistor.Controllers;
 public class TrainingPlanController : Controller
 {
     private readonly ITrainingPlanDataService _trainingPlanDataService;
-    
     private string? _sessionUsername 
     {
         get => HttpContext.Session.GetString("Username");
@@ -38,19 +37,19 @@ public class TrainingPlanController : Controller
         set => HttpContext.Session.SetString("PreviousExercises", JsonConvert.SerializeObject(value));
 	} 
 
+
 	public TrainingPlanController(ITrainingPlanDataService trainingPlanDataService)
 	{
         _trainingPlanDataService = trainingPlanDataService;
 	}
 
+
     public async Task<IActionResult> Index()
     {
         List<TrainingPlan> trainingPlans = await _trainingPlanDataService.GetUserTrainingPlans(_sessionUsername);
-
-        
-
         return View(trainingPlans);
     }
+
 
     //[Authorize(Roles = "admin")]
     [HttpGet]
@@ -80,9 +79,9 @@ public class TrainingPlanController : Controller
             trainingPlan = _sessionTrainingPlan;
 		}
 
-
 		return View(trainingPlan);
     }
+
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -90,7 +89,6 @@ public class TrainingPlanController : Controller
     public async Task<IActionResult> Upsert(TrainingPlan tp)
     {
         TrainingPlan trainingPlan = _sessionTrainingPlan;
-
         trainingPlan.CreateTrainingDaysString();
 
         if (trainingPlan.Creator is null)
@@ -112,69 +110,68 @@ public class TrainingPlanController : Controller
 		return RedirectToAction("Index");
 	}
 
+
 	public async Task<IActionResult> Show(int id)
     {
         TrainingPlan trainingPlan = await _trainingPlanDataService.GetTrainingPlan(id);
-
         _sessionExercises = await _trainingPlanDataService.GetTrainingPlanExercises(trainingPlan.Exercises);
         _sessionTrainingPlan = trainingPlan;
-
         return View(trainingPlan);
     }
+
 
 	[ClearSessionStrings]
 	public async Task<IActionResult> DeleteTrainingPlan(int id)
     {
         await _trainingPlanDataService.DeleteTrainingPlan(id);
-
         TempData["success"] = "Usunięto plan treningowy";
-
         return RedirectToAction("Index");
     }
+
 
     public IActionResult UpdateTrainingPlan() =>
         RedirectToAction("Upsert");
 
+
     public async Task<IActionResult> ExerciseSelectionAsync() =>
 		View();
     
+
     public IActionResult IncrementExerciseSeries(int id)
     {
 		_sessionTrainingPlan = _trainingPlanDataService.IncrementExerciseSeriesAndGetTrainingPlan(_sessionTrainingPlan, id);
-
 		return RedirectToAction("Upsert");
 	}
+
 
     public async Task<IActionResult> DeleteExercise(int listPosition)
     {
 		_sessionTrainingPlan = await _trainingPlanDataService.DeleteExerciseAndGetTrainingPlan(_sessionTrainingPlan, listPosition);
 		_sessionExercises = _trainingPlanDataService.DeleteExerciseAndGetExercisesList(_sessionExercises, listPosition);
-
         return RedirectToAction("Upsert");
     }
+
 
 	public IActionResult DecrementExerciseSeries(int id)
     {
 		_sessionTrainingPlan = _trainingPlanDataService.DecrementExerciseSeriesAndGetTrainingPlan(_sessionTrainingPlan, id);
-
 		return RedirectToAction("Upsert");
 	}
+
 
     [HttpGet]
     public IActionResult SaveRepsAndWeightsData(string values, string exerciseId, string seriesPosition)
     {
-		_sessionTrainingPlan = _trainingPlanDataService.SaveRepsWeightsAndGetTrainingPlan(_sessionTrainingPlan, values, exerciseId, seriesPosition);
-
-		return Ok();
+	    _sessionTrainingPlan = _trainingPlanDataService.SaveRepsWeightsAndGetTrainingPlan(_sessionTrainingPlan, values, exerciseId, seriesPosition);
+	    return Ok();
     }
+
 
 	public async Task<IActionResult> AddExerciseId(int id)
     {
-		 _sessionTrainingPlan = await _trainingPlanDataService.AddExerciseAndGetTrainingPlan(_sessionTrainingPlan, id);
-		 _sessionExercises = await _trainingPlanDataService.AddExerciseAndGetExercisesList(_sessionExercises, id);
-
-
-		return RedirectToAction("Upsert");
+		_sessionTrainingPlan = await _trainingPlanDataService.AddExerciseAndGetTrainingPlan(_sessionTrainingPlan, id);
+		_sessionExercises = await _trainingPlanDataService.AddExerciseAndGetExercisesList(_sessionExercises, id);
+	    return RedirectToAction("Upsert");
 	}
 
 
@@ -184,12 +181,13 @@ public class TrainingPlanController : Controller
         return Ok();
     }
 
+
     public IActionResult SaveTrainigDaysData(string day)
     {
 		_sessionTrainingPlan = _trainingPlanDataService.SaveTrainingDaysAndGetTrainingPlan(_sessionTrainingPlan, day);
-
 		return Ok();
     }
+
 
     public IActionResult SaveNotesData(string notes)
     {

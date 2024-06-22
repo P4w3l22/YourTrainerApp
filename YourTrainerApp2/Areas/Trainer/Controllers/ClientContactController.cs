@@ -79,4 +79,9 @@ public class ClientContactController : Controller
 
 		return RedirectToAction("Index");
 	}
+
+	public async Task SendTrainingPlanToClient(int memberId)
+	{
+		// wysłać stworzony plan jako wiadomość do klienta
+	}
 }

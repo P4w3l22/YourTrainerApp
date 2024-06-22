@@ -30,9 +30,14 @@
 				</div>
 			</div>
 
-			<div id="client_@client.ClientData.MemberId" style="" hidden>
-				<div class="container">
-					@Html.Partial("_Messages", @client)
+			<div id="client_@client.ClientData.MemberId" hidden>
+				<div class="d-flex justify-content-center">
+					<div class="container">
+						@Html.Partial("_Messages", @client)
+					</div>
+					<div>
+						<partial name="_AssignedPlans"></partial>
+					</div>
 				</div>
 				<ul class="no-dots">
 					<li>Opis: @client.ClientData.Description</li>
@@ -47,7 +52,7 @@
 @section Scripts {
 	<script>
 		function saveNewMessage(id) {
-			var message = document.getElementById("newMessage").value;
+			var message = document.getElementById("newMessage_"+id).value;
 
 			var data = {
 				newMessage: message,

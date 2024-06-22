@@ -1,13 +1,12 @@
 ﻿using DbDataAccess.Models;
 
-namespace DbDataAccess.Data
+namespace DbDataAccess.Data;
+
+public interface IMemberData
 {
-	public interface IMemberData
-	{
-		Task DeleteMemberData(int id);
-		Task<MemberDataModel> GetMember(int id);
-		Task<IEnumerable<MemberDataModel>> GetMembers();
-		Task InsertMemberData(MemberDataModel memberData);
-		Task UpdateMemberData(MemberDataModel memberData);
-	}
+	Task DeleteMemberData(int id);
+	Task<MemberDataModel> GetMember(int id);
+	Task<IEnumerable<MemberDataModel>> GetMembers();
+	Task InsertMemberData(MemberDataModel memberData);
+	Task UpdateMemberData(MemberDataModel memberData);
 }
