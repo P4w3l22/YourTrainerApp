@@ -80,8 +80,9 @@ public class ClientContactController : Controller
 		return RedirectToAction("Index");
 	}
 
-	public async Task SendTrainingPlanToClient(int memberId)
+	public async Task<IActionResult> SendTrainingPlanToClient(int clientId)
 	{
-		// wysłać stworzony plan jako wiadomość do klienta
+		HttpContext.Session.SetString("SenderReceiverId", _trainerId.ToString() + ";" + clientId.ToString());
+		return RedirectToAction("Upsert", "TrainingPlan", new { Area = "Visitor", isEditing = false });
 	}
 }

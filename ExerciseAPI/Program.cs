@@ -80,6 +80,7 @@ builder.Services.AddScoped<ILocalUserData, LocalUserData>();
 builder.Services.AddScoped<ITrainerData, TrainerData>();
 builder.Services.AddScoped<IMemberData, MemberData>();
 builder.Services.AddScoped<ITrainerClientContactData, TrainerClientContactData>();
+builder.Services.AddScoped<IAssignedTrainingPlanData, AssignedTrainingPlanData>();
 
 var app = builder.Build();
 

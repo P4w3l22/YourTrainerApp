@@ -146,9 +146,8 @@ public class ExercisesAPIController : ControllerBase
         return _response;
     }
 
-    [HttpDelete]
 	[Authorize(Roles = "admin")]
-	[HttpDelete("{id:int}", Name = "DeleteExercise")]
+	[HttpDelete("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]

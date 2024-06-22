@@ -36,6 +36,7 @@ public class TrainingPlanController : Controller
         get => JsonConvert.DeserializeObject<List<int>>(HttpContext.Session.GetString("PreviousExercises") ?? JsonConvert.SerializeObject(new List<int>()));
         set => HttpContext.Session.SetString("PreviousExercises", JsonConvert.SerializeObject(value));
 	} 
+    private string[]? _sessionTrainerClientId => (HttpContext.Session.GetString("SenderReceiverId") ?? "0;0").Split(";");
 
 
 	public TrainingPlanController(ITrainingPlanDataService trainingPlanDataService)
@@ -96,6 +97,11 @@ public class TrainingPlanController : Controller
             trainingPlan.Creator = _sessionUsername;
         }
 
+        if (trainingPlan.Exercises is null)
+        {
+            trainingPlan.Exercises = new();
+        }
+
         if (trainingPlan.Id == 0)
         {
 			await _trainingPlanDataService.CreateTrainingPlan(trainingPlan);
@@ -105,6 +111,15 @@ public class TrainingPlanController : Controller
         {
 			await _trainingPlanDataService.UpdateTrainingPlan(trainingPlan, _sessionPreviousExercises);
 			TempData["success"] = "Zaktualizowano plan!";
+        }
+
+        if (_sessionTrainerClientId[0] != "0" && _sessionTrainerClientId[1] != "0")
+        {
+            int trainerId = int.Parse(_sessionTrainerClientId[0]);
+            int clientId = int.Parse(_sessionTrainerClientId[1]);
+            int planId = await _trainingPlanDataService.GetTrainingPlanId(tp.Title, tp.Creator);
+
+            await _trainingPlanDataService.SetTrainingPlanToClient(trainerId, clientId, planId);
         }
 
 		return RedirectToAction("Index");

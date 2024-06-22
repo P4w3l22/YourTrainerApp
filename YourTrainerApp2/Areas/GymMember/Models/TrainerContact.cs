@@ -11,6 +11,6 @@ public class TrainerContact
 {
 	public TrainerDataModel TrainerData { get; set; }
 	public List<TrainerClientContact> MessagesWithTrainer { get; set; }
-    public List<TrainerClientContact> PlansFromTrainer { get; set; }
+    public List<TrainingPlan> PlansFromTrainer { get; set; }
 
 }

@@ -30,8 +30,11 @@ builder.Services.AddScoped<IMemberDataService, MemberDataService>();
 builder.Services.AddHttpClient<ITrainerClientContactService, TrainerClientContactService>();
 builder.Services.AddScoped<ITrainerClientContactService, TrainerClientContactService>();
 
-builder.Services.AddScoped<ITrainerClientDataService, TrainerClientDataService>();
+builder.Services.AddHttpClient<IAssignedTrainingPlanService, AssignedTrainingPlanService>();
+builder.Services.AddScoped<IAssignedTrainingPlanService, AssignedTrainingPlanService>();
 
+
+builder.Services.AddScoped<ITrainerClientDataService, TrainerClientDataService>();
 builder.Services.AddScoped<ITrainingPlanDataService, TrainingPlanDataService>();
 
 

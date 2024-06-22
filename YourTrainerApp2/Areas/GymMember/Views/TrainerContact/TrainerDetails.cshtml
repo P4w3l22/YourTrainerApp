@@ -31,7 +31,8 @@
 		</div>
 	</div>
 	<div id="assignedPlans" class="container" hidden>
-		<partial name="_AssignedPlans" />
+		@Html.Partial("_AssignedPlans", Model.PlansFromTrainer)
+		@* <partial name="_AssignedPlans" /> *@
 	</div>
 </div> 
 

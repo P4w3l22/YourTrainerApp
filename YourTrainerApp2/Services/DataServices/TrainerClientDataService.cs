@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using MoreLinq;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using YourTrainer_App.Areas.Trainer.Models;
@@ -15,12 +16,16 @@ public class TrainerClientDataService : ITrainerClientDataService
 	private readonly ITrainerDataService _trainerDataService;
 	private readonly IMemberDataService _memberDataService;
 	private readonly ITrainerClientContactService _trainerClientContactService;
+	private readonly IAssignedTrainingPlanService _assignedTrainingPlanService;
+	private readonly ITrainingPlanService _trainingPlanService;
 
-	public TrainerClientDataService(ITrainerDataService trainerDataService, IMemberDataService memberDataService, ITrainerClientContactService trainerClientContactService)
+	public TrainerClientDataService(ITrainerDataService trainerDataService, IMemberDataService memberDataService, ITrainerClientContactService trainerClientContactService, IAssignedTrainingPlanService assignedTrainingPlanService, ITrainingPlanService trainingPlanService)
 	{
 		_trainerDataService = trainerDataService;
 		_memberDataService = memberDataService;
 		_trainerClientContactService = trainerClientContactService;
+		_assignedTrainingPlanService = assignedTrainingPlanService;
+		_trainingPlanService = trainingPlanService;
 	}
 
 
@@ -158,8 +163,21 @@ public class TrainerClientDataService : ITrainerClientDataService
 		TrainerContact trainerContact = new();
 		trainerContact.TrainerData = await GetTrainerData(trainerId);
 		trainerContact.MessagesWithTrainer = await GetSortedMessages(trainerId, memberId);
+		trainerContact.PlansFromTrainer = await GetAssignedTrainingPlans(memberId);
 
 		return trainerContact;
+	}
+
+	private async Task<List<TrainingPlan>> GetAssignedTrainingPlans(int clientId)
+	{
+		List<TrainingPlan> assignedTrainingPlans = new();
+		APIResponse apiResponse = await _assignedTrainingPlanService.GetAsync<APIResponse>(clientId);
+		AssignedTrainingPlan trainingPlanFromTrainer = JsonConvert.DeserializeObject<AssignedTrainingPlan>(apiResponse.Result.ToString());
+
+		apiResponse = await _trainingPlanService.GetAsync<APIResponse>(trainingPlanFromTrainer.PlanId);
+		assignedTrainingPlans.Add(JsonConvert.DeserializeObject<TrainingPlan>(apiResponse.Result.ToString()));
+	
+		return assignedTrainingPlans;
 	}
 
 	public async Task<List<ClientContact>> GetClientsDetails(int trainerId)

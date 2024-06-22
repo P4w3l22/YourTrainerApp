@@ -9,6 +9,8 @@ namespace YourTrainer_App.Areas.Visitor.Services
 		Task<TrainingPlan> AddExerciseAndGetTrainingPlan(TrainingPlan trainingPlan, int id);
 		List<int> GetPreviousTrainingPlanExercises(List<TrainingPlanExercise> trainingPlanExercises);
 		Task CreateTrainingPlan(TrainingPlan trainingPlan);
+		Task<int> GetTrainingPlanId(string title, string creator);
+		Task SetTrainingPlanToClient(int trainerId, int clientId, int planId);
 		TrainingPlan DecrementExerciseSeriesAndGetTrainingPlan(TrainingPlan trainingPlan, int id);
 		Task<TrainingPlan> DeleteExerciseAndGetTrainingPlan(TrainingPlan trainingPlan, int listPosition);
 		List<TrainingPlanExerciseCreateVM> DeleteExerciseAndGetExercisesList(List<TrainingPlanExerciseCreateVM> exercises, int listPosition);

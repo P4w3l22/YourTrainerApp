@@ -1,4 +1,4 @@
-﻿
+﻿@model int
 
 <div class="container">
 	<p class="d-flex justify-content-center">Przypisane plany</p>
@@ -16,8 +16,8 @@
 	</div>
 	<div class="mt-4">
 		<a class="btn button-green" title="Dodaj nowy plan"
-		   asp-area="Visitor" asp-controller="TrainingPlan" 
-		   asp-action="Upsert" asp-route-isEditing="false">+</a>
+		   asp-area="Trainer" asp-controller="ClientContact" 
+		   asp-action="SendTrainingPlanToClient" asp-route-clientId="@Model">+</a>
 	</div>
 
 @* 	<div>

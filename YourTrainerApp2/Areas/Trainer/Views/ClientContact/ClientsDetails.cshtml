@@ -36,7 +36,8 @@
 						@Html.Partial("_Messages", @client)
 					</div>
 					<div>
-						<partial name="_AssignedPlans"></partial>
+						@Html.Partial("_AssignedPlans", @client.ClientData.MemberId)
+						@* <partial name="_AssignedPlans"></partial> *@
 					</div>
 				</div>
 				<ul class="no-dots">

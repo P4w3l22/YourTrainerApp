@@ -12,12 +12,24 @@ public class TrainingPlanDataService : ITrainingPlanDataService
 	private readonly ITrainingPlanService _trainingPlanService;
 	private readonly ITrainingPlanExerciseService _trainingPlanExerciseService;
 	private readonly IExerciseService _exerciseService;
+	private readonly IAssignedTrainingPlanService _assignedTrainingPlanService;
 
-	public TrainingPlanDataService(ITrainingPlanService trainingPlanService, ITrainingPlanExerciseService trainingPlanExerciseService, IExerciseService exerciseService)
+	public TrainingPlanDataService(ITrainingPlanService trainingPlanService, ITrainingPlanExerciseService trainingPlanExerciseService, IExerciseService exerciseService, IAssignedTrainingPlanService assignedTrainingPlanService)
 	{
 		_trainingPlanService = trainingPlanService;
 		_trainingPlanExerciseService = trainingPlanExerciseService;
 		_exerciseService = exerciseService;
+		_assignedTrainingPlanService = assignedTrainingPlanService;
+	}
+
+	public async Task SetTrainingPlanToClient(int trainerId, int clientId, int planId)
+	{
+		await _assignedTrainingPlanService.CreateAsync<APIResponse>(new AssignedTrainingPlan()
+		{
+			TrainerId = trainerId,
+			ClientId = clientId,
+			PlanId = planId
+		});
 	}
 
 	public async Task<List<TrainingPlan>> GetUserTrainingPlans(string sessionUsername)
@@ -49,7 +61,7 @@ public class TrainingPlanDataService : ITrainingPlanDataService
 		await CreateTrainingPlanExercises(trainingPlan.Exercises, trainingPlan.Title, trainingPlan.Creator);
 	}
 
-	private async Task<int> GetTrainingPlanId(string title, string creator)
+	public async Task<int> GetTrainingPlanId(string title, string creator)
 	{
 		APIResponse apiResponse = await _trainingPlanService.GetAllAsync<APIResponse>();
 		TrainingPlan trainingPlanDb = JsonConvert.DeserializeObject<List<TrainingPlan>>(Convert.ToString(apiResponse.Result))
