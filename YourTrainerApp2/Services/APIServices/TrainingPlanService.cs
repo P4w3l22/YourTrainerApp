@@ -7,12 +7,12 @@ namespace YourTrainer_App.Services.APIServices;
 public class TrainingPlanService : BaseService, ITrainingPlanService
 {
     private readonly IHttpClientFactory _client;
-    private string APIUrl;
+    private string? APIUrl;
 
     public TrainingPlanService(IHttpClientFactory client, IConfiguration? configuration) : base(client)
     {
         _client = client;
-        APIUrl = configuration.GetValue<string>("ServiceUrls:ExerciseAPI");
+        APIUrl = configuration?.GetValue<string>("ServiceUrls:ExerciseAPI");
     }
 
     public Task<T> GetAllAsync<T>() =>

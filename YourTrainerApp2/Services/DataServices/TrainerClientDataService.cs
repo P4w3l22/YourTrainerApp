@@ -32,7 +32,8 @@ public class TrainerClientDataService : ITrainerClientDataService
 	public async Task<List<TrainerClientContact>> GetCooperationProposals(int trainerId)
 	{
 		APIResponse apiResponse = await _trainerClientContactService.GetCooperationProposals<APIResponse>(trainerId, MessageType.ConfirmClient.ToString());
-		return JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
+		List<TrainerClientContact>? trainerClientContacts = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
+		return trainerClientContacts ?? throw new InvalidOperationException("Nie otrzymano odpowiedzi z API w GetCooperationProposals");
 	}
 
 	public async Task<List<CooperationProposal>> GetCooperationProposalsData(int trainerId)
@@ -64,10 +65,10 @@ public class TrainerClientDataService : ITrainerClientDataService
 	public async Task<string> GetCooperationProposalResponse(int memberId)
 	{
 		APIResponse apiResponse = await _trainerClientContactService.GetCooperationProposals<APIResponse>(memberId, MessageType.AcceptClient.ToString());
-		TrainerClientContact accepted = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result)).LastOrDefault();
+		TrainerClientContact? accepted = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result)).LastOrDefault();
 
 		apiResponse = await _trainerClientContactService.GetCooperationProposals<APIResponse>(memberId, MessageType.RejectClient.ToString());
-		TrainerClientContact rejected = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result)).LastOrDefault();
+		TrainerClientContact? rejected = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result)).LastOrDefault();
 
 		if (accepted is not null)
 		{
@@ -80,6 +81,7 @@ public class TrainerClientDataService : ITrainerClientDataService
 			return "Rejected";
 		}
 		return "NoResponse";
+		
 	}
 
 
@@ -274,11 +276,11 @@ public class TrainerClientDataService : ITrainerClientDataService
 
 	private async Task<List<TrainerClientContact>> GetSortedMessages(int trainerId, int memberId)
 	{
-		APIResponse apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(trainerId, memberId, StaticDetails.MessageType.Text.ToString());
-		List<TrainerClientContact> trainerMessages = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
+		APIResponse? apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(trainerId, memberId, StaticDetails.MessageType.Text.ToString());
+		List<TrainerClientContact>? trainerMessages = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
 
 		apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(memberId, trainerId, StaticDetails.MessageType.Text.ToString());
-		List<TrainerClientContact> memberMessages = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
+		List<TrainerClientContact>? memberMessages = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));
 
 		return trainerMessages.Concat(memberMessages).OrderBy(m => m.SendDateTime).ToList();
 	}

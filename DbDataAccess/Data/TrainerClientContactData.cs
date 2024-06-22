@@ -1,10 +1,6 @@
 ﻿using DbDataAccess.DbAccess;
 using DbDataAccess.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using YourTrainer_DBDataAccess.Data.IData;
 
 namespace DbDataAccess.Data;
 
@@ -31,10 +27,10 @@ public class TrainerClientContactData : ITrainerClientContactData
 	public async Task SendMessage(TrainerClientContact trainerClientContact) =>
 		await _db.SaveData("spTrainerClientContact_SendMessage", new
 		{
-			SenderId = trainerClientContact.SenderId,
-			ReceiverId = trainerClientContact.ReceiverId,
-			MessageType = trainerClientContact.MessageType,
-			MessageContent = trainerClientContact.MessageContent
+			trainerClientContact.SenderId,
+			trainerClientContact.ReceiverId,
+			trainerClientContact.MessageType,
+			trainerClientContact.MessageContent
 		});
 
 	public async Task SetAsRead(int id) =>

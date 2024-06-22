@@ -6,17 +6,17 @@ namespace YourTrainer_App.Services.DataServices
 {
 	public interface ITrainerClientDataService
 	{
-		Task SendCooperationProposal(int trainerId, int memberId);
-		Task<string> GetCooperationProposalResponse(int memberId);
-		Task AcceptCooperationProposal(int trainerId, int memberId, int proposalId);
-		Task RejectCooperationProposal(int trainerId, int memberId, int proposalId);
-		Task DeleteTrainerClientCooperation(int memberId);
-		Task<List<TrainerClientContact>> GetCooperationProposals(int trainerId);
-		Task<List<CooperationProposal>> GetCooperationProposalsData(int trainerId);
-		Task<List<ClientContact>> GetClientsDetails(int trainerId);
-		Task<MemberDataModel> GetMemberData(int memberId);
-		Task<TrainerContact> GetTrainerDetails(int trainerId, int memberId);
-		Task<List<TrainerDataModel>> GetTrainersOptions();
-		Task SendMessage(string newMessage, int senderId, int receiverId);
+		Task SendCooperationProposal(int trainerId, int memberId); //klient
+		Task<string> GetCooperationProposalResponse(int memberId); //klient
+		Task AcceptCooperationProposal(int trainerId, int memberId, int proposalId); //wspolne
+		Task RejectCooperationProposal(int trainerId, int memberId, int proposalId); //wspolne
+		Task DeleteTrainerClientCooperation(int memberId); //wspolne
+		Task<List<TrainerClientContact>> GetCooperationProposals(int trainerId); //wspolne
+		Task<List<CooperationProposal>> GetCooperationProposalsData(int trainerId); //wspolne
+		Task<List<ClientContact>> GetClientsDetails(int trainerId); //trener
+		Task<MemberDataModel> GetMemberData(int memberId); //klient
+		Task<TrainerContact> GetTrainerDetails(int trainerId, int memberId); //klient
+		Task<List<TrainerDataModel>> GetTrainersOptions(); //klient
+		Task SendMessage(string newMessage, int senderId, int receiverId); //wspolne
 	}
 }

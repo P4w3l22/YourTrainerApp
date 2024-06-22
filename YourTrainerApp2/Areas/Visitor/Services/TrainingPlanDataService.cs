@@ -22,14 +22,15 @@ public class TrainingPlanDataService : ITrainingPlanDataService
 		_assignedTrainingPlanService = assignedTrainingPlanService;
 	}
 
-	public async Task SetTrainingPlanToClient(int trainerId, int clientId, int planId)
+	public async Task SetTrainingPlanToClient(int trainerId, int clientId, int planId, string token)
 	{
-		await _assignedTrainingPlanService.CreateAsync<APIResponse>(new AssignedTrainingPlan()
+		var apiResponse = await _assignedTrainingPlanService.CreateAsync<APIResponse>(new AssignedTrainingPlan()
 		{
 			TrainerId = trainerId,
 			ClientId = clientId,
 			PlanId = planId
-		});
+		}, token);
+		int i = 0;
 	}
 
 	public async Task<List<TrainingPlan>> GetUserTrainingPlans(string sessionUsername)
@@ -160,7 +161,7 @@ public class TrainingPlanDataService : ITrainingPlanDataService
 
 	private async Task<TrainingPlanExerciseCreateVM> GetExercise(int exerciseId)
 	{
-		APIResponse apiResponse = await _exerciseService.GetAsync<APIResponse>(exerciseId);
+		APIResponse? apiResponse = await _exerciseService.GetAsync<APIResponse>(exerciseId);
 		return JsonConvert.DeserializeObject<TrainingPlanExerciseCreateVM>(Convert.ToString(apiResponse.Result));
 	}
 
@@ -314,8 +315,11 @@ public class TrainingPlanDataService : ITrainingPlanDataService
 		var apiResponse = await _exerciseService.GetAsync<APIResponse>(id);
 		if (apiResponse is not null && apiResponse.IsSuccess)
 		{
-			TrainingPlanExerciseCreateVM exercise = JsonConvert.DeserializeObject<TrainingPlanExerciseCreateVM>(Convert.ToString(apiResponse.Result));
-			exercises.Add(exercise);
+			TrainingPlanExerciseCreateVM? exercise = JsonConvert.DeserializeObject<TrainingPlanExerciseCreateVM>(Convert.ToString(apiResponse.Result));
+			if (exercise is not null)
+			{
+				exercises.Add(exercise);
+			}
 		}
 
 		return exercises;

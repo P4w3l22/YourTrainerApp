@@ -8,7 +8,7 @@
 @model TrainingPlan
 
 @{
-	List<TrainingPlanExerciseCreateVM> exercises = JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(httpAcc.HttpContext.Session.GetString("Exercises"));
+	List<TrainingPlanExerciseCreateVM>? exercises = JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(httpAcc.HttpContext.Session.GetString("Exercises"));
 }
 
 <div>

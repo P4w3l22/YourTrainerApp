@@ -8,7 +8,7 @@ namespace YourTrainer_App.Services.APIServices;
 public class TrainingPlanExerciseService : BaseService, ITrainingPlanExerciseService
 {
     private readonly IHttpClientFactory _client;
-    private string APIUrl;
+    private string? APIUrl;
 
     public TrainingPlanExerciseService(IHttpClientFactory client, IConfiguration configuration) : base(client)
     {

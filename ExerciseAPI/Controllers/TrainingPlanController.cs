@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using DbDataAccess.Data;
 using DbDataAccess.Models;
 using ExerciseAPI.Models;
 using ExerciseAPI.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using YourTrainer_DBDataAccess.Data.IData;
 
 namespace ExerciseAPI.Controllers;
 

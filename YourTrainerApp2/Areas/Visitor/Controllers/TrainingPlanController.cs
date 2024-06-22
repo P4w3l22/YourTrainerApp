@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_App.Areas.Visitor.Services;
 using Microsoft.AspNetCore.Http;
+using YourTrainer_Utility;
 
 namespace YourTrainerApp.Areas.Visistor.Controllers;
 
@@ -119,7 +120,7 @@ public class TrainingPlanController : Controller
             int clientId = int.Parse(_sessionTrainerClientId[1]);
             int planId = await _trainingPlanDataService.GetTrainingPlanId(tp.Title, tp.Creator);
 
-            await _trainingPlanDataService.SetTrainingPlanToClient(trainerId, clientId, planId);
+            await _trainingPlanDataService.SetTrainingPlanToClient(trainerId, clientId, planId, HttpContext.Session.GetString(StaticDetails.SessionToken));
         }
 
 		return RedirectToAction("Index");

@@ -1,21 +1,18 @@
 ﻿using DbDataAccess.DbAccess;
 using DbDataAccess.Models;
+using YourTrainer_DBDataAccess.Data.IData;
 
 namespace DbDataAccess.Data;
 
 public class TrainingPlanData : ITrainingPlanData
 {
 	private readonly ISqlDataAccess _db;
-	private readonly IExerciseData _exerciseData;
 
-	public TrainingPlanData(ISqlDataAccess db, IExerciseData exerciseData)
+	public TrainingPlanData(ISqlDataAccess db)
 	{
 		_db = db;
-		_exerciseData = exerciseData;
 	}
 
-	//TODO: dodać opcjonalny warunek po którym będzie można wyszukać plan
-	//TODO: dodać do tabeli trainingPlan kolumnę określającą właściciela planu
 	public async Task<IEnumerable<TrainingPlanModel>> GetAllPlans()
 	{
 		IEnumerable<TrainingPlanModel> plans = await _db.GetData<TrainingPlanModel, dynamic>("dbo.spTrainingPlan_GetAll", new { });
@@ -24,43 +21,22 @@ public class TrainingPlanData : ITrainingPlanData
 		{
 			plan.Exercises = await SetPlanExercises(plan.Id);
 		}
-
 		return plans;
 	}
 
 	public async Task<TrainingPlanModel> GetPlan(int id)
 	{
 		var plans = await _db.GetData<TrainingPlanModel, dynamic>("spTrainingPlan_Get", new { Id = id });
-		var plan = plans.FirstOrDefault();
+		var plan = plans.FirstOrDefault() ?? throw new InvalidOperationException("Brak planu o tym id w bazie danych"); ;
 		plan.Exercises = await SetPlanExercises(id);
-
 		return plan;
 	}
 
 	private async Task<List<TrainingPlanExerciseModel>> SetPlanExercises(int id)
 	{
-		List<TrainingPlanExerciseModel> planExercises = new();
-
 		IEnumerable<TrainingPlanExerciseModel> planExercisesFromDb = await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
-
-		//foreach (var exercise in planExercisesFromDb)
-		//{
-		//	var exerciseData = await _exerciseData.GetExercise(exercise.EId);
-		//	planExercises.Add(CreateExerciseTrainingPlan(exercise, exerciseData));
-		//}
-
 		return planExercisesFromDb.ToList();
 	}
-
-	private ExerciseTrainingPlan CreateExerciseTrainingPlan(TrainingPlanExerciseModel exercise, ExerciseModel exerciseData) =>
-		new()
-		{
-			Id = exercise.Id,
-			ExerciseData = exerciseData,
-			Series = exercise.Series,
-			Reps = exercise.Reps,
-			Weights = exercise.Weights,
-		};
 	
 
 	public async Task InsertPlan(TrainingPlanModel model) =>

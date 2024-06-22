@@ -6,7 +6,7 @@ namespace YourTrainer_App.Services.APIServices;
 
 public class AssignedTrainingPlanService : BaseService, IAssignedTrainingPlanService
 {
-	private string APIUrl;
+	private string? APIUrl;
 	public AssignedTrainingPlanService(IHttpClientFactory client, IConfiguration configuration) : base(client)
 	{
 		APIUrl = configuration.GetValue<string>("ServiceUrls:ExerciseAPI");
@@ -26,19 +26,21 @@ public class AssignedTrainingPlanService : BaseService, IAssignedTrainingPlanSer
 			Url = APIUrl + "/api/AssignedTrainingPlan/client/" + clientId
 		});
 
-	public Task<T> CreateAsync<T>(AssignedTrainingPlan assignedTrainingPlan) =>
+	public Task<T> CreateAsync<T>(AssignedTrainingPlan assignedTrainingPlan, string token) =>
 		SendAsync<T>(new APIRequest()
 		{
 			ApiType = StaticDetails.ApiType.POST,
 			Url = APIUrl + "/api/AssignedTrainingPlan/",
-			Data = assignedTrainingPlan
+			Data = assignedTrainingPlan,
+			Token = token
 		});
 
-	public Task<T> DeleteAsync<T>(int id) =>
+	public Task<T> DeleteAsync<T>(int id, string token) =>
 		SendAsync<T>(new APIRequest()
 		{
 			ApiType = StaticDetails.ApiType.DELETE,
 			Url = APIUrl + "/api/AssignedTrainingPlan/" + id,
+			Token = token
 		});
 
 }

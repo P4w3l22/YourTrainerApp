@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using DbDataAccess.Data;
 using DbDataAccess.Models;
 using ExerciseAPI.Models;
 using ExerciseAPI.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using YourTrainer_DBDataAccess.Data.IData;
 
 namespace ExerciseAPI.Controllers;
 
@@ -29,8 +29,8 @@ public class ExercisesAPIController : ControllerBase
     {
         try
         {
-            IEnumerable<ExerciseModel> exerList = await _data.GetExercises();
-            _response.Result = _mapper.Map<List<ExerciseDTO>>(exerList);
+            IEnumerable<ExerciseModel> exerciseList = await _data.GetExercises();
+            _response.Result = _mapper.Map<List<ExerciseDTO>>(exerciseList);
             _response.StatusCode = HttpStatusCode.OK;
             return Ok(_response);
         }
@@ -42,7 +42,6 @@ public class ExercisesAPIController : ControllerBase
         return _response;
     }
 
-    //[Authorize(Roles = "admin")]
     [HttpGet("{id:int}", Name = "GetExercise")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -57,7 +56,7 @@ public class ExercisesAPIController : ControllerBase
                 return BadRequest(_response);
             }
 
-            var exercise = await _data.GetExercise(id);
+            ExerciseModel exercise = await _data.GetExercise(id);
 
             if (exercise is null)
             {
@@ -86,9 +85,9 @@ public class ExercisesAPIController : ControllerBase
     {
         try
         {
-            var exercises = await _data.GetExercises();
-            var exList = exercises.Where(e => e.Name.ToLower() == exerciseCreate.Name.ToLower()).ToList();
-            if (exList.Count > 0)
+            IEnumerable<ExerciseModel> exercises = await _data.GetExercises();
+			List<ExerciseModel> exerciseList = exercises.Where(e => e?.Name?.ToLower() == exerciseCreate?.Name?.ToLower()).ToList();
+            if (exerciseList.Count > 0)
             {
                 ModelState.AddModelError("Errors", "Ćwiczenie już istnieje!");
                 return BadRequest(ModelState);
@@ -103,8 +102,7 @@ public class ExercisesAPIController : ControllerBase
             var exercise = _mapper.Map<ExerciseModel>(exerciseCreate);
             await _data.InsertExercise(exercise);
 
-            _response.Result = exercise;
-            _response.StatusCode = HttpStatusCode.OK;
+            _response.StatusCode = HttpStatusCode.Created;
             return Ok(_response);
         }
         catch (Exception ex)
@@ -118,9 +116,10 @@ public class ExercisesAPIController : ControllerBase
 
 	[HttpPut]
 	[Authorize(Roles = "admin")]
-	[ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<APIResponse>> UpdateExercise([FromBody] ExerciseUpdateDTO exerciseUpdate)
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	public async Task<ActionResult<APIResponse>> UpdateExercise([FromBody] ExerciseUpdateDTO exerciseUpdate)
     {
         try
         {

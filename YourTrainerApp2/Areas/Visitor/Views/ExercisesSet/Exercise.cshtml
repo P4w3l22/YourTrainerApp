@@ -23,12 +23,20 @@
 					<div class="my-3">
 						<ol>
 						@{
-							string[]? instrList = Model.Instructions.Split(";");
+							if (Model.Instructions is not null)
+							{
+								string[]? instrList = Model.Instructions.Split(";");
+								@foreach (string instr in instrList)
+								{
+									<li>@instr</li>
+								}
+							}
+							else 
+							{
+								<h3>Brak instrukcji dla tego ćwiczenia</h3>
+							}
 						}
-						@foreach (string instr in instrList)
-						{
-							<li>@instr</li>
-						}
+						
 						</ol>
 					</div>
 				</div>

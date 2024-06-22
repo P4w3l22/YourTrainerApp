@@ -1,10 +1,10 @@
-﻿using DbDataAccess.Data;
-using DbDataAccess.Models;
+﻿using DbDataAccess.Models;
 using ExerciseAPI.Models;
 using ExerciseAPI.Models.DTO;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using YourTrainer_DBDataAccess.Data.IData;
 using LoginRequest = DbDataAccess.Models.LoginRequest;
 
 namespace ExerciseAPI.Controllers;
@@ -15,7 +15,7 @@ public class UserController : Controller
 {
 	private readonly ILocalUserData _data;
     private readonly APIResponse _response;
-	private string _token;
+	private string? _token;
 
     public UserController(ILocalUserData data, IConfiguration configuration)
     {
@@ -48,13 +48,23 @@ public class UserController : Controller
 	[HttpPost("Register")]
 	public async Task<IActionResult> Register([FromBody] RegisterationRequest registerRequest)
     {
-        if (!await _data.IsUniqueUser(registerRequest.UserName))
+        if (registerRequest.UserName is not null)
         {
-            _response.IsSuccess = false;
-            _response.Errors = new List<string>() { "Podana nazwa użytkownika już jest zajęta" };
-            _response.StatusCode = HttpStatusCode.BadRequest;
-            return BadRequest(_response);
+            if (!await _data.IsUniqueUser(registerRequest.UserName))
+            {
+                _response.IsSuccess = false;
+                _response.Errors = new List<string>() { "Podana nazwa użytkownika już jest zajęta" };
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                return BadRequest(_response);
+            }
         }
+        else
+        {
+			_response.IsSuccess = false;
+			_response.Errors = new List<string>() { "Nazwa użytkownika nie może być pusta" };
+			return BadRequest(_response);
+        }
+        
 
         var registerUser = await _data.Register(registerRequest);
 

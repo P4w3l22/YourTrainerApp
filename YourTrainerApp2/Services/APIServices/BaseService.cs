@@ -53,14 +53,14 @@ internal class APICommunication
         };
 
         var serializedMessage = JsonConvert.SerializeObject(message);
-        var apiResponse = JsonConvert.DeserializeObject<T>(serializedMessage);
+        var apiResponse = JsonConvert.DeserializeObject<T>(serializedMessage) ?? throw new InvalidOperationException("Wystąpił problem z odebraniem wiadomości o błędach z API"); ;
         return apiResponse;
     }
 
     internal async Task<T> GetResponse<T>(APIRequest request)
     {
         var client = httpClient.CreateClient("ExerciseAPI");
-        HttpResponseMessage message = null;
+        HttpResponseMessage? message = null;
 
         if (!string.IsNullOrEmpty(request.Token))
         {
@@ -70,7 +70,7 @@ internal class APICommunication
         message = await GetAPIResponse(client, GetRequest(request));
 
         var apiContent = await message.Content.ReadAsStringAsync();
-        var apiResponse = JsonConvert.DeserializeObject<T>(apiContent);
+        var apiResponse = JsonConvert.DeserializeObject<T>(apiContent) ?? throw new InvalidOperationException("Nie otrzymano odpowiedzi z API");
         return apiResponse;
     }
 
@@ -81,7 +81,7 @@ internal class APICommunication
     {
         HttpRequestMessage message = new();
         message.Headers.Add("Accept", "application/json");
-        message.RequestUri = new Uri(request.Url);
+        message.RequestUri = new Uri(request.Url ?? throw new InvalidOperationException("Wystąpił problem z otrzymaniem ścieżki do requesta API"));
         if (request.Data is not null)
         {
             message.Content = new StringContent(JsonConvert.SerializeObject(request.Data),

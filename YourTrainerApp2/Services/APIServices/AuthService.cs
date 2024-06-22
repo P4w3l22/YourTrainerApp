@@ -10,7 +10,7 @@ namespace YourTrainer_App.Services.APIServices;
 public class AuthService : BaseService, IAuthService
 {
     private readonly IHttpClientFactory _clientFactory;
-    private string APIUrl;
+    private string? APIUrl;
 
     public AuthService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(clientFactory)
     {

@@ -6,7 +6,7 @@ namespace YourTrainer_App.Services.APIServices;
 
 public class TrainerDataService : BaseService, ITrainerDataService
 {
-    private string APIUrl;
+    private string? APIUrl;
     public TrainerDataService(IHttpClientFactory client, IConfiguration configuration) : base(client)
     {
         APIUrl = configuration.GetValue<string>("ServiceUrls:ExerciseAPI");

@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using DbDataAccess.Data;
 using DbDataAccess.Models;
 using ExerciseAPI.Models;
 using ExerciseAPI.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using YourTrainer_DBDataAccess.Data.IData;
 
 namespace ExerciseAPI.Controllers;
 
@@ -81,10 +81,11 @@ public class MemberDataController : Controller
 
 	[HttpPost]
 	//[Authorize(Roles = "trainer")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-	public async Task<ActionResult<APIResponse>> CreateTrainerData([FromBody] MemberDataModel memberData)
+	public async Task<ActionResult<APIResponse>> CreateMemberData([FromBody] MemberDataModel memberData)
 	{
 		try
 		{
@@ -96,16 +97,10 @@ public class MemberDataController : Controller
 				return BadRequest(ModelState);
 			}
 
-			if (memberData is null)
-			{
-				_response.StatusCode = HttpStatusCode.BadRequest;
-				return BadRequest(memberData);
-			}
-
 			await _memberData.InsertMemberData(memberData);
 
 			_response.Result = memberData;
-			_response.StatusCode = HttpStatusCode.OK;
+			_response.StatusCode = HttpStatusCode.Created;
 			return Ok(_response);
 		}
 		catch (Exception ex)
@@ -119,10 +114,11 @@ public class MemberDataController : Controller
 
 	[HttpPut]
 	//[Authorize(Roles = "trainer")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status201Created)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	public async Task<ActionResult<APIResponse>> UpdateTrainerData([FromBody] MemberDataModel memberData)
+	public async Task<ActionResult<APIResponse>> UpdateMemberData([FromBody] MemberDataModel memberData)
 	{
 		try
 		{
@@ -149,12 +145,11 @@ public class MemberDataController : Controller
 
 	[HttpDelete("{id:int}")]
 	//[Authorize(Roles = "trainer")]
-	//[HttpDelete("{id:int}", Name = "DeleteExercise")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	public async Task<ActionResult<APIResponse>> DeleteTrainerData(int id)
+	public async Task<ActionResult<APIResponse>> DeleteMemberData(int id)
 	{
 		try
 		{

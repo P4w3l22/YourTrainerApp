@@ -5,9 +5,12 @@
 @model TrainingPlan 
 
 @{
-	//TrainingPlan trainingPlan = JsonConvert.DeserializeObject<TrainingPlan>(httpAcc.HttpContext.Session.GetString("TrainingPlanData"));
-	string exercisesInJson = httpAcc.HttpContext.Session.GetString("Exercises");
-	List<TrainingPlanExerciseCreateVM> exercises = JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(exercisesInJson);
+	string? exercisesInJson = httpAcc?.HttpContext?.Session.GetString("Exercises");
+	List<TrainingPlanExerciseCreateVM>? exercises = new();
+	if (exercisesInJson is not null)
+	{
+		exercises = JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(exercisesInJson);
+	}
 }
 	
 

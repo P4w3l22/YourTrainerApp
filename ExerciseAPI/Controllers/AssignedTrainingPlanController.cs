@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using DbDataAccess.Data;
 using DbDataAccess.Models;
 using ExerciseAPI.Models;
-using ExerciseAPI.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using YourTrainer_DBDataAccess.Data.IData;
 using YourTrainer_DBDataAccess.Models;
 
 namespace YourTrainer_API.Controllers;
@@ -17,13 +15,18 @@ public class AssignedTrainingPlanController : ControllerBase
 {
 	private readonly IMapper _mapper;
 	private readonly IAssignedTrainingPlanData _data;
-    protected APIResponse _response;
+	private readonly ITrainerData _trainerData;
+	private readonly IMemberData _memberData;
+	//private readonly ITrainingPlanData _trainingPlanData;
+	protected APIResponse _response;
 
-
-    public AssignedTrainingPlanController(IMapper mapper, IAssignedTrainingPlanData data)
+    public AssignedTrainingPlanController(IMapper mapper, IAssignedTrainingPlanData data, ITrainerData trainerData, IMemberData memberData/*, ITrainingPlanData trainingPlanData*/)
     {
         _mapper = mapper;
 		_data = data;
+		_trainerData = trainerData;
+		_memberData = memberData;
+		//_trainingPlanData = trainingPlanData;
 		this._response = new();
 	}
 
@@ -46,7 +49,6 @@ public class AssignedTrainingPlanController : ControllerBase
 		return _response;
 	}
 
-	//[Authorize(Roles = "admin")]
 	[HttpGet("client/{clientId:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -82,7 +84,7 @@ public class AssignedTrainingPlanController : ControllerBase
 	}
 
 	[HttpPost]
-	//[Authorize(Roles = "admin")]
+	[Authorize(Roles = "trainer")]
 	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -91,15 +93,27 @@ public class AssignedTrainingPlanController : ControllerBase
 		try
 		{
 			// Dodać sprawdzanie czy trener, plan i klient istnieją w bazie danych
-			//var exercises = await _data.GetAssignedPlan();
-			//var exList = exercises.Where(e => e.Name.ToLower() == exerciseCreate.Name.ToLower()).ToList();
-			//if (exList.Count > 0)
+			TrainerDataModel trainerData = await _trainerData.GetTrainer(assignedPlanCreate.TrainerId);
+			MemberDataModel memberData = await _memberData.GetMember(assignedPlanCreate.ClientId);
+			//TrainingPlanModel trainingPlan = await _trainingPlanData.GetPlan(assignedPlanCreate.PlanId);
+
+			if (trainerData is null)
+			{
+				ModelState.AddModelError("Errors", "Nie ma trenera o takim id");
+				return BadRequest(assignedPlanCreate);
+			}
+			else if (memberData is null)
+			{
+				ModelState.AddModelError("Errors", "Nie ma użytkownika o takim id");
+				return BadRequest(assignedPlanCreate);
+			}
+			//else if (trainingPlan is null)
 			//{
-			//	ModelState.AddModelError("Errors", "Ćwiczenie już istnieje!");
-			//	return BadRequest(ModelState);
+			//	ModelState.AddModelError("Errors", "Nie ma planu o takim id");
+			//	return BadRequest(assignedPlanCreate);
 			//}
 
-			if (assignedPlanCreate == null)
+			if (assignedPlanCreate is null)
 			{
 				_response.StatusCode = HttpStatusCode.BadRequest;
 				return BadRequest(assignedPlanCreate);
@@ -108,8 +122,7 @@ public class AssignedTrainingPlanController : ControllerBase
 			var assignedPlan = assignedPlanCreate;
 			await _data.InsertAssignedPlan(assignedPlan);
 
-			_response.Result = assignedPlan;
-			_response.StatusCode = HttpStatusCode.OK;
+			_response.StatusCode = HttpStatusCode.Created;
 			return Ok(_response);
 		}
 		catch (Exception ex)
@@ -122,10 +135,9 @@ public class AssignedTrainingPlanController : ControllerBase
 	}
 
 
-	//[Authorize(Roles = "admin")]
 	[HttpDelete("{id:int}")]
+	[Authorize(Roles = "trainer")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<APIResponse>> DeleteAssignedPlan(int id)
@@ -137,12 +149,11 @@ public class AssignedTrainingPlanController : ControllerBase
 				return BadRequest();
 			}
 
-			//var exercise = await _data.GetExercise(id);
-
-			//if (exercise == null)
-			//{
-			//	return NotFound();
-			//}
+			AssignedTrainingPlan assignedTrainingPlan = await _data.GetAssignedPlan(id);
+			if (assignedTrainingPlan is null)
+			{
+				return NotFound();
+			}
 
 			await _data.DeleteAssignedPlan(id);
 			_response.StatusCode = HttpStatusCode.NoContent;

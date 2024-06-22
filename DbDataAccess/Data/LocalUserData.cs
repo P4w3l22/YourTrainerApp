@@ -2,14 +2,10 @@
 using DbDataAccess.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
+using YourTrainer_DBDataAccess.Data.IData;
 
 namespace DbDataAccess.Data;
 
@@ -23,6 +19,7 @@ public class LocalUserData : ILocalUserData
 		_db = db;
 	}
 
+
 	public async Task<LoginResponse> Login(LoginRequest loginRequest, string token)
 	{
 		_token = token;
@@ -32,7 +29,7 @@ public class LocalUserData : ILocalUserData
 			user = await GetUser(loginRequest);
 
 		}
-		catch (ArgumentNullException ex)
+		catch (ArgumentNullException)
 		{
 			return new LoginResponse()
 			{
@@ -41,7 +38,7 @@ public class LocalUserData : ILocalUserData
 				Errors = new List<string>() { "Niewłaściwy login" }
 			};
 		}
-		catch (ArgumentException ex)
+		catch (ArgumentException)
 		{
 			return new LoginResponse()
 			{
@@ -59,6 +56,7 @@ public class LocalUserData : ILocalUserData
 
 		return loginResponse;
 	}
+
 
 	private async Task<LocalUserModel> GetUser(LoginRequest loginRequest)
 	{
@@ -81,9 +79,10 @@ public class LocalUserData : ILocalUserData
 	private async Task<LocalUserModel> GetUserAccountByUserName(string userName)
 	{
 		var users = await _db.GetData<LocalUserModel, dynamic>("spLocalUsers_Get", new { userName });
-		return users.FirstOrDefault();
+		return users.FirstOrDefault() ?? throw new InvalidOperationException("Brak użytkownika o tej nazwie w bazie");
 	}
 
+	
 	private string GenerateTokenString(LocalUserModel user)
 	{
 		JwtSecurityTokenHandler tokenHandler = new();
@@ -103,6 +102,7 @@ public class LocalUserData : ILocalUserData
 		var token = tokenHandler.CreateToken(tokenDescriptor);
 		return tokenHandler.WriteToken(token);
 	}
+
 
 	public async Task<LocalUserModel> Register(RegisterationRequest registerationRequest)
 	{
@@ -126,7 +126,7 @@ public class LocalUserData : ILocalUserData
 		return user;
 	}
 
+
 	public async Task<bool> IsUniqueUser(string userName) =>
 		await GetUserAccountByUserName(userName) is null;
-
 }

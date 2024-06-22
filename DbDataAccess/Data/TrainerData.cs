@@ -1,10 +1,6 @@
 ﻿using DbDataAccess.DbAccess;
 using DbDataAccess.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using YourTrainer_DBDataAccess.Data.IData;
 
 namespace DbDataAccess.Data;
 
@@ -23,7 +19,7 @@ public class TrainerData : ITrainerData
 	public async Task<TrainerDataModel> GetTrainer(int id)
 	{
 		var trainers = await _db.GetData<TrainerDataModel, dynamic>("spTrainerData_Get", new { TrainerId = id });
-		return trainers.FirstOrDefault();
+		return trainers.FirstOrDefault() ?? throw new InvalidOperationException("Brak trenera o tym id w bazie danych"); ;
 	}
 
 	public async Task InsertTrainerData(TrainerDataModel trainerData) =>
