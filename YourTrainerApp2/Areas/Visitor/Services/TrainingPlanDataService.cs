@@ -166,7 +166,8 @@ public class TrainingPlanDataService : ITrainingPlanDataService
 
 	public async Task DeleteTrainingPlan(int id)
 	{
-		await _trainingPlanService.DeleteAsync<APIResponse>(id);
+		var apiResponse = await _trainingPlanService.DeleteAsync<APIResponse>(id);
+		int i = 1;
 	}
 
 	public TrainingPlan IncrementExerciseSeriesAndGetTrainingPlan(TrainingPlan trainingPlan, int id)

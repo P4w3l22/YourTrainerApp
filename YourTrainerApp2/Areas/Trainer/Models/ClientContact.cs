@@ -6,6 +6,6 @@ public class ClientContact
 {
 	public MemberDataModel ClientData { get; set; }
 	public List<TrainerClientContact> MessagesWithClient { get; set; }
-	public List<TrainerClientContact> PlansToClient { get; set; }
+	public List<TrainingPlan> PlansToClient { get; set; }
 
 }

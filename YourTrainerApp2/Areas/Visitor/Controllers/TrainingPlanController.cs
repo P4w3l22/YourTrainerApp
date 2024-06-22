@@ -138,6 +138,7 @@ public class TrainingPlanController : Controller
 	[ClearSessionStrings]
 	public async Task<IActionResult> DeleteTrainingPlan(int id)
     {
+        // BŁĄD: przypisanych planów treningowych nie można usuwać - konflikt kluczy
         await _trainingPlanDataService.DeleteTrainingPlan(id);
         TempData["success"] = "Usunięto plan treningowy";
         return RedirectToAction("Index");

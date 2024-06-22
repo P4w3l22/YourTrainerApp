@@ -1,11 +1,15 @@
-﻿@model int
+﻿@using YourTrainer_App.Areas.Trainer.Models
+@model ClientContact
 
 <div class="container">
 	<p class="d-flex justify-content-center">Przypisane plany</p>
-	<div class="my-2 d-flex justify-content-center">
-		<a class="btn button-green d-flex justify-content-between align-items-center px-2" style="width: 500px; border-radius: 15px">
+	@foreach (TrainingPlan assignedTrainingPlan in Model.PlansToClient)
+	{
+
+		<a asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Show" asp-route-id="@assignedTrainingPlan.Id"
+		   class="btn button-green d-flex justify-content-between align-items-center px-2" style="width: 500px; border-radius: 15px">
 			<div>
-				<p class="mb-0" style="font-size: 26px;">FBW</p>
+				<p class="mb-0" style="font-size: 26px;">@assignedTrainingPlan.Title</p>
 			</div>
 			<div>
 				<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
@@ -13,11 +17,12 @@
 				</svg>
 			</div>
 		</a>
-	</div>
+	}
+	
 	<div class="mt-4">
 		<a class="btn button-green" title="Dodaj nowy plan"
 		   asp-area="Trainer" asp-controller="ClientContact" 
-		   asp-action="SendTrainingPlanToClient" asp-route-clientId="@Model">+</a>
+		   asp-action="SendTrainingPlanToClient" asp-route-clientId="@Model.ClientData.MemberId">+</a>
 	</div>
 
 @* 	<div>

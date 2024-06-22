@@ -172,10 +172,14 @@ public class TrainerClientDataService : ITrainerClientDataService
 	{
 		List<TrainingPlan> assignedTrainingPlans = new();
 		APIResponse apiResponse = await _assignedTrainingPlanService.GetAsync<APIResponse>(clientId);
-		AssignedTrainingPlan trainingPlanFromTrainer = JsonConvert.DeserializeObject<AssignedTrainingPlan>(apiResponse.Result.ToString());
 
-		apiResponse = await _trainingPlanService.GetAsync<APIResponse>(trainingPlanFromTrainer.PlanId);
-		assignedTrainingPlans.Add(JsonConvert.DeserializeObject<TrainingPlan>(apiResponse.Result.ToString()));
+		AssignedTrainingPlan trainingPlanFromTrainer = new();
+		if (apiResponse.Result is not null)
+		{
+			trainingPlanFromTrainer = JsonConvert.DeserializeObject<AssignedTrainingPlan>(apiResponse.Result.ToString());
+			apiResponse = await _trainingPlanService.GetAsync<APIResponse>(trainingPlanFromTrainer.PlanId);
+			assignedTrainingPlans.Add(JsonConvert.DeserializeObject<TrainingPlan>(apiResponse.Result.ToString()));
+		}
 	
 		return assignedTrainingPlans;
 	}
@@ -192,7 +196,7 @@ public class TrainerClientDataService : ITrainerClientDataService
 			{
 				ClientData = client,
 				MessagesWithClient = await GetSortedMessages(trainerId, client.MemberId),
-				PlansToClient = new()
+				PlansToClient = await GetAssignedTrainingPlans(client.MemberId)
 			});
 		}
 

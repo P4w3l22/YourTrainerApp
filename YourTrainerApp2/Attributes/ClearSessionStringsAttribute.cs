@@ -11,7 +11,7 @@ public class ClearSessionStrings : ActionFilterAttribute
 		context.HttpContext.Session.SetString("TrainingPlanData", "");
 		context.HttpContext.Session.SetString("Exercises", "");
 		context.HttpContext.Session.SetString("PreviousExercises", JsonConvert.SerializeObject(new List<int>()));
-		context.HttpContext.Session.SetString("SenderReceiverId", "");
+		context.HttpContext.Session.SetString("SenderReceiverId", "0;0");
 		base.OnActionExecuted(context);
 	}
 }

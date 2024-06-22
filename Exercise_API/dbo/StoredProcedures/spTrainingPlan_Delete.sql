@@ -8,6 +8,7 @@ BEGIN
 	BEGIN TRY
 			DELETE FROM TrainingPlanExercises WHERE TPId = @Id;
 			DELETE FROM TrainingPlans WHERE Id = @Id;
+			DELETE FROM AssignedTrainingPlans WHERE PlanId = @Id;
 		COMMIT TRANSACTION;
 	END TRY
 
