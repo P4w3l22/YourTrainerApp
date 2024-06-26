@@ -8,18 +8,23 @@ using YourTrainer_App.Services.DataServices;
 using YourTrainer_Utility;
 using YourTrainerApp.Areas.GymMember.Models;
 using YourTrainerApp.Models;
+using static YourTrainer_Utility.StaticDetails;
 
 namespace YourTrainerApp.Areas.GymMember.Controllers;
 
 [Area("GymMember")]
 public class TrainerContactController : Controller
 {
+	private readonly ICooperationProposalService _cooperationProposalService;
 	private readonly ITrainerClientDataService _trainerClientDataService;
+	private readonly IMessagingService _messagingService;
 	private int _memberId => int.Parse(HttpContext.Session.GetString("UserId"));
 
-	public TrainerContactController(ITrainerClientDataService trainerClientDataService)
+	public TrainerContactController(ICooperationProposalService cooperationProposalService, ITrainerClientDataService trainerClientDataService, IMessagingService messagingService)
     {
+		_cooperationProposalService = cooperationProposalService;
 		_trainerClientDataService = trainerClientDataService;
+		_messagingService = messagingService;
 	}
 
 
@@ -43,7 +48,7 @@ public class TrainerContactController : Controller
 			HttpContext.Session.SetString("WaitingForAnAnswer", "");
 		}
 		
-		string trainerResponseResult = await _trainerClientDataService.GetCooperationProposalResponse(_memberId);
+		string trainerResponseResult = await _cooperationProposalService.GetCooperationProposalResponse(_memberId);
 		if (trainerResponseResult == "Rejected")
 		{
 			TempData["error"] = "Trener odmówił współpracy";
@@ -57,7 +62,7 @@ public class TrainerContactController : Controller
 	{
 		TrainerContact trainerContact = await _trainerClientDataService.GetTrainerDetails(trainerId, _memberId);
 
-		string trainerResponseResult = await _trainerClientDataService.GetCooperationProposalResponse(_memberId);
+		string trainerResponseResult = await _cooperationProposalService.GetCooperationProposalResponse(_memberId);
 
 		if (trainerResponseResult == "Accepted")
 		{
@@ -74,14 +79,14 @@ public class TrainerContactController : Controller
 
 	public async Task<IActionResult> SendMessage(string newMessage, int trainerId)
 	{
-		await _trainerClientDataService.SendMessage(newMessage, _memberId, trainerId);
+		await _messagingService.SendMessage(newMessage, _memberId, trainerId, MessageType.Text.ToString());
 		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
 
 
 	public async Task<IActionResult> AddTrainer(int id) 
 	{
-		await _trainerClientDataService.SendCooperationProposal(id, _memberId);
+		await _cooperationProposalService.SendCooperationProposal(id, _memberId);
 		TempData["success"] = "Wysłano wiadomość do trenera odnośnie chęci współpracy";
 		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
@@ -89,7 +94,7 @@ public class TrainerContactController : Controller
 
 	public async Task<IActionResult> DeleteTrainerAsync()
 	{
-		await _trainerClientDataService.DeleteTrainerClientCooperation(_memberId);
+		await _cooperationProposalService.DeleteTrainerClientCooperation(_memberId);
 		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
 }

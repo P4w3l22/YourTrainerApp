@@ -7,6 +7,7 @@ using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_App.Services.DataServices;
 using YourTrainer_Utility;
 using YourTrainerApp.Models;
+using static YourTrainer_Utility.StaticDetails;
 
 namespace YourTrainer_App.Areas.Trainer.Controllers;
 
@@ -14,6 +15,10 @@ namespace YourTrainer_App.Areas.Trainer.Controllers;
 public class ClientContactController : Controller
 {
 	private readonly ITrainerClientDataService _trainerClientDataService;
+	private readonly ICooperationProposalService _cooperationProposalService;
+	private readonly IMessagingService _messagingService;
+
+
 	private int _trainerId => int.Parse(HttpContext.Session.GetString("UserId"));
 	private List<TrainerClientContact> _proposals
 	{
@@ -21,14 +26,16 @@ public class ClientContactController : Controller
 		set => HttpContext.Session.SetString("Proposals", JsonConvert.SerializeObject(value));
 	}
 
-	public ClientContactController(ITrainerClientDataService trainerClientDataService)
+	public ClientContactController(ITrainerClientDataService trainerClientDataService, ICooperationProposalService cooperationProposalService, IMessagingService messagingService)
 	{
 		_trainerClientDataService = trainerClientDataService;
+		_cooperationProposalService = cooperationProposalService;
+		_messagingService = messagingService;
 	}
 
 	public async Task<IActionResult> Index()
 	{
-		List<TrainerClientContact> trainerCooperationProposals = await _trainerClientDataService.GetCooperationProposals(_trainerId);
+		List<TrainerClientContact> trainerCooperationProposals = await _cooperationProposalService.GetCooperationProposals(_trainerId);
 
 		if (!trainerCooperationProposals.IsNullOrEmpty())
 		{
@@ -47,8 +54,8 @@ public class ClientContactController : Controller
 
 	public async Task<List<CooperationProposal>> GetCooperationProposals()
 	{
-		_proposals = await _trainerClientDataService.GetCooperationProposals(_trainerId);;
-		List<CooperationProposal> proposals = await _trainerClientDataService.GetCooperationProposalsData(_trainerId);
+		_proposals = await _cooperationProposalService.GetCooperationProposals(_trainerId);;
+		List<CooperationProposal> proposals = await _cooperationProposalService.GetCooperationProposalsData(_trainerId);
 		return proposals;
 	}
 
@@ -62,20 +69,20 @@ public class ClientContactController : Controller
 	public async Task<IActionResult> RejectCooperationProposal(int proposalIndex)
 	{
 		TrainerClientContact proposal = _proposals[proposalIndex];
-		await _trainerClientDataService.RejectCooperationProposal(proposal.ReceiverId, proposal.SenderId, proposal.Id);
+		await _cooperationProposalService.RejectCooperationProposal(proposal.ReceiverId, proposal.SenderId, proposal.Id);
 		return RedirectToAction("Index");
 	}
 
 	public async Task<IActionResult> AcceptCooperationProposal(int proposalIndex)
 	{
 		TrainerClientContact proposal = _proposals[proposalIndex];
-		await _trainerClientDataService.AcceptCooperationProposal(proposal.ReceiverId, proposal.SenderId, proposal.Id);
+		await _cooperationProposalService.AcceptCooperationProposal(proposal.ReceiverId, proposal.SenderId, proposal.Id);
 		return RedirectToAction("Index");
 	}
 
 	public async Task<IActionResult> SendMessage(string newMessage, int memberId)
 	{
-		await _trainerClientDataService.SendMessage(newMessage, _trainerId, memberId);
+		await _messagingService.SendMessage(newMessage, _trainerId, memberId, MessageType.Text.ToString());
 
 		return RedirectToAction("Index");
 	}
