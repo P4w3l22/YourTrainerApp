@@ -36,6 +36,7 @@ builder.Services.AddScoped<IAssignedTrainingPlanService, AssignedTrainingPlanSer
 
 builder.Services.AddScoped<ITrainerClientDataService, TrainerClientDataService>();
 builder.Services.AddScoped<ITrainingPlanDataService, TrainingPlanDataService>();
+builder.Services.AddScoped<ITrainingPlanDataService, TrainingPlanDataService>();
 
 
 builder.Services.AddHttpContextAccessor();

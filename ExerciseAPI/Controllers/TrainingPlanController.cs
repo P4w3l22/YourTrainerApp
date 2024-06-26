@@ -45,11 +45,17 @@ public class TrainingPlanController : Controller
 
 	[HttpGet("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<APIResponse>> GetPlan(int id)
 	{
 		try
 		{
 			var plan = await _data.GetPlan(id);
+			if (plan is null)
+			{
+				return NotFound();
+			}
+
 			_response.Result = plan;
 			_response.StatusCode = HttpStatusCode.OK;
 			return Ok(_response);
@@ -91,10 +97,17 @@ public class TrainingPlanController : Controller
 
 	[HttpPut]
 	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<APIResponse>> UpdatePlan([FromBody] TrainingPlanUpdateDTO trainingPlanUpdate)
 	{
 		try
 		{
+			var plan = await _data.GetPlan(trainingPlanUpdate.Id);
+			if (plan == null)
+			{
+				return NotFound();
+			}
+
 			if (trainingPlanUpdate == null)
 			{
 				return BadRequest();
@@ -118,6 +131,7 @@ public class TrainingPlanController : Controller
 	//[Authorize(Roles = "admin")]
 	[HttpDelete("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<APIResponse>> DeletePlan(int id)
 	{
 		try

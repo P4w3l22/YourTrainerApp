@@ -25,7 +25,9 @@ public class UserController : Controller
     }
 
     [HttpPost("Login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
     {
         var loginResponse = await _data.Login(loginRequest, _token);
         if (loginResponse.User is null || loginResponse.Token == string.Empty)
@@ -46,6 +48,8 @@ public class UserController : Controller
 	}
 
 	[HttpPost("Register")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> Register([FromBody] RegisterationRequest registerRequest)
     {
         if (registerRequest.UserName is not null)
@@ -65,7 +69,6 @@ public class UserController : Controller
 			return BadRequest(_response);
         }
         
-
         var registerUser = await _data.Register(registerRequest);
 
         if (registerUser is null)

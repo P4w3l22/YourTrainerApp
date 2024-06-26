@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using DbDataAccess.Models;
 using ExerciseAPI.Models;
-using ExerciseAPI.Models.DTO;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using YourTrainer_DBDataAccess.Data.IData;
@@ -52,7 +50,7 @@ public class TrainerDataController : Controller
 	{
 		try
 		{
-			if (id == 0)
+			if (id < 1)
 			{
 				_response.StatusCode = HttpStatusCode.BadRequest;
 				return BadRequest(_response);
@@ -149,7 +147,6 @@ public class TrainerDataController : Controller
 
 	[HttpDelete("{id:int}")]
 	//[Authorize(Roles = "trainer")]
-	//[HttpDelete("{id:int}", Name = "DeleteExercise")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]

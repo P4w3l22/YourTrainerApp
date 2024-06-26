@@ -30,7 +30,6 @@ public class TrainingPlanDataService : ITrainingPlanDataService
 			ClientId = clientId,
 			PlanId = planId
 		}, token);
-		int i = 0;
 	}
 
 	public async Task<List<TrainingPlan>> GetUserTrainingPlans(string sessionUsername)

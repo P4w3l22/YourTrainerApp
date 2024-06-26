@@ -24,12 +24,17 @@ public class TrainingPlanExerciseController : Controller
     }
 
 	[HttpGet("{id:int}")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<APIResponse>> GetPlanExercises(int id)
 	{
 		try
 		{
 			var plan = await _data.GetPlan(id);
-			if (plan == null) return NotFound();
+			if (plan == null)
+			{
+				return NotFound();
+			}
 
 			var planExercises = await _data.GetPlanExercises(id);
 			_response.Result = planExercises;
@@ -45,12 +50,17 @@ public class TrainingPlanExerciseController : Controller
 	}
 
 	[HttpPost]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<APIResponse>> InsertPlanExercise([FromBody]TrainingPlanExerciseCreateDTO trainingPlanExerciseCreate)
 	{
 		try
 		{
 			var plan = await _data.GetPlan(trainingPlanExerciseCreate.TPId);
-			if (plan == null) return NotFound();
+			if (plan == null)
+			{
+				return NotFound();
+			}
 
 			var trainingPlanExercise = _mapper.Map<TrainingPlanExerciseModel>(trainingPlanExerciseCreate);
 			await _data.InsertPlanExercise(trainingPlanExercise);
@@ -68,12 +78,17 @@ public class TrainingPlanExerciseController : Controller
 	}
 
 	[HttpPut]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<APIResponse>> UpdatePlanExercise([FromBody] TrainingPlanExerciseUpdateDTO trainingPlanExerciseUpdate)
 	{
 		try
 		{
-			//var plan = await _data.GetPlan(trainingPlanExerciseUpdate.TPId);
-			//if (plan == null) return NotFound();
+			var plan = await _data.GetPlan(trainingPlanExerciseUpdate.TPId);
+			if (plan == null)
+			{
+				return NotFound();
+			}
 
 			var trainingPlanExercise = _mapper.Map<TrainingPlanExerciseModel>(trainingPlanExerciseUpdate);
 			await _data.UpdatePlanExercise(trainingPlanExercise);
@@ -91,12 +106,18 @@ public class TrainingPlanExerciseController : Controller
 	}
 
 	[HttpDelete("{id:int}")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<APIResponse>> DeletePlanExercise(int id)
 	{
 		try
 		{
-			//var plan = await _data.GetPlan(id);
-			//if (plan == null) return NotFound();
+			var plan = await _data.GetPlan(id);
+			if (plan == null)
+			{
+				return NotFound();
+			}
 
 			await _data.DeletePlanExercise(id);
 
