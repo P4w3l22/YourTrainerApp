@@ -150,7 +150,7 @@ public class TrainingPlanController : Controller
         RedirectToAction("Upsert");
 
 
-    public async Task<IActionResult> ExerciseSelectionAsync() =>
+    public IActionResult ExerciseSelectionAsync() =>
 		View();
     
 

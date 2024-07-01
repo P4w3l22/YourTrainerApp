@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainerApp.Models;
-using YourTrainerApp.Models;
 
 namespace YourTrainerApp.Areas.Visistor.Controllers;
 

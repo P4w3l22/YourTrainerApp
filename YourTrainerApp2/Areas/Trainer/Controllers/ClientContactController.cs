@@ -87,7 +87,7 @@ public class ClientContactController : Controller
 		return RedirectToAction("Index");
 	}
 
-	public async Task<IActionResult> SendTrainingPlanToClient(int clientId)
+	public IActionResult SendTrainingPlanToClient(int clientId)
 	{
 		HttpContext.Session.SetString("SenderReceiverId", _trainerId.ToString() + ";" + clientId.ToString());
 		return RedirectToAction("Upsert", "TrainingPlan", new { Area = "Visitor", isEditing = false });

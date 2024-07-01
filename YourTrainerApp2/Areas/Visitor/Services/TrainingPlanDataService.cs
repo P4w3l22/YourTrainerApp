@@ -132,8 +132,7 @@ public class TrainingPlanDataService : ITrainingPlanDataService
 		{
 			foreach (int exerciseId in previousExercisesId)
 			{
-				APIResponse apiResponse = await _trainingPlanExerciseService.DeleteAsync<APIResponse>(exerciseId);
-				string test = "test";
+				await _trainingPlanExerciseService.DeleteAsync<APIResponse>(exerciseId);
 			}
 		}
 	}

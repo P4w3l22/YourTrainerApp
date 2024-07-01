@@ -73,7 +73,7 @@ public class TrainerContactController : Controller
 	}
 
 
-	public async Task<IActionResult> TrainerMessages() =>
+	public IActionResult TrainerMessages() =>
 		RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	
 
