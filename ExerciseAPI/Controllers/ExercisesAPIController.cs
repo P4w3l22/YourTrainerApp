@@ -25,7 +25,8 @@ public class ExercisesAPIController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<APIResponse>> GetExercises()
+	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+	public async Task<ActionResult<APIResponse>> GetExercises()
     {
         try
         {
@@ -36,7 +37,8 @@ public class ExercisesAPIController : ControllerBase
         }
         catch (Exception ex)
         {
-            _response.IsSuccess = false;
+			_response.StatusCode = HttpStatusCode.InternalServerError;
+			_response.IsSuccess = false;
             _response.Errors = new List<string> { ex.Message };
         }
         return _response;
@@ -46,14 +48,17 @@ public class ExercisesAPIController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<APIResponse>> GetExercise(int id)
+	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+	public async Task<ActionResult<APIResponse>> GetExercise(int id)
     {
         try
         {
             if (id == 0)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
-                return BadRequest(_response);
+				_response.Errors = new List<string> { "Id ćwiczenia nie może być równe 0" };
+				_response.IsSuccess = false;
+				return BadRequest(_response);
             }
 
             ExerciseModel exercise = await _data.GetExercise(id);
@@ -61,7 +66,9 @@ public class ExercisesAPIController : ControllerBase
             if (exercise is null)
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
-                return NotFound();
+				_response.Errors = new List<string> { "Brak danego ćwiczenia" };
+				_response.IsSuccess = false;
+				return NotFound(_response);
             }
             _response.Result = _mapper.Map<ExerciseDTO>(exercise);
             _response.StatusCode = HttpStatusCode.OK;
@@ -69,7 +76,8 @@ public class ExercisesAPIController : ControllerBase
         }
         catch (Exception ex)
         {
-            _response.IsSuccess = false;
+			_response.StatusCode = HttpStatusCode.InternalServerError;
+			_response.IsSuccess = false;
             _response.Errors = new List<string>() { ex.ToString() };
         }
 
@@ -78,6 +86,7 @@ public class ExercisesAPIController : ControllerBase
 
     [HttpPost]
 	[Authorize(Roles = "admin")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -89,14 +98,10 @@ public class ExercisesAPIController : ControllerBase
 			List<ExerciseModel> exerciseList = exercises.Where(e => e?.Name?.ToLower() == exerciseCreate?.Name?.ToLower()).ToList();
             if (exerciseList.Count > 0)
             {
-                ModelState.AddModelError("Errors", "Ćwiczenie już istnieje!");
-                return BadRequest(ModelState);
-            }
-
-            if (exerciseCreate == null)
-            {
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                return BadRequest(exerciseCreate);
+				_response.StatusCode = HttpStatusCode.BadRequest;
+				_response.Errors = new List<string> { "Ćwiczenie o tej nazwie już istnieje" };
+				_response.IsSuccess = false;
+                return BadRequest(_response);
             }
 
             var exercise = _mapper.Map<ExerciseModel>(exerciseCreate);
@@ -107,6 +112,7 @@ public class ExercisesAPIController : ControllerBase
         }
         catch (Exception ex)
         {
+            _response.StatusCode = HttpStatusCode.InternalServerError;
             _response.IsSuccess = false;
             _response.Errors = new List<string> { ex.ToString() };
         }
@@ -119,15 +125,20 @@ public class ExercisesAPIController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 	public async Task<ActionResult<APIResponse>> UpdateExercise([FromBody] ExerciseUpdateDTO exerciseUpdate)
     {
         try
         {
-            var exerciseId = await _data.GetExercise(exerciseUpdate.Id);
-            if (exerciseId == null) 
+            ExerciseModel exerciseId = await _data.GetExercise(exerciseUpdate.Id);
+            
+            if (exerciseId is null) 
             {
-                return NotFound(); 
-            }
+				_response.StatusCode = HttpStatusCode.NotFound;
+				_response.Errors = new List<string> { "Brak danego ćwiczenia" };
+				_response.IsSuccess = false;
+				return NotFound(_response);
+			}
 
             var exercise = _mapper.Map<ExerciseModel>(exerciseUpdate);
             await _data.UpdateExercise(exercise);
@@ -138,9 +149,10 @@ public class ExercisesAPIController : ControllerBase
         }
         catch (Exception ex)
         {
-            _response.IsSuccess = false;
-            _response.Errors = new List<string>() { ex.ToString() };
-        }
+			_response.StatusCode = HttpStatusCode.InternalServerError;
+			_response.IsSuccess = false;
+			_response.Errors = new List<string> { ex.ToString() };
+		}
 
         return _response;
     }
@@ -151,21 +163,28 @@ public class ExercisesAPIController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 	public async Task<ActionResult<APIResponse>> DeleteExercise(int id)
 	{
 		try
 		{
 			if (id == 0) 
-            { 
-                return BadRequest(); 
+            {
+				_response.StatusCode = HttpStatusCode.BadRequest;
+				_response.Errors = new List<string> { "Id ćwiczenia nie może być równe 0" };
+				_response.IsSuccess = false;
+				return BadRequest(); 
             }
 
 			var exercise = await _data.GetExercise(id);
 
-			if (exercise == null) 
-            { 
-                return NotFound(); 
-            }
+			if (exercise is null) 
+            {
+				_response.StatusCode = HttpStatusCode.NotFound;
+				_response.Errors = new List<string> { "Brak danego ćwiczenia" };
+				_response.IsSuccess = false;
+				return NotFound(_response);
+			}
 
 			await _data.DeleteExercise(id);
 			_response.StatusCode = HttpStatusCode.NoContent;
@@ -175,6 +194,7 @@ public class ExercisesAPIController : ControllerBase
 		}
 		catch (Exception ex)
 		{
+			_response.StatusCode = HttpStatusCode.InternalServerError;
 			_response.IsSuccess = false;
 			_response.Errors = new List<string>() { ex.ToString() };
 		}

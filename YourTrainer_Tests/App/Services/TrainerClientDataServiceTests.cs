@@ -1,8 +1,8 @@
 ﻿using Moq;
 using Newtonsoft.Json;
-using NUnit.Framework;
 using System.Net;
 using Xunit.Abstractions;
+using YourTrainer_App.Areas.Trainer.Models;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_App.Services.DataServices;
 using YourTrainerApp.Models;
@@ -34,32 +34,38 @@ public class TrainerClientDataServiceTests
 		_output = output;
 	}
 
-	//[Fact]
-	//public async Task GetClientDetails_ReturnClientContactList()
-	//{
-	//	Mock<ITrainerClientContactService> mockTrainerClientContactService = new();
+	[Fact]
+	public async Task GetClientDetails_ReturnClientContactList()
+	{
+		Mock<TrainerClientDataService> mockTrainerClientDataService = new();
+
+		MemberDataModel client2 = GetSampleMemberDataModel(2);
+		MemberDataModel client3 = GetSampleMemberDataModel(3);
+
+		TrainerClientContact messages1 = GetSampleMessagesWithClient(1);
+		TrainerClientContact messages2 = GetSampleMessagesWithClient(2);
+
+		TrainingPlan trainingPlan1 = GetSampleTrainingPlan(1);
+		TrainingPlan trainingPlan2 = GetSampleTrainingPlan(2);
+
+		int trainerId = 1;
+
+		List<MemberDataModel> clients = new() { client2, client3 };
+		List<TrainerClientContact> messagesWithClients = new() { messages1, messages2 };
+		List<TrainingPlan> trainingPlans = new() { trainingPlan1, trainingPlan2 };
+
+		mockTrainerClientDataService.Setup(s => s.GetClients(trainerId)).ReturnsAsync(clients);
+		mockTrainerClientDataService.Setup(s => s.GetSortedMessages(trainerId, 1)).ReturnsAsync(new List<TrainerClientContact> { messages1 });
+		mockTrainerClientDataService.Setup(s => s.GetSortedMessages(trainerId, 2)).ReturnsAsync(new List<TrainerClientContact> { messages2 });
+		mockTrainerClientDataService.Setup(s => s.GetAssignedTrainingPlans(1)).ReturnsAsync(new List<TrainingPlan> { trainingPlan1 });
+		mockTrainerClientDataService.Setup(s => s.GetAssignedTrainingPlans(2)).ReturnsAsync(new List<TrainingPlan> { trainingPlan2 });
 		
-	//	MemberDataModel client2 = GetSampleMemberDataModel(2);
-	//	MemberDataModel client3 = GetSampleMemberDataModel(3);
+		TrainerClientDataService trainerClientDataService = mockTrainerClientDataService.Object;
 
-	//	TrainerClientContact messages1 = GetSampleMessagesWithClient(1);
-	//	TrainerClientContact messages2 = GetSampleMessagesWithClient(2);
-
-	//	TrainingPlan trainingPlan1 = GetSampleTrainingPlan(1);
-	//	TrainingPlan trainingPlan2 = GetSampleTrainingPlan(2);
-
-	//	int trainerId = 1;
-		
-	//	List<MemberDataModel> clients = new(){ client2, client3 };
-	//	List<TrainerClientContact> messagesWithClients = new() { messages1, messages2 };
-	//	List<TrainingPlan> trainingPlans = new() { trainingPlan1, trainingPlan2 };
-
-	//	mockTrainerClientContactService.Setup(s => s.GetClients(trainerId)).ReturnsAsync(clients);
-	//	mockTrainerClientContactService.Setup(s => s.GetSortedMessages(trainerId, 1)).ReturnsAsync(messagesClientOne);
-	//	mockTrainerClientContactService.Setup(s => s.GetSortedMessages(trainerId, 2)).ReturnsAsync(messagesClientTwo);
-	//	mockTrainerClientContactService.Setup(s => s.GetAssignedTrainingPlans(1)).ReturnsAsync(plansClientOne);
-	//	mockTrainerClientContactService.Setup(s => s.GetAssignedTrainingPlans(2)).ReturnsAsync(plansClientTwo);
-	//}
+		List<ClientContact> clientContacts = await trainerClientDataService.GetClientsDetails(trainerId);
+	
+		Assert.NotNull(clientContacts);
+	}
 
 	[Fact]
 	public async Task GetTrainersOption_ReturnTrainerList()
@@ -141,7 +147,7 @@ public class TrainerClientDataServiceTests
 		new()
 		{
 			Id = id,
-			SenderId = id + 1,
+			SenderId = 1,
 			ReceiverId = id + 2,
 			MessageType = MessageType.Text.ToString(),
 			MessageContent = "Test" + id.ToString(),

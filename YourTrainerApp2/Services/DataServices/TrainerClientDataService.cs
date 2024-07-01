@@ -39,7 +39,8 @@ public class TrainerClientDataService : ITrainerClientDataService
 		return trainerContact;
 	}
 
-	private async Task<List<TrainingPlan>> GetAssignedTrainingPlans(int clientId)
+	//private
+	public async Task<List<TrainingPlan>> GetAssignedTrainingPlans(int clientId)
 	{
 		List<TrainingPlan> assignedTrainingPlans = new();
 		APIResponse apiResponse = await _assignedTrainingPlanService.GetAsync<APIResponse>(clientId);
@@ -74,7 +75,8 @@ public class TrainerClientDataService : ITrainerClientDataService
 		return clientsContact;
 	}
 
-	private async Task<List<MemberDataModel>> GetClients(int trainerId)
+	//private
+	public async Task<List<MemberDataModel>> GetClients(int trainerId)
 	{
 		TrainerDataModel trainerData = await GetTrainerData(trainerId);
 		List<MemberDataModel> clients = new();
@@ -111,7 +113,8 @@ public class TrainerClientDataService : ITrainerClientDataService
 		return JsonConvert.DeserializeObject<List<TrainerDataModel>>(Convert.ToString(apiResponse.Result));
 	}
 
-	private async Task<List<TrainerClientContact>> GetSortedMessages(int trainerId, int memberId)
+	//private
+	public async Task<List<TrainerClientContact>> GetSortedMessages(int trainerId, int memberId)
 	{
 		APIResponse? apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(trainerId, memberId, StaticDetails.MessageType.Text.ToString());
 		List<TrainerClientContact>? trainerMessages = JsonConvert.DeserializeObject<List<TrainerClientContact>>(Convert.ToString(apiResponse.Result));

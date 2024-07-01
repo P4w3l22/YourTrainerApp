@@ -4,6 +4,7 @@ using YourTrainer_App.Services.APIServices;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_App.Services.DataServices;
 using YourTrainer_App.Areas.Visitor.Services;
+using YourTrainer_App.Areas.Admin.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,12 +35,13 @@ builder.Services.AddHttpClient<IAssignedTrainingPlanService, AssignedTrainingPla
 builder.Services.AddScoped<IAssignedTrainingPlanService, AssignedTrainingPlanService>();
 
 
+builder.Services.AddScoped<IExerciseAdminService, ExerciseAdminService>();
 builder.Services.AddScoped<ITrainerClientDataService, TrainerClientDataService>();
 builder.Services.AddScoped<ICooperationProposalService, CooperationProposalService>();
 builder.Services.AddScoped<IMessagingService, MessagingService>();
 
 builder.Services.AddScoped<ITrainingPlanDataService, TrainingPlanDataService>();
-builder.Services.AddScoped<ITrainingPlanDataService, TrainingPlanDataService>();
+//builder.Services.AddScoped<ITrainingPlanDataService, TrainingPlanDataService>();
 
 
 builder.Services.AddHttpContextAccessor();

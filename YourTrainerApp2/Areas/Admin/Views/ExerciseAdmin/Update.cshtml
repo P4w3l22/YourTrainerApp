@@ -13,7 +13,7 @@
 		<form method="post" asp-action="Update">
 			<div class="border p-3 mt-4">
 				<input asp-for="Exercise.Id" hidden />
-				@*<div asp-validation-summary="All"></div>*@
+				<div asp-validation-summary="All" class="text-danger"></div>
 				<div class="form-floating py-2 col-12">
 					<input asp-for="Exercise.Name" class="form-control border-0 shadow" />
 					<label asp-for="Exercise.Name" class="ms-2"></label>

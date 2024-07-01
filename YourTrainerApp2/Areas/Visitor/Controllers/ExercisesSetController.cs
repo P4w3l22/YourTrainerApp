@@ -36,11 +36,15 @@ public class ExercisesSetController : Controller
 			return NotFound();
 		}
 
-        if (exercise.ImgPath1.Contains("''"))
+		if (exercise.ImgPath1 is not null && exercise.ImgPath2 is not null)
         {
-            exercise.ImgPath1 = exercise.ImgPath1.Replace("''", "'");
-            exercise.ImgPath2 = exercise.ImgPath2.Replace("''", "'");
-        }
+			if (exercise.ImgPath1.Contains("''"))
+			{
+				exercise.ImgPath1 = exercise.ImgPath1.Replace("''", "'");
+				exercise.ImgPath2 = exercise.ImgPath2.Replace("''", "'");
+			}
+		}
+			
 
 		return View(exercise);
 	}
@@ -123,6 +127,10 @@ public class ExercisesSetController : Controller
 
     private string GetExerciseData(Exercise exercise)
     {
+        if (exercise.ImgPath1 is null || exercise.ImgPath2 is null)
+        {
+            return exercise.Name + "&_&" + exercise.Id;
+		}
         if (exercise.ImgPath1.Contains("''"))
         {
             exercise.ImgPath1 = exercise.ImgPath1.Replace("''", "'");

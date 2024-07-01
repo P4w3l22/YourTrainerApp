@@ -7,9 +7,9 @@
 	[Mechanic] NVARCHAR(30) NOT NULL,
 	[Equipment] NVARCHAR(70) NOT NULL,
 	[PrimaryMuscles] NVARCHAR(150) NOT NULL,
-	[SecondaryMuscles] NVARCHAR(300) NULL,
+	[SecondaryMuscles] NVARCHAR(300),
 	[Instructions] NVARCHAR(MAX) NOT NULL,
 	[Category] NVARCHAR(50) NOT NULL,
-	[ImgPath1] NVARCHAR(200) NOT NULL,
-	[ImgPath2] NVARCHAR(200) NOT NULL
+	[ImgPath1] NVARCHAR(200),
+	[ImgPath2] NVARCHAR(200)
 )
