@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net;
 using System.Security.Claims;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_Utility;
@@ -15,11 +17,13 @@ namespace YourTrainerApp.Areas.Auth.Controllers;
 [Area("Auth")]
 public class AuthController : Controller
 {
-    private readonly IAuthService _authService;
+	private readonly ILogger<AuthController> _logger;
+	private readonly IAuthService _authService;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, ILogger<AuthController> logger)
     {
         _authService = authService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -36,16 +40,15 @@ public class AuthController : Controller
 		APIResponse apiResponse = await _authService.LoginAsync<APIResponse>(loginRequest);
         if (apiResponse is not null)
         {
-            if (apiResponse.IsSuccess)
-            {
-				await SignInSession(apiResponse.Result.ToString());
-				TempData["success"] = "Zalogowano!";
-
-				return RedirectToAction("Index", "Home", new { area = "Visitor" });
-			}
-			else if (apiResponse.Errors is not null && apiResponse.Errors.Count > 0)
+			string loginErrorResponse = await LoginOrGetErrorResponse(loginRequest);
+			if (loginErrorResponse.Length > 0)
 			{
-				ModelState.AddModelError("CustomError", apiResponse.Errors.FirstOrDefault());
+				ModelState.AddModelError(string.Empty, loginErrorResponse);
+			}
+			else
+			{
+				TempData["success"] = "Zalogowano!";
+				return RedirectToAction("Index", "Home", new { area = "Visitor" });
 			}
 		}
         return View(loginRequest);
@@ -62,7 +65,6 @@ public class AuthController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterationRequestDTO registerRequest)
     {
-        // BŁĄD - REJESTRACJA NIE DZIAŁA
         if (ModelState.IsValid)
         {
             if (registerRequest.RegisterationRequest.Password != registerRequest.ConfirmPassword)
@@ -71,25 +73,59 @@ public class AuthController : Controller
                 return View(registerRequest);
             }
 
-            var apiResponse = await _authService.RegisterAsync<APIResponse>(registerRequest.RegisterationRequest);
-            if (apiResponse is not null)
+            string registerErrorResponse = await RegisterOrGetErrorResponse(registerRequest);
+            if (registerErrorResponse.Length > 0)
             {
-                if (apiResponse.IsSuccess)
-                {
-                    TempData["success"] = "Zarejestrowano!";
-                    await SignInSession(apiResponse.Result.ToString());
-
-                    return RedirectToAction("Index", "Home", new { area = "Visitor" });
-                }
-                else if (apiResponse.Errors is not null && apiResponse.Errors.Count > 0)
-                {
-                    ModelState.AddModelError("CustomError", apiResponse.Errors.FirstOrDefault());
-                }
+                ModelState.AddModelError(string.Empty, registerErrorResponse);
             }
-        }
+            else
+            {
+                TempData["success"] = "Zarejestrowano!";
+				return RedirectToAction("Index", "Home", new { area = "Visitor" });
+			}
+
+		}
         
 		return View(registerRequest);
     }
+
+    private async Task<string> LoginOrGetErrorResponse(LoginRequest loginRequest)
+    {
+		APIResponse apiResponse = await _authService.LoginAsync<APIResponse>(loginRequest);
+		return await GetResponse(apiResponse);
+	}
+
+    private async Task<string> RegisterOrGetErrorResponse(RegisterationRequestDTO registerRequest)
+    {
+		APIResponse apiResponse = await _authService.RegisterAsync<APIResponse>(registerRequest.RegisterationRequest);
+		return await GetResponse(apiResponse);
+	}
+
+    private async Task<string> GetResponse(APIResponse? apiResponse)
+    {
+		if (apiResponse is not null)
+		{
+			if (apiResponse.StatusCode == HttpStatusCode.OK)
+			{
+				await SignInSession(apiResponse.Result.ToString());
+				return string.Empty;
+			}
+			else if (apiResponse.StatusCode == HttpStatusCode.InternalServerError)
+			{
+				_logger.LogError(apiResponse.Errors.FirstOrDefault(), string.Empty);
+			}
+			else
+			{
+				return apiResponse.Errors.FirstOrDefault();
+			}
+		}
+		else
+		{
+			_logger.LogError("apiResponse zwróciło null", string.Empty);
+		}
+
+		return "Wystąpił błąd podczas przetwarzania Twojego żądania. Spróbuj ponownie później.";
+	}
 
     private async Task SignInSession(string? apiResponseResult)
     {
