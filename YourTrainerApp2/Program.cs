@@ -5,6 +5,7 @@ using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_App.Services.DataServices;
 using YourTrainer_App.Areas.Visitor.Services;
 using YourTrainer_App.Areas.Admin.Services;
+using YourTrainer_App.Areas.Trainer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,7 @@ builder.Services.AddScoped<IAssignedTrainingPlanService, AssignedTrainingPlanSer
 
 
 builder.Services.AddScoped<IExerciseAdminService, ExerciseAdminService>();
+builder.Services.AddScoped<IDataSettingsService, DataSettingsService>();
 builder.Services.AddScoped<ITrainerClientDataService, TrainerClientDataService>();
 builder.Services.AddScoped<ICooperationProposalService, CooperationProposalService>();
 builder.Services.AddScoped<IMessagingService, MessagingService>();

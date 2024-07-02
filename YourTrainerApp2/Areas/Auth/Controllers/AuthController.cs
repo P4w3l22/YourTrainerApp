@@ -1,18 +1,14 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Net;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using NuGet.Protocol.Plugins;
+using System.Security.Claims;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_Utility;
 using YourTrainerApp.Areas.Admin.Models;
 using YourTrainerApp.Areas.Auth.Models;
 using YourTrainerApp.Models;
 using LoginRequest = YourTrainerApp.Areas.Auth.Models.LoginRequest;
-using RegisterationRequest = YourTrainerApp.Areas.Auth.Models.RegisterationRequest;
 
 namespace YourTrainerApp.Areas.Auth.Controllers;
 
@@ -37,24 +33,21 @@ public class AuthController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginRequest loginRequest)
     {
-        var apiResponse = await _authService.LoginAsync<APIResponse>(loginRequest);
-        if (apiResponse is not null && apiResponse.IsSuccess)
+		APIResponse apiResponse = await _authService.LoginAsync<APIResponse>(loginRequest);
+        if (apiResponse is not null)
         {
-            LoginResponse loginResponse = JsonConvert.DeserializeObject<LoginResponse>(Convert.ToString(apiResponse.Result));
-            
-            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-            identity.AddClaim(new Claim(ClaimTypes.Name, loginResponse.User.UserName));
-            identity.AddClaim(new Claim(ClaimTypes.Role, loginResponse.User.Role));
-            var principal = new ClaimsPrincipal(identity);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-            
-            SetSessionStrings(loginResponse.Token, loginResponse.User.UserName);
-            HttpContext.Session.SetString("UserId", loginResponse.User.Id.ToString());
+            if (apiResponse.IsSuccess)
+            {
+				await SignInSession(apiResponse.Result.ToString());
+				TempData["success"] = "Zalogowano!";
 
-            TempData["success"] = "Zalogowano!";
-            return RedirectToAction("Index", "Home", new { area = "Visitor" });
-        }
-        ModelState.AddModelError("CustomError", apiResponse.Errors.FirstOrDefault());
+				return RedirectToAction("Index", "Home", new { area = "Visitor" });
+			}
+			else if (apiResponse.Errors is not null && apiResponse.Errors.Count > 0)
+			{
+				ModelState.AddModelError("CustomError", apiResponse.Errors.FirstOrDefault());
+			}
+		}
         return View(loginRequest);
     }
 
@@ -69,31 +62,53 @@ public class AuthController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterationRequestDTO registerRequest)
     {
-        // DODAĆ TE SAME RZECZY CO W LOGIN - ZACHOWYWANIE TOKENU
-
-        if (registerRequest.RegisterationRequest.Password != registerRequest.ConfirmPassword)
+        // BŁĄD - REJESTRACJA NIE DZIAŁA
+        if (ModelState.IsValid)
         {
-            ModelState.AddModelError("CustomError", "Hasła nie są identyczne");
-            return View(registerRequest);
+            if (registerRequest.RegisterationRequest.Password != registerRequest.ConfirmPassword)
+            {
+                ModelState.AddModelError("CustomError", "Hasła nie są identyczne");
+                return View(registerRequest);
+            }
+
+            var apiResponse = await _authService.RegisterAsync<APIResponse>(registerRequest.RegisterationRequest);
+            if (apiResponse is not null)
+            {
+                if (apiResponse.IsSuccess)
+                {
+                    TempData["success"] = "Zarejestrowano!";
+                    await SignInSession(apiResponse.Result.ToString());
+
+                    return RedirectToAction("Index", "Home", new { area = "Visitor" });
+                }
+                else if (apiResponse.Errors is not null && apiResponse.Errors.Count > 0)
+                {
+                    ModelState.AddModelError("CustomError", apiResponse.Errors.FirstOrDefault());
+                }
+            }
         }
         
-        var apiResponse = await _authService.RegisterAsync<APIResponse>(registerRequest.RegisterationRequest);
-        if (apiResponse is not null && apiResponse.IsSuccess)
-        {
-            TempData["success"] = "Zarejestrowano!";
-
-            LoginResponse loginResponse = JsonConvert.DeserializeObject<LoginResponse>(Convert.ToString(apiResponse.Result));
-            SetSessionStrings(loginResponse.Token, loginResponse.User.UserName);
-
-			return RedirectToAction("Index", "Home", new { area = "Visitor" });
-        }
-        
-        ModelState.AddModelError("CustomError", apiResponse.Errors.FirstOrDefault());
-
-        return View(registerRequest);
+		return View(registerRequest);
     }
 
-    private void SetSessionStrings(string sessionToken, string userName)
+    private async Task SignInSession(string? apiResponseResult)
+    {
+        if (apiResponseResult is not null)
+        {
+            LoginResponse? loginResponse = JsonConvert.DeserializeObject<LoginResponse>(Convert.ToString(apiResponseResult));
+
+            ClaimsIdentity identity = new(CookieAuthenticationDefaults.AuthenticationScheme);
+            identity.AddClaim(new Claim(ClaimTypes.Name, loginResponse.User.UserName));
+            identity.AddClaim(new Claim(ClaimTypes.Role, loginResponse.User.Role));
+            ClaimsPrincipal principal = new(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            SetSessionTokenAndUsername(loginResponse.Token, loginResponse.User.UserName);
+            HttpContext.Session.SetString("UserId", loginResponse.User.Id.ToString());
+        }
+	}
+
+    private void SetSessionTokenAndUsername(string sessionToken, string userName)
     {
         HttpContext.Session.SetString(StaticDetails.SessionToken, sessionToken);
         HttpContext.Session.SetString("Username", userName);
@@ -102,7 +117,7 @@ public class AuthController : Controller
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync();
-        SetSessionStrings(string.Empty, string.Empty);
+		SetSessionTokenAndUsername(string.Empty, string.Empty);
 
         TempData["success"] = "Wylogowano!";
         return RedirectToAction("Index", "Home", new { area = "Visitor" });
@@ -111,7 +126,5 @@ public class AuthController : Controller
     public IActionResult AccessDenied()
     {
         return View();
-        //TempData["error"] = "Błąd dostępu";
-        //return RedirectToAction("Login");
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using YourTrainer_App.Areas.Trainer.Models;
+using YourTrainer_App.Areas.Trainer.Services;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_App.Services.DataServices;
 using YourTrainer_Utility;
@@ -17,6 +18,7 @@ public class ClientContactController : Controller
 	private readonly ITrainerClientDataService _trainerClientDataService;
 	private readonly ICooperationProposalService _cooperationProposalService;
 	private readonly IMessagingService _messagingService;
+	private readonly IDataSettingsService _dataSettingsService;
 
 
 	private int _trainerId => int.Parse(HttpContext.Session.GetString("UserId"));
@@ -26,11 +28,12 @@ public class ClientContactController : Controller
 		set => HttpContext.Session.SetString("Proposals", JsonConvert.SerializeObject(value));
 	}
 
-	public ClientContactController(ITrainerClientDataService trainerClientDataService, ICooperationProposalService cooperationProposalService, IMessagingService messagingService)
+	public ClientContactController(ITrainerClientDataService trainerClientDataService, ICooperationProposalService cooperationProposalService, IMessagingService messagingService, IDataSettingsService dataSettingsService)
 	{
 		_trainerClientDataService = trainerClientDataService;
 		_cooperationProposalService = cooperationProposalService;
 		_messagingService = messagingService;
+		_dataSettingsService = dataSettingsService;
 	}
 
 	public async Task<IActionResult> Index()
@@ -40,6 +43,11 @@ public class ClientContactController : Controller
 		if (!trainerCooperationProposals.IsNullOrEmpty())
 		{
 			return RedirectToAction("ShowCooperationProposals", "ClientContact", new { Area = "Trainer" });
+		}
+		if (!await _dataSettingsService.TrainerDataIsPresent(_trainerId))
+		{
+			TempData["error"] = "Najpierw uzupełnij swoje dane";
+			return RedirectToAction("ShowData", "DataSettings", new { Area = "Trainer" });
 		}
 
 		return RedirectToAction("ClientsDetails");

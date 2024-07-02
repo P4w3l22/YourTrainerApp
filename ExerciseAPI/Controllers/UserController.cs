@@ -62,12 +62,6 @@ public class UserController : Controller
                 return BadRequest(_response);
             }
         }
-        else
-        {
-			_response.IsSuccess = false;
-			_response.Errors = new List<string>() { "Nazwa użytkownika nie może być pusta" };
-			return BadRequest(_response);
-        }
         
         var registerUser = await _data.Register(registerRequest);
 

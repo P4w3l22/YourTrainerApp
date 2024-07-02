@@ -1,10 +1,20 @@
-﻿namespace YourTrainerApp.Areas.Auth.Models;
+﻿using Newtonsoft.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
+
+namespace YourTrainerApp.Areas.Auth.Models;
 
 public class RegisterationRequest
 {
-    public string Username { get; set; }
-    public string Name { get; set; }
-    public string Password { get; set; }
-    public string Role { get; set; }
+	[Required(ErrorMessage = "Pole nazwy użytkownika jest wymagane")]
+	public string Username { get; set; }
+
+	[Required(ErrorMessage = "Pole imienia jest wymagane")]
+	public string Name { get; set; }
+
+	[Required(ErrorMessage = "Podaj hasło")]
+	public string Password { get; set; }
+
+	[Required(ErrorMessage = "Pole roli jest wymagane")]
+	public string Role { get; set; }
 
 }

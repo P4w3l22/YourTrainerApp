@@ -62,6 +62,11 @@ public class TrainerClientDataService : ITrainerClientDataService
 
 		List<MemberDataModel> clients = await GetClients(trainerId);
 
+		if (clients.IsNullOrEmpty())
+		{
+			return new List<ClientContact>();
+		}
+
 		foreach (var client in clients)
 		{
 			clientsContact.Add(new()
@@ -81,7 +86,7 @@ public class TrainerClientDataService : ITrainerClientDataService
 		TrainerDataModel trainerData = await GetTrainerData(trainerId);
 		List<MemberDataModel> clients = new();
 
-		if (trainerData.MembersId.Length > 0)
+		if (trainerData.MembersId.Length > 0 && trainerData.MembersId != "0")
 		{
 			List<string> clientsId = trainerData.MembersId.Split(';').ToList();
 			

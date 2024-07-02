@@ -79,7 +79,7 @@ public class LocalUserData : ILocalUserData
 	private async Task<LocalUserModel> GetUserAccountByUserName(string userName)
 	{
 		var users = await _db.GetData<LocalUserModel, dynamic>("spLocalUsers_Get", new { userName });
-		return users.FirstOrDefault() ?? throw new InvalidOperationException("Brak użytkownika o tej nazwie w bazie");
+		return users.FirstOrDefault();
 	}
 
 	

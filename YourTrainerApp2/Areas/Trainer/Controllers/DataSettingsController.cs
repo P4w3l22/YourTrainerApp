@@ -34,7 +34,7 @@ public class DataSettingsController : Controller
         }
         else
         {
-			await _trainerDataService.CreateAsync<APIResponse>(trainerData);
+			APIResponse apiResponse = await _trainerDataService.CreateAsync<APIResponse>(trainerData);
 		}
 
 		TempData["success"] = "Zapisano zmiany";

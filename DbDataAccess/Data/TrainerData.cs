@@ -19,7 +19,7 @@ public class TrainerData : ITrainerData
 	public async Task<TrainerDataModel> GetTrainer(int id)
 	{
 		var trainers = await _db.GetData<TrainerDataModel, dynamic>("spTrainerData_Get", new { TrainerId = id });
-		return trainers.FirstOrDefault() ?? throw new InvalidOperationException("Brak trenera o tym id w bazie danych"); ;
+		return trainers.FirstOrDefault();
 	}
 
 	public async Task InsertTrainerData(TrainerDataModel trainerData) =>
