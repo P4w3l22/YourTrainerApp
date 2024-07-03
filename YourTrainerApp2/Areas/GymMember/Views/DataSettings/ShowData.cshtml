@@ -5,6 +5,9 @@
 <div>
 	<form method="post">
 		<div class="container">
+			<div class="row">
+				<div asp-validation-summary="All" class="text-danger"></div>
+			</div>
 			<div class="m-2">
 				<input class="form-control" type="number" asp-for="@Model.MemberId" hidden />
 			</div>

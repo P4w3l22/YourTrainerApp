@@ -1,13 +1,11 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using MoreLinq;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using YourTrainer_App.Areas.Trainer.Models;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_Utility;
 using YourTrainerApp.Areas.GymMember.Models;
 using YourTrainerApp.Models;
-using static YourTrainer_Utility.StaticDetails;
 
 namespace YourTrainer_App.Services.DataServices;
 
@@ -129,4 +127,8 @@ public class TrainerClientDataService : ITrainerClientDataService
 
 		return trainerMessages.Concat(memberMessages).OrderBy(m => m.SendDateTime).ToList();
 	}
+
+	public bool TrainerIsAssigned(MemberDataModel memberData) =>
+		memberData is not null && !memberData.TrainersId.IsNullOrEmpty() &&
+		memberData.TrainersId != "0" && memberData.TrainersId != "-1";
 }

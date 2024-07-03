@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using YourTrainer_App.Areas.Trainer.Models;
 using YourTrainer_App.Areas.Trainer.Services;
-using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_App.Services.DataServices;
-using YourTrainer_Utility;
 using YourTrainerApp.Models;
 using static YourTrainer_Utility.StaticDetails;
 
@@ -18,8 +15,7 @@ public class ClientContactController : Controller
 	private readonly ITrainerClientDataService _trainerClientDataService;
 	private readonly ICooperationProposalService _cooperationProposalService;
 	private readonly IMessagingService _messagingService;
-	private readonly IDataSettingsService _dataSettingsService;
-
+	private readonly ITrainerDataSettingsService _dataSettingsService;
 
 	private int _trainerId => int.Parse(HttpContext.Session.GetString("UserId"));
 	private List<TrainerClientContact> _proposals
@@ -28,7 +24,7 @@ public class ClientContactController : Controller
 		set => HttpContext.Session.SetString("Proposals", JsonConvert.SerializeObject(value));
 	}
 
-	public ClientContactController(ITrainerClientDataService trainerClientDataService, ICooperationProposalService cooperationProposalService, IMessagingService messagingService, IDataSettingsService dataSettingsService)
+	public ClientContactController(ITrainerClientDataService trainerClientDataService, ICooperationProposalService cooperationProposalService, IMessagingService messagingService, ITrainerDataSettingsService dataSettingsService)
 	{
 		_trainerClientDataService = trainerClientDataService;
 		_cooperationProposalService = cooperationProposalService;

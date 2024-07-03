@@ -19,7 +19,7 @@ public class MemberData : IMemberData
 	public async Task<MemberDataModel> GetMember(int id)
 	{
 		var members = await _db.GetData<MemberDataModel, dynamic>("spMemberData_Get", new { MemberId = id });
-		return members.FirstOrDefault() ?? throw new InvalidOperationException("Brak użytkownika o tym id w bazie danych");
+		return members.FirstOrDefault();
 	}
 
 	public async Task InsertMemberData(MemberDataModel memberData) =>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using YourTrainer_App.Areas.Trainer.Services;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainerApp.Models;
 
@@ -9,6 +10,7 @@ namespace YourTrainerApp.Areas.Trainer.Controllers;
 public class DataSettingsController : Controller
 {
 	private readonly ITrainerDataService _trainerDataService;
+    private readonly ITrainerDataSettingsService _trainerDataSettingsService;
 
     private int _trainerId
     {
@@ -16,54 +18,47 @@ public class DataSettingsController : Controller
     }
 
 
-	public DataSettingsController(ITrainerDataService trainerDataService)
+	public DataSettingsController(ITrainerDataService trainerDataService, ITrainerDataSettingsService trainerDataSettingsService)
     {
         _trainerDataService = trainerDataService;
+        _trainerDataSettingsService = trainerDataSettingsService;
     }
 
     [HttpGet]
-    public async Task<IActionResult> ShowData() =>
-        await TrainerDataIsPresent() ? View(await GetTrainerDataFromDb()) : View(GetTrainerDataDefault());
+    public async Task<IActionResult> ShowData()
+    {
+        if (await _trainerDataSettingsService.TrainerDataIsPresent(_trainerId))
+        {
+            return View(await _trainerDataSettingsService.GetTrainerDataFromDb(_trainerId));
+		}
+
+        return View(_trainerDataSettingsService.GetTrainerDataDefault(_trainerId, HttpContext.Session.GetString("Username")));
+    }
 
     [HttpPost]
     public async Task<IActionResult> ShowData(TrainerDataModel trainerData)
     {
-		if (await TrainerDataIsPresent())
+        if (ModelState.IsValid) 
         {
-            await _trainerDataService.UpdateAsync<APIResponse>(trainerData);
-        }
-        else
-        {
-			APIResponse apiResponse = await _trainerDataService.CreateAsync<APIResponse>(trainerData);
+		    if (await _trainerDataSettingsService.TrainerDataIsPresent(_trainerId))
+            {
+                await _trainerDataSettingsService.UpdateTrainerData(trainerData);
+            }
+            else
+            {
+			    await _trainerDataSettingsService.CreateTrainerData(trainerData);
+		    }
+
+			TempData["success"] = "Zapisano zmiany";
+			return RedirectToAction("ShowData");
 		}
 
-		TempData["success"] = "Zapisano zmiany";
-        return RedirectToAction("ShowData");
+        return View(trainerData);
     }
 
     public async Task<IActionResult> ClearData()
     {
-        APIResponse apiResponse = await _trainerDataService.DeleteAsync<APIResponse>(_trainerId);
-
+        await _trainerDataSettingsService.ClearTrainerData(_trainerId);
         return RedirectToAction("ShowData");
     }
-
-    private async Task<bool> TrainerDataIsPresent()
-    {
-		APIResponse apiResponse = await _trainerDataService.GetAsync<APIResponse>(_trainerId);
-        return apiResponse.Result is not null;
-	}
-
-    private async Task<TrainerDataModel> GetTrainerDataFromDb()
-    {
-		APIResponse apiResponse = await _trainerDataService.GetAsync<APIResponse>(_trainerId);
-		return JsonConvert.DeserializeObject<TrainerDataModel>(Convert.ToString(apiResponse.Result));
-	}
-
-    private TrainerDataModel GetTrainerDataDefault() =>
-        new TrainerDataModel()
-		{
-			TrainerId = _trainerId,
-			Email = HttpContext.Session.GetString("Username")
-		};
 }

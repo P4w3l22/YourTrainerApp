@@ -1,27 +1,35 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using YourTrainer_App.Services.APIServices.IServices;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using YourTrainer_App.Areas.GymMember.Services;
 using YourTrainerApp.Models;
-using YourTrainer_App.Services.APIServices;
 
 namespace YourTrainerApp.Areas.GymMember.Controllers;
 
 [Area("GymMember")]
 public class DataSettingsController : Controller
 {
-	private readonly IMemberDataService _memberDataService;
+	private readonly IMemberDataSettingsService _memberDataSettingsService;
 	private int _memberId => int.Parse(HttpContext.Session.GetString("UserId"));
 
-	public DataSettingsController(IMemberDataService memberDataService)
+	public DataSettingsController(IMemberDataSettingsService memberDataSettingsService)
 	{
-		_memberDataService = memberDataService;
+		_memberDataSettingsService = memberDataSettingsService;
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> ShowData() =>
-		await MemberDataIsPresent() ? View(await GetMemberDataFromDb()) : View(GetMemberDataDefault());
+	[Authorize(Roles = "gym member")]
+	public async Task<IActionResult> ShowData()
+	{
+		if (await _memberDataSettingsService.MemberDataIsPresent(_memberId))
+		{
+			return View(await _memberDataSettingsService.GetMemberDataFromDb(_memberId));
+		}
+
+		return View(_memberDataSettingsService.GetMemberDataDefault(_memberId, HttpContext.Session.GetString("Username")));
+	}
 
 	[HttpPost]
+	[Authorize(Roles = "gym member")]
 	public async Task<IActionResult> ShowData(MemberDataModel memberData)
 	{
 		if (memberData.TrainersId is null)
@@ -34,44 +42,28 @@ public class DataSettingsController : Controller
 			memberData.TrainersPlan = "0";
 		}
 
-		if (await MemberDataIsPresent())
+		if (ModelState.IsValid)
 		{
-			await _memberDataService.UpdateAsync<APIResponse>(memberData);
-		}
-		else
-		{
-			await _memberDataService.CreateAsync<APIResponse>(memberData);
+			if (await _memberDataSettingsService.MemberDataIsPresent(_memberId))
+			{
+				await _memberDataSettingsService.UpdateMemberData(memberData);
+			}
+			else
+			{
+				await _memberDataSettingsService.CreateMemberData(memberData);
+			}
+
+			TempData["success"] = "Zapisano zmiany";
+			return RedirectToAction("ShowData");
 		}
 
-		TempData["success"] = "Zapisano zmiany";
-		return RedirectToAction("ShowData");
+		return View(memberData);
 	}
 
+	[Authorize(Roles = "gym member")]
 	public async Task<IActionResult> ClearData()
 	{
-		// TODO: Usunąć wszystkie dane poza przyporządkowanymi trenerami
-
-		APIResponse apiResponse = await _memberDataService.DeleteAsync<APIResponse>(_memberId);
-
+		await _memberDataSettingsService.ClearMemberData(_memberId);
 		return RedirectToAction("ShowData");
 	}
-
-	private async Task<bool> MemberDataIsPresent()
-	{
-		APIResponse apiResponse = await _memberDataService.GetAsync<APIResponse>(_memberId);
-		return apiResponse.Result is not null;
-	}
-
-	private async Task<MemberDataModel> GetMemberDataFromDb()
-	{
-		APIResponse apiResponse = await _memberDataService.GetAsync<APIResponse>(_memberId);
-		return JsonConvert.DeserializeObject<MemberDataModel>(Convert.ToString(apiResponse.Result));
-	}
-
-	private MemberDataModel GetMemberDataDefault() =>
-		new MemberDataModel()
-		{
-			MemberId = _memberId,
-			Email = HttpContext.Session.GetString("Username")
-		};
 }

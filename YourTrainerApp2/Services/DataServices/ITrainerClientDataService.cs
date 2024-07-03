@@ -18,6 +18,7 @@ public interface ITrainerClientDataService
 	Task<TrainerDataModel> GetTrainerData(int trainerId);
 	Task<TrainerContact> GetTrainerDetails(int trainerId, int memberId); //klient
 	Task<List<TrainerDataModel>> GetTrainersOptions(); //klient
+	bool TrainerIsAssigned(MemberDataModel memberData);
 	//Task SendMessage(string newMessage, int senderId, int receiverId); //wspolne
 	//Task SendMessage(string newMessage, int senderId, int receiverId, string messageType);
 }

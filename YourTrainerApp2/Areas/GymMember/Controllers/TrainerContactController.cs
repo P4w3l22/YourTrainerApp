@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using YourTrainer_App.Services.APIServices.IServices;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using YourTrainer_App.Areas.GymMember.Services;
 using YourTrainer_App.Services.DataServices;
-using YourTrainer_Utility;
 using YourTrainerApp.Areas.GymMember.Models;
 using YourTrainerApp.Models;
 using static YourTrainer_Utility.StaticDetails;
@@ -18,24 +14,30 @@ public class TrainerContactController : Controller
 	private readonly ICooperationProposalService _cooperationProposalService;
 	private readonly ITrainerClientDataService _trainerClientDataService;
 	private readonly IMessagingService _messagingService;
+	private readonly IMemberDataSettingsService _memberDataSettingsService;
 	private int _memberId => int.Parse(HttpContext.Session.GetString("UserId"));
 
-	public TrainerContactController(ICooperationProposalService cooperationProposalService, ITrainerClientDataService trainerClientDataService, IMessagingService messagingService)
+	public TrainerContactController(ICooperationProposalService cooperationProposalService, ITrainerClientDataService trainerClientDataService, IMessagingService messagingService, IMemberDataSettingsService memberDataSettingsService)
     {
 		_cooperationProposalService = cooperationProposalService;
 		_trainerClientDataService = trainerClientDataService;
 		_messagingService = messagingService;
+		_memberDataSettingsService = memberDataSettingsService;
 	}
 
-
+	[Authorize(Roles = "gym member")]
 	public async Task<IActionResult> Index()
 	{
+		if (!await _memberDataSettingsService.MemberDataIsPresent(_memberId))
+		{
+			TempData["error"] = "Najpierw uzupełnij swoje dane";
+			return RedirectToAction("ShowData", "DataSettings", new { Area = "GymMember" });
+		}
+
 		MemberDataModel memberData = await _trainerClientDataService.GetMemberData(_memberId);
 
-		if (memberData is not null && !memberData.TrainersId.IsNullOrEmpty() && memberData.TrainersId != "0" && memberData.TrainersId != "-1")
+		if (_trainerClientDataService.TrainerIsAssigned(memberData))
 		{
-			// sprawdzić zawartość wiadomości, jeśli odpowiedź pozytywna - wyświetl że trener dodał, jeśli nie - że odmówił
-
 			return RedirectToAction("TrainerDetails", "TrainerContact", new { Area = "GymMember", trainerId = int.Parse(memberData.TrainersId) });
 		}
 
@@ -58,6 +60,7 @@ public class TrainerContactController : Controller
 		return View(trainersData);
 	}
 
+	[Authorize(Roles = "gym member")]
 	public async Task<IActionResult> TrainerDetails(int trainerId)
 	{
 		TrainerContact trainerContact = await _trainerClientDataService.GetTrainerDetails(trainerId, _memberId);
@@ -72,18 +75,18 @@ public class TrainerContactController : Controller
 		return View(trainerContact);
 	}
 
-
+	[Authorize(Roles = "gym member")]
 	public IActionResult TrainerMessages() =>
 		RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
-	
 
+	[Authorize(Roles = "gym member")]
 	public async Task<IActionResult> SendMessage(string newMessage, int trainerId)
 	{
 		await _messagingService.SendMessage(newMessage, _memberId, trainerId, MessageType.Text.ToString());
 		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
 
-
+	[Authorize(Roles = "gym member")]
 	public async Task<IActionResult> AddTrainer(int id) 
 	{
 		await _cooperationProposalService.SendCooperationProposal(id, _memberId);
@@ -91,7 +94,7 @@ public class TrainerContactController : Controller
 		return RedirectToAction("Index", "TrainerContact", new { Area = "GymMember" });
 	}
 
-
+	[Authorize(Roles = "gym member")]
 	public async Task<IActionResult> DeleteTrainerAsync()
 	{
 		await _cooperationProposalService.DeleteTrainerClientCooperation(_memberId);
