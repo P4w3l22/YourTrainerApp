@@ -113,10 +113,14 @@ public class TrainerClientDataService : ITrainerClientDataService
 	public async Task<List<TrainerDataModel>> GetTrainersOptions()
 	{
 		APIResponse apiResponse = await _trainerDataService.GetAllAsync<APIResponse>();
-		return JsonConvert.DeserializeObject<List<TrainerDataModel>>(Convert.ToString(apiResponse.Result));
+		List<TrainerDataModel>? trainerOptions = JsonConvert.DeserializeObject<List<TrainerDataModel>>(Convert.ToString(apiResponse.Result));
+		if (trainerOptions is not null)
+		{
+			return trainerOptions.Where(trainer => trainer.Availability == 1).ToList();
+		}
+		return new();
 	}
 
-	//private
 	public async Task<List<TrainerClientContact>> GetSortedMessages(int trainerId, int memberId)
 	{
 		APIResponse? apiResponse = await _trainerClientContactService.GetMessagesAsync<APIResponse>(trainerId, memberId, StaticDetails.MessageType.Text.ToString());

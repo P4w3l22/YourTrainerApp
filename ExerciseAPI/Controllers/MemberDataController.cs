@@ -37,6 +37,7 @@ public class MemberDataController : Controller
 		}
 		catch (Exception ex)
 		{
+			_response.StatusCode = HttpStatusCode.InternalServerError;
 			_response.IsSuccess = false;
 			_response.Errors = new List<string>() { ex.Message };
 		}
@@ -55,6 +56,7 @@ public class MemberDataController : Controller
 			if (id == 0)
 			{
 				_response.StatusCode = HttpStatusCode.BadRequest;
+				_response.Errors = new List<string> { "Id ćwiczenia nie może być równe 0" };
 				return BadRequest(_response);
 			}
 
@@ -63,6 +65,8 @@ public class MemberDataController : Controller
 			if (memberData is null)
 			{
 				_response.StatusCode = HttpStatusCode.NotFound;
+				_response.Errors = new List<string> { "Brak danego ćwiczenia" };
+				_response.IsSuccess = false;
 				return NotFound(_response);
 			}
 
@@ -72,6 +76,7 @@ public class MemberDataController : Controller
 		}
 		catch (Exception ex)
 		{
+			_response.StatusCode = HttpStatusCode.InternalServerError;
 			_response.IsSuccess = false;
 			_response.Errors = new List<string>() { ex.Message };
 		}
@@ -80,7 +85,7 @@ public class MemberDataController : Controller
 	}
 
 	[HttpPost]
-	//[Authorize(Roles = "trainer")]
+	[Authorize(Roles = "gym member")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -89,22 +94,24 @@ public class MemberDataController : Controller
 	{
 		try
 		{
-			var memberDataDb = await _memberData.GetMember(memberData.MemberId);
+			MemberDataModel memberDataDb = await _memberData.GetMember(memberData.MemberId);
 
 			if (memberDataDb is not null)
 			{
-				ModelState.AddModelError("Errors", "Istnieją już dane dla tego użytkownika");
+				_response.StatusCode = HttpStatusCode.BadRequest;
+				_response.Errors = new List<string> { "Istnieją już dane dla tego użytkownika" };
+				_response.IsSuccess = false;
 				return BadRequest(ModelState);
 			}
 
 			await _memberData.InsertMemberData(memberData);
 
-			_response.Result = memberData;
 			_response.StatusCode = HttpStatusCode.Created;
 			return Ok(_response);
 		}
 		catch (Exception ex)
 		{
+			_response.StatusCode = HttpStatusCode.InternalServerError;
 			_response.IsSuccess = false;
 			_response.Errors = new List<string> { ex.ToString() };
 		}
@@ -113,7 +120,7 @@ public class MemberDataController : Controller
 	}
 
 	[HttpPut]
-	//[Authorize(Roles = "trainer")]
+	//[Authorize(Roles = "gym member")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -122,10 +129,13 @@ public class MemberDataController : Controller
 	{
 		try
 		{
-			var memberDataDb = await _memberData.GetMember(memberData.MemberId);
+			MemberDataModel memberDataDb = await _memberData.GetMember(memberData.MemberId);
 			if (memberDataDb is null)
 			{
-				return NotFound();
+				_response.StatusCode = HttpStatusCode.NotFound;
+				_response.Errors = new List<string> { "Brak danego użytkownika" };
+				_response.IsSuccess = false;
+				return NotFound(_response);
 			}
 
 			await _memberData.UpdateMemberData(memberData);
@@ -136,6 +146,7 @@ public class MemberDataController : Controller
 		}
 		catch (Exception ex)
 		{
+			_response.StatusCode = HttpStatusCode.InternalServerError;
 			_response.IsSuccess = false;
 			_response.Errors = new List<string>() { ex.ToString() };
 		}
@@ -144,7 +155,7 @@ public class MemberDataController : Controller
 	}
 
 	[HttpDelete("{id:int}")]
-	//[Authorize(Roles = "trainer")]
+	[Authorize(Roles = "gym member")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -155,24 +166,30 @@ public class MemberDataController : Controller
 		{
 			if (id == 0)
 			{
-				return BadRequest();
+				_response.StatusCode = HttpStatusCode.BadRequest;
+				_response.Errors = new List<string> { "Id użytkownika nie może być równe 0" };
+				_response.IsSuccess = false;
+				return BadRequest(_response);
 			}
 
 			var memberDataDb = await _memberData.GetMember(id);
 
 			if (memberDataDb is null)
 			{
-				return NotFound();
+				_response.StatusCode = HttpStatusCode.NotFound;
+				_response.Errors = new List<string> { "Brak danego użytkownika" };
+				_response.IsSuccess = false;
+				return NotFound(_response);
 			}
 
 			await _memberData.DeleteMemberData(id);
 			_response.StatusCode = HttpStatusCode.NoContent;
 			_response.IsSuccess = true;
-
 			return Ok(_response);
 		}
 		catch (Exception ex)
 		{
+			_response.StatusCode = HttpStatusCode.InternalServerError;
 			_response.IsSuccess = false;
 			_response.Errors = new List<string>() { ex.ToString() };
 		}

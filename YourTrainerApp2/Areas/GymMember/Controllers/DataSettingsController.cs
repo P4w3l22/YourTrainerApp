@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using YourTrainer_App.Areas.GymMember.Services;
+using YourTrainer_Utility;
 using YourTrainerApp.Models;
 
 namespace YourTrainerApp.Areas.GymMember.Controllers;
@@ -44,17 +45,25 @@ public class DataSettingsController : Controller
 
 		if (ModelState.IsValid)
 		{
+			string errorResponse;
 			if (await _memberDataSettingsService.MemberDataIsPresent(_memberId))
 			{
-				await _memberDataSettingsService.UpdateMemberData(memberData);
+				errorResponse = await _memberDataSettingsService.UpdateMemberDataOrGetErrorResponse(memberData);
 			}
 			else
 			{
-				await _memberDataSettingsService.CreateMemberData(memberData);
+				errorResponse = await _memberDataSettingsService.CreateMemberDataOrGetErrorResponse(memberData, HttpContext.Session.GetString(StaticDetails.SessionToken));
 			}
 
-			TempData["success"] = "Zapisano zmiany";
-			return RedirectToAction("ShowData");
+			if (errorResponse.Length > 0)
+			{
+				ModelState.AddModelError(string.Empty, errorResponse);
+			}
+			else
+			{
+				TempData["success"] = "Zapisano zmiany";
+				return RedirectToAction("ShowData");
+			}
 		}
 
 		return View(memberData);
@@ -63,7 +72,7 @@ public class DataSettingsController : Controller
 	[Authorize(Roles = "gym member")]
 	public async Task<IActionResult> ClearData()
 	{
-		await _memberDataSettingsService.ClearMemberData(_memberId);
+		await _memberDataSettingsService.ClearMemberData(_memberId, HttpContext.Session.GetString(StaticDetails.SessionToken));
 		return RedirectToAction("ShowData");
 	}
 }

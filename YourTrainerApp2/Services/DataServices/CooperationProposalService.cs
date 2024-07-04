@@ -141,17 +141,20 @@ public class CooperationProposalService : ICooperationProposalService
 	{
 		MemberDataModel memberData = await _trainerClientDataService.GetMemberData(memberId);
 
-		int trainerId = int.Parse(memberData.TrainersId);
-		memberData.TrainersId = "";
+		if (!memberData.TrainersId.IsNullOrEmpty() && memberData.TrainersId != "0")
+		{
+			int trainerId = int.Parse(memberData.TrainersId);
+			memberData.TrainersId = "";
 
-		await _memberDataService.UpdateAsync<APIResponse>(memberData);
+			await _memberDataService.UpdateAsync<APIResponse>(memberData);
 
-		TrainerDataModel trainerData = await _trainerClientDataService.GetTrainerData(trainerId);
+			TrainerDataModel trainerData = await _trainerClientDataService.GetTrainerData(trainerId);
 
-		List<string> membersIdTrainer = trainerData.MembersId.Split(";").ToList();
-		membersIdTrainer.RemoveAll(id => id == memberId.ToString());
-		trainerData.MembersId = String.Join(";", membersIdTrainer);
+			List<string> membersIdTrainer = trainerData.MembersId.Split(";").ToList();
+			membersIdTrainer.RemoveAll(id => id == memberId.ToString());
+			trainerData.MembersId = String.Join(";", membersIdTrainer);
 
-		await _trainerDataService.UpdateAsync<APIResponse>(trainerData);
+			await _trainerDataService.UpdateAsync<APIResponse>(trainerData);
+		}
 	}
 }

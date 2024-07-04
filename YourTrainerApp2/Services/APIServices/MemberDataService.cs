@@ -26,12 +26,13 @@ public class MemberDataService : BaseService, IMemberDataService
             Url = APIUrl + "/api/MemberData/" + id
         });
 
-    public Task<T> CreateAsync<T>(MemberDataModel memberData) =>
+    public Task<T> CreateAsync<T>(MemberDataModel memberData, string token) =>
         SendAsync<T>(new APIRequest()
         {
             ApiType = StaticDetails.ApiType.POST,
             Url = APIUrl + "/api/MemberData/",
-            Data = memberData
+            Data = memberData,
+            Token = token
         });
 
     public Task<T> UpdateAsync<T>(MemberDataModel memberData) =>
@@ -40,12 +41,13 @@ public class MemberDataService : BaseService, IMemberDataService
             ApiType = StaticDetails.ApiType.PUT,
             Url = APIUrl + "/api/MemberData/",
             Data = memberData
-        });
+		});
 
-    public Task<T> DeleteAsync<T>(int id) =>
+    public Task<T> DeleteAsync<T>(int id, string token) =>
         SendAsync<T>(new APIRequest()
         {
             ApiType = StaticDetails.ApiType.DELETE,
-            Url = APIUrl + "/api/MemberData/" + id
-        });
+            Url = APIUrl + "/api/MemberData/" + id,
+			Token = token
+		});
 }

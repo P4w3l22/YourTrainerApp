@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using YourTrainer_App.Areas.Trainer.Models;
@@ -32,6 +33,7 @@ public class ClientContactController : Controller
 		_dataSettingsService = dataSettingsService;
 	}
 
+	[Authorize(Roles = "trainer")]
 	public async Task<IActionResult> Index()
 	{
 		List<TrainerClientContact> trainerCooperationProposals = await _cooperationProposalService.GetCooperationProposals(_trainerId);
@@ -49,6 +51,7 @@ public class ClientContactController : Controller
 		return RedirectToAction("ClientsDetails");
 	}
 
+	[Authorize(Roles = "trainer")]
 	public async Task<IActionResult> ClientsDetails()
 	{
 		List<ClientContact> clientsContact = await _trainerClientDataService.GetClientsDetails(_trainerId);
@@ -56,6 +59,7 @@ public class ClientContactController : Controller
         return View(clientsContact);
 	}
 
+	[Authorize(Roles = "trainer")]
 	public async Task<List<CooperationProposal>> GetCooperationProposals()
 	{
 		_proposals = await _cooperationProposalService.GetCooperationProposals(_trainerId);;
@@ -63,6 +67,7 @@ public class ClientContactController : Controller
 		return proposals;
 	}
 
+	[Authorize(Roles = "trainer")]
 	public async Task<IActionResult> ShowCooperationProposals()
 	{
 		List<CooperationProposal> proposals = await GetCooperationProposals();
@@ -70,6 +75,7 @@ public class ClientContactController : Controller
 		return View(proposals);
 	}
 
+	[Authorize(Roles = "trainer")]
 	public async Task<IActionResult> RejectCooperationProposal(int proposalIndex)
 	{
 		TrainerClientContact proposal = _proposals[proposalIndex];
@@ -77,6 +83,7 @@ public class ClientContactController : Controller
 		return RedirectToAction("Index");
 	}
 
+	[Authorize(Roles = "trainer")]
 	public async Task<IActionResult> AcceptCooperationProposal(int proposalIndex)
 	{
 		TrainerClientContact proposal = _proposals[proposalIndex];
@@ -84,6 +91,7 @@ public class ClientContactController : Controller
 		return RedirectToAction("Index");
 	}
 
+	[Authorize(Roles = "trainer")]
 	public async Task<IActionResult> SendMessage(string newMessage, int memberId)
 	{
 		await _messagingService.SendMessage(newMessage, _trainerId, memberId, MessageType.Text.ToString());
@@ -91,6 +99,7 @@ public class ClientContactController : Controller
 		return RedirectToAction("Index");
 	}
 
+	[Authorize(Roles = "trainer")]
 	public IActionResult SendTrainingPlanToClient(int clientId)
 	{
 		HttpContext.Session.SetString("SenderReceiverId", _trainerId.ToString() + ";" + clientId.ToString());

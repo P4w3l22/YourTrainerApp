@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using YourTrainer_App.Areas.Trainer.Services;
 using YourTrainer_App.Services.APIServices.IServices;
@@ -25,6 +26,7 @@ public class DataSettingsController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "trainer")]
     public async Task<IActionResult> ShowData()
     {
         if (await _trainerDataSettingsService.TrainerDataIsPresent(_trainerId))
@@ -36,7 +38,8 @@ public class DataSettingsController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> ShowData(TrainerDataModel trainerData)
+    [Authorize(Roles = "trainer")]
+	public async Task<IActionResult> ShowData(TrainerDataModel trainerData)
     {
         if (ModelState.IsValid) 
         {
@@ -56,7 +59,8 @@ public class DataSettingsController : Controller
         return View(trainerData);
     }
 
-    public async Task<IActionResult> ClearData()
+	[Authorize(Roles = "trainer")]
+	public async Task<IActionResult> ClearData()
     {
         await _trainerDataSettingsService.ClearTrainerData(_trainerId);
         return RedirectToAction("ShowData");
