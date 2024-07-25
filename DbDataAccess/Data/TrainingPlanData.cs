@@ -13,6 +13,7 @@ public class TrainingPlanData : ITrainingPlanData
 		_db = db;
 	}
 
+
 	public async Task<IEnumerable<TrainingPlanModel>> GetAllPlans()
 	{
 		IEnumerable<TrainingPlanModel> plans = await _db.GetData<TrainingPlanModel, dynamic>("dbo.spTrainingPlan_GetAll", new { });
@@ -24,6 +25,7 @@ public class TrainingPlanData : ITrainingPlanData
 		return plans;
 	}
 
+
 	public async Task<TrainingPlanModel> GetPlan(int id)
 	{
 		var plans = await _db.GetData<TrainingPlanModel, dynamic>("spTrainingPlan_Get", new { Id = id });
@@ -31,6 +33,7 @@ public class TrainingPlanData : ITrainingPlanData
 		plan.Exercises = await SetPlanExercises(id);
 		return plan;
 	}
+
 
 	private async Task<List<TrainingPlanExerciseModel>> SetPlanExercises(int id)
 	{
@@ -48,6 +51,7 @@ public class TrainingPlanData : ITrainingPlanData
 			model.Creator
 		});
 
+
 	public async Task UpdatePlan(TrainingPlanModel model) =>
 		await _db.SaveData("spTrainingPlan_Update", new
 		{
@@ -58,12 +62,18 @@ public class TrainingPlanData : ITrainingPlanData
 			model.Creator
 		});
 
-	public async Task DeletePlan(int id) =>
+
+	public async Task DeletePlan(int id)
+	{
+		await _db.SaveData("spAssingedTrainingPlans_Delete", new { PlanId = id });
 		await _db.SaveData("spTrainingPlan_Delete", new { Id = id });
+	}
+		
 
 
 	public async Task<IEnumerable<TrainingPlanExerciseModel>> GetPlanExercises(int id) =>
 		await _db.GetData<TrainingPlanExerciseModel, dynamic>("spTrainingPlanExercises_GetAll", new { TPId = id });
+
 
 	public async Task InsertPlanExercise(TrainingPlanExerciseModel model) =>
 		await _db.SaveData("spTrainingPlanExercise_Insert", new
@@ -75,8 +85,10 @@ public class TrainingPlanData : ITrainingPlanData
 			model.Weights
 		});
 
+
 	public async Task UpdatePlanExercise(TrainingPlanExerciseModel model) =>
 		await _db.SaveData("spTrainingPlanExercise_Update", model);
+
 
 	public async Task DeletePlanExercise(int id) =>
 		await _db.SaveData("spTrainingPlanExercise_Delete", new { Id = id });

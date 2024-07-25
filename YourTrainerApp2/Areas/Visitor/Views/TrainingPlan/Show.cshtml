@@ -78,7 +78,8 @@
 					<p class="m-3">@Model.Notes</p>
 				</div>
 
-				@if (httpAcc.HttpContext.Session.GetString("Username") is not null && httpAcc.HttpContext.Session.GetString("Username").Length > 0)
+				@if (httpAcc.HttpContext.Session.GetString("Username") is not null && httpAcc.HttpContext.Session.GetString("Username").Length > 0 &&
+					 Model.Creator == httpAcc.HttpContext.Session.GetString("Username"))
 				{
 					<div class="row text-center">
 						<div class="col-3"></div>

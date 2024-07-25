@@ -1,10 +1,10 @@
 ﻿CREATE PROCEDURE [dbo].[spAssingedTrainingPlans_Delete]
-	@Id INT
+	@PlanId INT
 AS
 BEGIN
 
 	DELETE 
 	FROM dbo.AssignedTrainingPlans
-	WHERE Id = @Id;
+	WHERE PlanId = @PlanId;
 
 END

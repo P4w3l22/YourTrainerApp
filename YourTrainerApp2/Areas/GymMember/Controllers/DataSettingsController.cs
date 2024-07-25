@@ -72,7 +72,16 @@ public class DataSettingsController : Controller
 	[Authorize(Roles = "gym member")]
 	public async Task<IActionResult> ClearData()
 	{
-		await _memberDataSettingsService.ClearMemberData(_memberId, HttpContext.Session.GetString(StaticDetails.SessionToken));
+		string errorResponse = await _memberDataSettingsService.ClearMemberData(_memberId, HttpContext.Session.GetString(StaticDetails.SessionToken));
+		if (errorResponse.Length > 0)
+		{
+			ModelState.AddModelError(string.Empty, errorResponse);
+		}
+		else
+		{
+			TempData["success"] = "Wyczyszczono dane";
+		}
+
 		return RedirectToAction("ShowData");
 	}
 }

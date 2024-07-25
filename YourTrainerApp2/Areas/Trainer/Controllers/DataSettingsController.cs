@@ -12,12 +12,10 @@ public class DataSettingsController : Controller
 {
 	private readonly ITrainerDataService _trainerDataService;
     private readonly ITrainerDataSettingsService _trainerDataSettingsService;
-
     private int _trainerId
     {
         get => int.Parse(HttpContext.Session.GetString("UserId"));
     }
-
 
 	public DataSettingsController(ITrainerDataService trainerDataService, ITrainerDataSettingsService trainerDataSettingsService)
     {
