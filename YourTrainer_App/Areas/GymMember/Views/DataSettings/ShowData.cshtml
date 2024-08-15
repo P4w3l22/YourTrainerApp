@@ -1,0 +1,80 @@
+﻿@using YourTrainer_App.Models
+
+@model MemberDataModel
+
+<div>
+	<form method="post">
+		<div class="container">
+			<div class="row">
+				<div asp-validation-summary="All" class="text-danger"></div>
+			</div>
+			<div class="m-2">
+				<input class="form-control" type="number" asp-for="@Model.MemberId" hidden />
+			</div>
+			<div class="m-2">
+				<label class="form-label" for="memberName">Imię</label>
+				<input id="memberName" class="form-control" name="memberName" type="text" asp-for="@Model.MemberName" disabled />
+			</div>
+			<div class="m-2">
+				<label class="form-label" for="description">Twój opis</label>
+				<textarea id="description" class="form-control" name="description" type="text" asp-for="@Model.Description" disabled></textarea>
+			</div>
+			<div class="m-2">
+				<label class="form-label" for="email">Email kontaktowy</label>
+				<input id="email" class="form-control" name="email" type="text" asp-for="@Model.Email" disabled />
+			</div>
+			<div class="m-2">
+				<label class="form-label" for="phoneNumber">Numer telefonu</label>
+				<input id="phoneNumber" class="form-control" name="phoneNumber" type="text" asp-for="@Model.PhoneNumber" disabled />
+			</div>
+			<div class="m-2">
+				<input class="form-control" name="trainersId" type="text" asp-for="@Model.TrainersId" hidden />
+			</div>
+			<div class="m-2">
+				<input id="trainersPlan" class="form-control" name="trainersPlan" type="text" asp-for="@Model.TrainersPlan" hidden />
+			</div>
+			<div class="d-flex justify-content-between">
+				<div class="btn-group">
+					<button id="submitButton" class="btn button-green" type="submit" asp-area="GymMember" asp-controller="DataSettings" asp-action="ShowData" hidden>Zatwierdź</button>
+					<a id="clearButton" class="btn button-red" asp-area="GymMember" asp-controller="DataSettings" asp-action="ClearData" hidden>Wyczyść</a>
+				</div>
+				<div>
+					<button id="editButton" type="button" class="btn button-orange" onclick="enableInputs()">Edycja</button>
+					<button id="removeChangesButton" type="button" class="btn button-orange" onclick="disableInputs()" hidden>Cofnij zmiany</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+@section Scripts {
+	<script>
+		function enableInputs() {
+			document.getElementById("memberName").removeAttribute("disabled");
+			document.getElementById("description").removeAttribute("disabled");
+			document.getElementById("email").removeAttribute("disabled");
+			document.getElementById("phoneNumber").removeAttribute("disabled");
+			// document.getElementById("trainersPlan").removeAttribute("disabled");
+
+			document.getElementById("submitButton").removeAttribute("hidden");
+			document.getElementById("clearButton").removeAttribute("hidden");
+			document.getElementById("removeChangesButton").removeAttribute("hidden");
+			document.getElementById("editButton").setAttribute("hidden", "hidden");
+		}
+
+		function disableInputs() {
+			document.getElementById("memberName").setAttribute("disabled", "disabled");
+			document.getElementById("description").setAttribute("disabled", "disabled");
+			document.getElementById("email").setAttribute("disabled", "disabled");
+			document.getElementById("phoneNumber").setAttribute("disabled", "disabled");
+			// document.getElementById("trainersPlan").setAttribute("disabled", "disabled");
+
+			document.getElementById("submitButton").setAttribute("hidden", "hidden");
+			document.getElementById("clearButton").setAttribute("hidden", "hidden");
+			document.getElementById("editButton").removeAttribute("hidden");
+			document.getElementById("removeChangesButton").setAttribute("hidden", "hidden");
+
+			location.reload();
+		}
+	</script>
+}

@@ -1,0 +1,117 @@
+﻿@using Newtonsoft.Json
+@using YourTrainer_App.Models.VM
+@* @using YourTrainer_DBDataAccess.Models *@
+
+@inject IHttpContextAccessor httpAcc
+
+
+@model TrainingPlan
+
+@{
+	List<TrainingPlanExerciseCreateVM>? exercises = JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(httpAcc.HttpContext.Session.GetString("Exercises"));
+}
+
+<div>
+	<div class="container m-2 d-flex justify-content-center p-4" @* style="min-height: 900px;" *@>
+		<form>
+		<div class="text-center p-4">
+			<h2>@Model.Title</h2>
+		</div>
+		<div>
+			<div class="p-3">
+				<span class="d-flex justify-content-md-center ">
+					@* @foreach (var exercise in Model.Exercises)
+					{
+						<h4>@exercise.ExerciseData.Name</h4>
+					} *@
+
+					@foreach (KeyValuePair<string, bool> day in Model.TrainingDaysDict)
+					{
+						if (day.Value)
+						{
+							<input class="check" id="@day.Key" type="checkbox" value="@day.Key" hidden checked disabled/>
+						}
+						else
+						{
+							<input class="check" id="@day.Key" type="checkbox" value="@day.Key" hidden disabled/>
+						}
+
+						<label class="days-checkbox btn btn-secondary m-1"
+							   style="background-color: #262626">@day.Key</label>
+
+					}
+
+				 </span>
+			</div>
+			<div class="m-2">
+				<div class="row d-flex justify-content-center">
+					@for (int i = 0; i < exercises.Count(); i++)
+					{
+						<div class="card m-2 p-0" style="width: 300px; height: fit-content;">
+							<div class="card-header p-0">
+								<img src="/@exercises[i].ImgPath1" alt="Alternate Text" style="width: 300px; height: 200.81px" />
+							</div>
+							<div class="card-body" style="height: 95%">
+								<h5 class="card-title text-center">@exercises[i].Name</h5>
+								<hr />
+								<ol id="ol_1">
+									@{
+										var exerciseWeightsList = Model.Exercises[i].Weights.Split(';');
+										var exerciseRepsList = Model.Exercises[i].Reps.Split(';');
+									}
+									@if (exercises[i].Equipment == "" || exercises[i].Equipment == "body only" || exercises[i].Equipment == "other")
+									{
+										@for (int j = 0; j < exerciseRepsList.Count(); j++)
+										{
+											<li>
+												seria:
+												<p class="value1" style="display: inline-block">@exerciseRepsList[j] powtórzenia</p>
+											</li>
+										}
+									}
+									else 
+									{
+										@for (int j = 0; j < exerciseRepsList.Count(); j++)
+										{
+											<li>
+												seria:
+												<p class="value1" style="display: inline-block">@exerciseRepsList[j] x @exerciseWeightsList[j] kg</p>
+											</li>
+										}
+									}
+									
+
+								</ol>
+							</div>
+						</div>
+					}
+				</div>
+			
+				<div class="m-4 p-2" style="border: 1px solid white; border-radius: 10px; min-height: 100px;">
+					<h6>Notatki do planu: </h6>
+					<p class="m-3">@Model.Notes</p>
+				</div>
+
+				@if (httpAcc.HttpContext.Session.GetString("Username") is not null && httpAcc.HttpContext.Session.GetString("Username").Length > 0)
+				{
+					<div class="row text-center">
+						<div class="col-3"></div>
+						<div class="col-6">
+							<a class="btn button-red"
+								asp-area="Visitor" asp-controller="TrainingPlan" asp-action="DeleteTrainingPlan" asp-route-id="@Model.Id">
+								Usuń plan
+							</a>
+							<a class="btn button-orange"
+								asp-area="Visitor" asp-controller="TrainingPlan" asp-action="UpdateTrainingPlan" asp-route-id="@Model.Id">
+								Edytuj plan
+							</a>
+						</div>
+						<div class="col-3"></div>
+					</div>
+				}
+				
+			</div>
+			</div>
+		</form>
+	</div>
+</div>

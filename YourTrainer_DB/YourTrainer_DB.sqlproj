@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>YourTrainer_DB</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{33f5b46e-b93a-40a8-a5b3-ffa2d046e494}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>YourTrainer_DB</RootNamespace>
+    <AssemblyName>YourTrainer_DB</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="dbo" />
+    <Folder Include="dbo\StoredProcedures" />
+    <Folder Include="dbo\Tables" />
+    <Folder Include="dbo\Triggers" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\StoredProcedures\spExercise_GetAll.sql" />
+    <Build Include="dbo\Tables\Exercises.sql" />
+    <Build Include="dbo\StoredProcedures\spExercise_Get.sql" />
+    <Build Include="dbo\StoredProcedures\spExercise_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spExercise_Update.sql" />
+    <Build Include="dbo\StoredProcedures\spExercise_Delete.sql" />
+    <Build Include="dbo\Tables\TrainingPlans.sql" />
+    <Build Include="dbo\Tables\TrainingPlanExercises.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlan_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlan_Get.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlan_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlan_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlan_Update.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlanExercise_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlanExercise_Get.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlanExercise_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlanExercise_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainingPlanExercise_Update.sql" />
+    <Build Include="dbo\Tables\LocalUsers.sql" />
+    <Build Include="dbo\StoredProcedures\spLocalUsers_Get.sql" />
+    <Build Include="dbo\StoredProcedures\spLocalUsers_Insert.sql" />
+    <Build Include="dbo\Triggers\fill_sequence_after_insert.sql" />
+    <Build Include="dbo\Triggers\update_sequence_after_delete.sql" />
+    <Build Include="dbo\Tables\TrainersData.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainerData_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainerData_Get.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainerData_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainerData_Update.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainerData_Delete.sql" />
+    <Build Include="dbo\Tables\MembersData.sql" />
+    <Build Include="dbo\StoredProcedures\spMemberData_Delete.sql" />
+    <Build Include="dbo\StoredProcedures\spMemberData_Get.sql" />
+    <Build Include="dbo\StoredProcedures\spMemberData_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spMemberData_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spMemberData_Update.sql" />
+    <Build Include="dbo\Tables\TrainerClientContact.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainerClientContact_GetMessages.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainerClientContact_SendMessage.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainerClientContact_SetAsRead.sql" />
+    <Build Include="dbo\Triggers\delete_messeges_on_client_removal.sql" />
+    <Build Include="dbo\StoredProcedures\spTrainerClientContact_GetCooperationProposals.sql" />
+    <Build Include="dbo\Tables\AssignedTrainingPlans.sql" />
+    <Build Include="dbo\StoredProcedures\spAssignedTrainingPlans_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spAssignedTrainingPlans_Get.sql" />
+    <Build Include="dbo\StoredProcedures\spAssingedTrainingPlans_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spAssingedTrainingPlans_Delete.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="YourTrainer_DB.publish.xml" />
+  </ItemGroup>
+</Project>

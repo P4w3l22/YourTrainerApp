@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\YourTrainerApp2\YourTrainer_App.csproj" />
+    <ProjectReference Include="..\YourTrainer_App\YourTrainer_App.csproj" />
   </ItemGroup>
 
 </Project>

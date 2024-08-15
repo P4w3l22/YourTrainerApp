@@ -3,22 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34616.47
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YourTrainer_App", "YourTrainerApp2\YourTrainer_App.csproj", "{1F1D689A-132C-41B0-BA51-D8C56BE0BC7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YourTrainer_App", "YourTrainer_App\YourTrainer_App.csproj", "{1F1D689A-132C-41B0-BA51-D8C56BE0BC7B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YourTrainer_API", "ExerciseAPI\YourTrainer_API.csproj", "{7B3E1E7F-1FDF-48F1-809E-C50C004E1001}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YourTrainer_API", "YourTrainer_API\YourTrainer_API.csproj", "{7B3E1E7F-1FDF-48F1-809E-C50C004E1001}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YourTrainer_Utility", "YourTrainerUtility\YourTrainer_Utility.csproj", "{A95B094A-AB90-4FB2-A2D6-FBE214422338}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YourTrainer_Utility", "YourTrainer_Utility\YourTrainer_Utility.csproj", "{A95B094A-AB90-4FB2-A2D6-FBE214422338}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "YourTrainer_DB", "Exercise_API\YourTrainer_DB.sqlproj", "{33F5B46E-B93A-40A8-A5B3-FFA2D046E494}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "YourTrainer_DB", "YourTrainer_DB\YourTrainer_DB.sqlproj", "{33F5B46E-B93A-40A8-A5B3-FFA2D046E494}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YourTrainer_DBDataAccess", "DbDataAccess\YourTrainer_DBDataAccess.csproj", "{C12767A0-E749-4DE5-B6F5-CC41CC93CBEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YourTrainer_DBDataAccess", "YourTrainer_DBDataAccess\YourTrainer_DBDataAccess.csproj", "{C12767A0-E749-4DE5-B6F5-CC41CC93CBEC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YourTrainer_Tests", "YourTrainer_Tests\YourTrainer_Tests.csproj", "{EF978622-3ED2-4068-8E90-115B7B1A16CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Release|Any CPU = Release|Any CPU`
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1F1D689A-132C-41B0-BA51-D8C56BE0BC7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

@@ -1,0 +1,180 @@
+﻿@using System.IdentityModel.Tokens.Jwt
+@using YourTrainer_Utility
+@inject IHttpContextAccessor httpAcc
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - YourTrainer_App</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body style="background-color: #101010;
+             background-size: cover;">
+    <partial name="_Notification"/>
+    <header>
+        <nav class="navbar navbar-expand-lg m-4 p-3" data-bs-theme="" 
+             style="border-radius: 50px;
+                    background-color: #1A1A1A;
+                    box-shadow: 0 0 3px black">
+            <div class="container-fluid" style="padding-right:0">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/dumbell2.png" style="max-height: 40px" alt="Strona domowa"/>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse ">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
+                            <div style="padding-left: 10px; padding-right: 10px;">
+                                <a class="nav-link text-dark" asp-area="Visitor" asp-controller="ExercisesSet" asp-action="Index">
+                                    <p style="color: #6F7172; margin-bottom: 0">
+                                        Atlas ćwiczeń
+                                    </p>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
+                            <div style="padding-left: 10px; padding-right: 10px;">
+                                <a class="nav-link text-dark" asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Index">
+                                    <p style="color: #6F7172; margin-bottom: 0">
+                                        Plan treningowy
+                                    </p>
+                                </a>
+                            </div>
+                        </li>
+                        @{
+                            string userRole = string.Empty;
+                            
+                            if (httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken) is not null &&
+                                httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken).Length > 0)
+                            {
+                                var tokenHandler = new JwtSecurityTokenHandler();
+                                var roleClaim = tokenHandler.ReadJwtToken(httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken))
+                                .Claims.ToList().FirstOrDefault(c => c.Type == "role");
+                                
+                                if (roleClaim is not null)
+                                {
+                                    userRole = roleClaim.Value;
+                                }   
+                            }
+                            else
+                            {
+                                userRole = "brak danych";
+                            }
+                        }
+                        @if (httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken) is not null &&
+                             userRole == "gym member")
+                        {
+                            <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
+                                <div style="padding-left: 10px; padding-right: 10px;">
+                                    <a class="nav-link text-dark" asp-area="GymMember" asp-controller="TrainerContact" asp-action="Index">
+                                        <p style="color: #6F7172; margin-bottom: 0">
+                                            Trenerzy
+                                        </p>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
+                                <div style="padding-left: 10px; padding-right: 10px;">
+                                    <a class="nav-link text-dark" asp-area="GymMember" asp-controller="DataSettings" asp-action="ShowData">
+                                        <p style="color: #6F7172; margin-bottom: 0">
+                                            Twoje dane
+                                        </p>
+                                    </a>
+                                </div>
+                            </li>
+                        }
+                        else if (httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken) is not null &&
+                                  userRole == "trainer")
+                        {
+                            <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
+                                <div style="padding-left: 10px; padding-right: 10px;">
+                                    <a class="nav-link text-dark" asp-area="Trainer" asp-controller="ClientContact" asp-action="Index">
+                                        <p style="color: #6F7172; margin-bottom: 0">
+                                            Klienci
+                                        </p>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
+                                <div style="padding-left: 10px; padding-right: 10px;">
+                                    <a class="nav-link text-dark" asp-area="Trainer" asp-controller="DataSettings" asp-action="ShowData">
+                                        <p style="color: #6F7172; margin-bottom: 0">
+                                            Twoje dane
+                                        </p>
+                                    </a>
+                                </div>
+                            </li>
+                            
+                        }
+                        else if (httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken) is not null &&
+                             userRole == "admin")
+                        {
+                            <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
+                                <div style="padding-left: 10px; padding-right: 10px;">
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="ExerciseAdmin" asp-action="Index">
+                                        <p style="color: #6F7172; margin-bottom: 0">
+                                            Ćwiczenia
+                                        </p>
+                                    </a>
+                                </div>
+                            </li>
+                            @* <li class="nav-item text-center m-1" style="background-color: #262626; border-radius: 50px; width: fit-content;">
+                                <div style="padding-left: 10px; padding-right: 10px;">
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="TrainingPlanAdmin" asp-action="Index">
+                                        <p style="color: #6F7172; margin-bottom: 0">
+                                            Plany treningowe
+                                        </p>
+                                    </a>
+                                </div>
+                            </li> *@
+                        }
+                    </ul>
+                    
+                    @if (httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken) is not null &&
+                         httpAcc.HttpContext.Session.GetString(StaticDetails.SessionToken).ToString().Length > 0)
+                    {
+                        <p>@httpAcc.HttpContext.Session.GetString("Username")</p>
+                        <a class="nav-link text-dark" asp-area="Auth" asp-controller="Auth" asp-action="Logout">Wyloguj</a>
+                    }
+                    else
+                    {
+					    <a asp-area="Auth" asp-controller="Auth" asp-action="Login"
+					       class="" style="background-color: #37D477;
+                                               padding: 10px;
+                                               border-radius: 50px;">
+						    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="black" class="bi bi-person" viewBox="0 0 16 16" color="#6F7172">
+							    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z" />
+						    </svg>
+					    </a>
+                    }
+                    
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="" data-bs-theme="dark">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @* <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - YourTrainer_App2 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer> *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

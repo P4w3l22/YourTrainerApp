@@ -5,7 +5,7 @@ using Xunit.Abstractions;
 using YourTrainer_App.Areas.Trainer.Models;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_App.Services.DataServices;
-using YourTrainerApp.Models;
+using YourTrainer_App.Models;
 using static YourTrainer_Utility.StaticDetails;
 using Assert = Xunit.Assert;
 

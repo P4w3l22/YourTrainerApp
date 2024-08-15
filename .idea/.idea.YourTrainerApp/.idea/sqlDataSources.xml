@@ -4,8 +4,8 @@
     <option name="dataSources">
       <list>
         <State>
-          <option name="id" value="5549b8ad-e65f-4486-a593-083f9bee7467" />
-          <option name="name" value="ExerciseDB" />
+          <option name="id" value="cf80286a-8b3c-425e-a5bc-2b1bf09126a0" />
+          <option name="name" value="YourTrainer_DB" />
           <option name="dbmsName" value="MSSQL" />
           <option name="urls">
             <array>
@@ -31,18 +31,36 @@
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainerData_Insert.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainerData_Update.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainerData_Delete.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spMemberData_Delete.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spMemberData_Get.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spMemberData_GetAll.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spMemberData_Insert.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spMemberData_Update.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainerClientContact_GetMessages.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainerClientContact_SendMessage.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainerClientContact_SetAsRead.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spTrainerClientContact_GetCooperationProposals.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spAssignedTrainingPlans_GetAll.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spAssignedTrainingPlans_Get.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spAssingedTrainingPlans_Insert.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/StoredProcedures/spAssingedTrainingPlans_Delete.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/Exercises.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/TrainingPlans.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/TrainingPlanExercises.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/LocalUsers.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/TrainersData.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/MembersData.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/TrainerClientContact.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Tables/AssignedTrainingPlans.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Triggers/fill_sequence_after_insert.sql" />
               <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Triggers/update_sequence_after_delete.sql" />
+              <option value="file://$PROJECT_DIR$/Exercise_API/dbo/Triggers/delete_messeges_on_client_removal.sql" />
             </array>
           </option>
           <option name="remarks" value="Database Project" />
           <option name="outPath" value="$PROJECT_DIR$/Exercise_API" />
           <option name="codeStyleName" value="Visual Studio Database Project" />
+          <option name="outLayout" value="File per object by schema.groovy" />
           <option name="scriptOptions">
             <map>
               <entry key="ConstraintContext" value="CONSTRAINT_IN_TABLE" />

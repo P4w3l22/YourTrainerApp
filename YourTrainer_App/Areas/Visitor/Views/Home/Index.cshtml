@@ -1,0 +1,63 @@
+﻿@model Exercise
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center px-3">
+    <h1 class="display-4 p-4">Progresuj razem z nami!</h1>
+    <div id="carouselExampleControls1" class="carousel slide my-5 p-5" data-bs-ride="carousel" 
+         style="border: 1px solid #33C26F;
+                border-radius: 10px;
+                background-color: #33C26F">
+        <div class="carousel-inner" id="cardMost">
+            <div class="carousel-item active" style="text-align:center">
+                <div style="min-height: 400px;
+                            max-width: 800px; 
+                            margin-left: auto; 
+                            margin-right: auto;
+                            border-radius: 10px;">
+                    <h3 style="color: black">Kontaktuj się z trenerem</h3>
+                    <h6 style="color: black">Zaloguj się i dodaj swojego trenera by móc otrzymywać od niego plany treningowe, wskazówki i kontaktować się z nim</h6>
+                </div>
+				
+            </div>
+
+            <div class="carousel-item">
+                <div style="min-height: 400px;
+                            max-width: 800px;
+                            margin-left: auto;
+                            margin-right: auto;
+                            border-radius: 10px;">
+                    <h3 style="color: black">Dobierz plan pod siebie</h3>
+                    <h6 style="color: black">Oferujemy możliwość stworzenia własnego planu treningowego</h6>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div style="min-height: 400px;
+                            max-width: 800px;
+                            margin-left: auto;
+                            margin-right: auto;
+                            border-radius: 10px;">
+                    <h3 style="color: black">Przeglądaj ćwiczenia</h3>
+                    <h6 style="color: black">Znajdź ćwiczenie które Cię interesuje</h6>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev"
+                type="button"
+                data-bs-target="#carouselExampleControls1"
+                data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next"
+                type="button"
+                data-bs-target="#carouselExampleControls1"
+                data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>

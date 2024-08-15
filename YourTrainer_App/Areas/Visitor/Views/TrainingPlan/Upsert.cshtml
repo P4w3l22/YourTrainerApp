@@ -1,0 +1,223 @@
+﻿@using Newtonsoft.Json
+@using YourTrainer_App.Models.VM
+@inject IHttpContextAccessor httpAcc
+
+@model TrainingPlan 
+
+@{
+	string? exercisesInJson = httpAcc?.HttpContext?.Session.GetString("Exercises");
+	List<TrainingPlanExerciseCreateVM>? exercises = new();
+	if (exercisesInJson is not null)
+	{
+		exercises = JsonConvert.DeserializeObject<List<TrainingPlanExerciseCreateVM>>(exercisesInJson);
+	}
+}
+	
+
+
+<div class="container m-2 d-flex justify-content-center">
+	
+	<form method="post">
+		<div class="text-center">
+			<h2>Dodaj nowy plan</h2>
+		</div>
+		<div>
+			<label for="title" class="form-label mt-4">Nazwa planu</label>
+			<input name="title" id="title" type="text" class="form-control" value="@Model.Title" onblur="saveTitleData()"/>
+		</div>
+		<br>
+		<div class="btn-group-toggle my-4 d-flex justify-content-center" data-toggle="buttons">
+			@foreach (string day in new List<string>() {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"})
+			{
+				<label class="btn btn-secondary mx-1 " style="background-color: #262626">
+					<input type="checkbox"
+						   class="days-checkbox d-none"
+						   onclick="saveTrainigDaysData('@day'); changeCheckboxColor(this)"
+						   @(Model.TrainingDaysDict[day] ? "checked" : "")>
+					@day
+				</label>
+			}
+		</div>
+		<br />
+
+		<div>
+			<input asp-for="@Model.Creator" value="@httpAcc.HttpContext.Session.GetString("Username")" hidden />
+		</div>
+
+		<div class="row">
+			<label class="form-label mt-4">Ćwiczenia</label>
+
+			@if (exercises is not null && exercises.Count > 0)
+			{
+				<div class="row d-flex justify-content-center">
+				@for (int i = 0; i < exercises.Count; i++)
+				{
+					int exerciseId = Model.Exercises[i].EId;
+					<div class="card m-2 p-0" style="width: 300px; height: fit-content;">
+						<div class="card-header p-0">
+							<img src="/@exercises[i].ImgPath1" alt="Alternate Text" style="width: 300px; height: 200.81px" />
+						</div>
+						<div class="card-body" style="height: 95%">
+							<h6 class="card-title text-center">@exercises[i].Name</h6>
+							<hr />
+							<ol id="ol_@exerciseId">
+
+								@{
+									string[] reps = Model.Exercises[i].Reps.Split(";");
+									string[] weights = Model.Exercises[i].Weights.Split(";");
+								}
+
+								@for (int j = 0; j < Model.Exercises[i].Series; j++)
+								{
+									if (exercises[i].Equipment == "" || exercises[i].Equipment == "body only" || exercises[i].Equipment == "other")
+									{
+										<li>
+											seria:
+											<input class="input_@exerciseId" 
+												   id="@j-r-@exerciseId" 
+												   type="number" value="@reps[j]" min="1" max="10" 
+												   style="width: 50px;" 
+												   onblur="saveRepsAndWeightsData(@exerciseId, @j)"/>
+											powtórzeń
+											<input class="input_@exerciseId" 
+												   id="@j-w-@exerciseId"  
+												   type="number" value="0" hidden/>
+										</li>
+									}
+									else
+									{
+										<li>
+											seria:
+											<input class="input_@exerciseId" 
+												   id="@j-r-@exerciseId" 
+												   type="number" value="@reps[j]" min="1" max="10" 
+												   style="width: 50px;"
+												   onblur="saveRepsAndWeightsData(@exerciseId, @j)" />
+											 x
+											<input class="input_@exerciseId" 
+												   id="@j-w-@exerciseId" 
+												   type="number" value="@weights[j]" step="2.5" max="500" 
+												   style="width: 50px;" 
+												   onblur="saveRepsAndWeightsData(@exerciseId, @j)"/>
+											kg
+										</li>		
+									}		
+								}
+								
+							</ol>
+							<div class="row d-flex justify-content-center">
+								<div class="col-4 btn-group">
+									<a class="btn button-red" asp-action="DecrementExerciseSeries" asp-route-id="@exerciseId">-</a>
+									<a class="btn button-green" asp-action="IncrementExerciseSeries" asp-route-id="@exerciseId">+</a>	
+								</div>
+								<div class="col-8 text-end">
+									<div>
+										<a class="btn button-red px-0" 
+										   style="width: 40px; border-radius: 50px;"
+										   title="Usuń ćwiczenie"
+										   asp-area="Visitor" asp-controller="TrainingPlan" asp-action="DeleteExercise" asp-route-listPosition="@i">
+											<svg class="text-center" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+												<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+											</svg>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
+				</div>
+			}
+
+			<a class="btn button-green mx-3" type="button" style="width: fit-content"
+			   asp-area="Visitor" asp-controller="TrainingPlan" asp-action="ExerciseSelection"> + </a>
+		</div>
+
+		<div>
+			<label for="notes" class="form-label mt-4">Notatka do planu</label>
+			<textarea name="notes" class="form-control" id="notes" type="text" asp-for="@Model.Notes" onblur="saveNotesData()"></textarea>
+		</div>
+
+		<br /><br />
+		<div>
+			<button type="submit" class="btn button-green form-control"
+					asp-area="Visitor" asp-controller="TrainingPlan" asp-action="Upsert" asp-route-trainingPlan="@Model">
+				Zatwierdź
+			</button>
+		</div>
+	</form>
+</div>
+
+@* jQuerry modal popup *@
+
+@section Scripts
+{
+	<script src="~/js/trainingDataSaving.js"></script>
+	<script>
+
+		var checkboxInputs = document.querySelectorAll(".days-checkbox");
+
+		checkboxInputs.forEach(function(checkboxInput) {
+			if (checkboxInput.checked) {
+				checkboxInput.parentElement.style.color = '#22CE00';
+				checkboxInput.parentElement.style.border = '1px solid #22CE00';
+			}
+			else {
+				checkboxInput.parentElement.style.color = '';
+				checkboxInput.parentElement.style.border = 'none';
+			}
+		})
+
+		function changeCheckboxColor(checkbox) {
+			if (checkbox.checked) {
+				checkbox.parentElement.style.color = '#22CE00';
+				checkbox.parentElement.style.border = '1px solid #22CE00';
+			} else {
+				checkbox.parentElement.style.color = '';
+				checkbox.parentElement.style.border = 'none';
+			}
+		}
+	</script>
+	<script>
+		function displayInputs(id) {
+			var inputs = document.getElementsByClassName("input_" + id);
+
+			var values = document.getElementsByClassName("value_" + id);
+
+			for (var i = 0; i < inputs.length; i++) {
+				inputs[i].style.display = "inline-block";
+				values[i].style.display = "none";
+			}
+		}
+
+		function hideInputs(id) {
+			var inputs = document.getElementsByClassName("input_" + id);
+
+			var values = document.getElementsByClassName("value_" + id);
+
+			for (var i = 0; i < inputs.length; i++) {
+				inputs[i].style.display = "none";
+				values[i].style.display = "inline-block";
+			}
+		}
+
+		// function addSeries(id) {
+		// 	const htmlCode = '<li>seria: <input class="input_' + id + '" type="number" value="4" max="10" style="width: 50px;" /> x <input class="input_' + id + '" type="number" value="80" max="500" style="width: 50px;" /> kg</li>'
+
+		// 	var ol = document.getElementById("ol_" + id);
+		// 	ol.innerHTML += htmlCode;
+		// }
+
+		// function removeSeries(id) {
+		// 	var ol = document.getElementById("ol_" + id);
+		// 	let lastLi = ol.lastChild;
+
+		// 	ol.removeChild(lastLi);
+
+		// }
+
+	</script>
+
+
+
+}

@@ -1,0 +1,45 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model YourTrainer_App.Areas.Admin.Models.RegisterationRequestDTO
+
+<form method="POST">
+    <div class="container border py-5" style="border-radius: 20px">
+        <div class="row text-center">
+            <h1>Rejestracja</h1>
+        </div>
+        <div class="row">
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+        <div class="row">
+            <div class="col-6 offset-3 pb-2">
+                <input asp-for="@Model.RegisterationRequest.Username" type="text" class="form-control" placeholder="Podaj nazwę użytkownika.." />
+            </div>
+            <div class="col-6 offset-3 pb-2">
+                <input asp-for="@Model.RegisterationRequest.Name" type="text" class="form-control" placeholder="Podaj imię.." />
+            </div>
+            <div class="col-6 offset-3 pb-2">
+                <input asp-for="@Model.RegisterationRequest.Password" type="password" class="form-control" placeholder="Podaj hasło.." />
+            </div>
+            <div class="col-6 offset-3 pb-2">
+                <input asp-for="@Model.ConfirmPassword" type="password" class="form-control" placeholder="Potwierdź hasło.." />
+            </div>
+            <div class="col-6 offset-3 pb-2">
+                <select class="form-select" asp-for="@Model.RegisterationRequest.Role" asp-items="@Model.RoleOptionsList">
+                    <option selected disabled >Podaj swoją rolę</option>
+                </select>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-3">
+            </div>
+            <div class="col-6 text-center">
+                <button type="submit" class="btn button-green" value="Submit">Zarejestruj</button>
+                <a class="btn btn-primary button-blank-green" asp-action="Login">Logowanie</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@* @section Scripts { *@
+@*     <partial name="_ValidationScriptsPartial" /> *@
+@* } *@
