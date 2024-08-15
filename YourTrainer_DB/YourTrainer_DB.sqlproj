@@ -101,7 +101,6 @@
     <Build Include="dbo\StoredProcedures\spTrainerClientContact_GetMessages.sql" />
     <Build Include="dbo\StoredProcedures\spTrainerClientContact_SendMessage.sql" />
     <Build Include="dbo\StoredProcedures\spTrainerClientContact_SetAsRead.sql" />
-    <Build Include="dbo\Triggers\delete_messeges_on_client_removal.sql" />
     <Build Include="dbo\StoredProcedures\spTrainerClientContact_GetCooperationProposals.sql" />
     <Build Include="dbo\Tables\AssignedTrainingPlans.sql" />
     <Build Include="dbo\StoredProcedures\spAssignedTrainingPlans_GetAll.sql" />

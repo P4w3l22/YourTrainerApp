@@ -315,3 +315,26 @@ BEGIN
         ('strength', 'dumbbell', 'pull', 'exercisesListImg\Zottman_Curl\0.jpg', 'exercisesListImg\Zottman_Curl\1.jpg', ' Stand up with your torso upright and a dumbbell in each hand being held at arms length. The elbows should be close to the torso.; Make sure the palms of the hands are facing each other. This will be your starting position.; While holding the upper arm stationary, curl the weights while contracting the biceps as you breathe out. Only the forearms should move. Your wrist should rotate so that you have a supinated (palms up) grip. Continue the movement until your biceps are fully contracted and the dumbbells are at shoulder level.; Hold the contracted position for a second as you squeeze the biceps.; Now during the contracted position, rotate your wrist until you now have a pronated (palms facing down) grip with the thumb at a higher position than the pinky.; Slowly begin to bring the dumbbells back down using the pronated grip.; As the dumbbells close your thighs, start rotating the wrist so that you go back to a neutral (palms facing your body) grip.; Repeat for the recommended amount of repetitions.', 'intermediate', 'isolation', 'Zottman Curl', 'biceps', 'forearms'),
         ('strength', 'dumbbell', 'pull', 'exercisesListImg\Zottman_Preacher_Curl\0.jpg', 'exercisesListImg\Zottman_Preacher_Curl\1.jpg', ' Grab a dumbbell in each hand and place your upper arms on top of the preacher bench or the incline bench. The dumbbells should be held at shoulder height and the elbows should be flexed. Hold the dumbbells with the palms of your hands facing down. This will be your starting position.; As you breathe in, slowly lower the dumbbells keeping the palms down until your upper arm is extended and your biceps are fully stretched.; Now rotate your wrists once you are at the bottom of the movement so that the palms of the hands are facing up.; As you exhale, use your biceps to curl the weights up until they are fully contracted and the dumbbells are at shoulder height. Again, remember that to ensure full contraction you need to bring that small finger higher than the thumb.; Squeeze the biceps hard for a second at the contracted position and rotate your wrists so that the palms are facing down again.; Repeat for the recommended amount of repetitions.', 'intermediate', 'isolation', 'Zottman Preacher Curl', 'biceps', 'forearms')
 END
+
+IF NOT EXISTS (SELECT 1 FROM dbo.TrainingPlans)
+BEGIN
+
+    INSERT INTO dbo.TrainingPlans (Title, TrainingDays, Notes, Creator)
+    VALUES ('FBW', 'Poniedziałek:1;Wtorek:0;Środa:1;Czwartek:0;Piątek:1;Sobota:0;Niedziela:0', 'Trening całego ciała na jednej jednostce treningowej', 'admin@gmail.com'),
+           ('Split', 'Poniedziałek:1;Wtorek:1;Środa:0;Czwartek:1;Piątek:1;Sobota:0;Niedziela:0', 'Trening określonych partii ciała na jednej jednostce treningowej', 'admin@gmail.com'),
+           ('Push Pull Legs', 'Poniedziałek:1;Wtorek:0;Środa:1;Czwartek:0;Piątek:1;Sobota:0;Niedziela:1', 'Trening całego ciała podzielony na treningi mięśni push, pull i nóg.', 'admin@gmail.com');
+
+END
+
+IF NOT EXISTS (SELECT 1 FROM dbo.TrainingPlanExercises)
+BEGIN
+
+    INSERT INTO dbo.TrainingPlanExercises (TPId, EId, Series, Reps, Weights, Sequence)
+    VALUES (1, 2, 3, '10;10;10', '50;50;50', 1),
+           (1, 4, 3, '10;10;10', '70;70;70', 2),
+           (2, 154, 4, '12;12;12;12', '80;80;70;70', 1),
+           (2, 271, 4, '4;4;4;4', '60;60;60;45', 2),
+           (3, 245, 3, '6;6;6', '10;10;10', 1),
+           (3, 110, 3, '8;8;8', '50;50;40', 2);
+
+END

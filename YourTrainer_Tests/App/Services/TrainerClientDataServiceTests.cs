@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 using System.Net;
 using Xunit.Abstractions;
 using YourTrainer_App.Areas.Trainer.Models;
+using YourTrainer_App.Models;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_App.Services.DataServices;
-using YourTrainer_App.Models;
 using static YourTrainer_Utility.StaticDetails;
 using Assert = Xunit.Assert;
 

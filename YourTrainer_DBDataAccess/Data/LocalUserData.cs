@@ -74,7 +74,6 @@ public class LocalUserData : ILocalUserData
 		return user;
 	}
 
-	// TODO: zastanowić się nad biblioteką klas dla modeli, dużo się powtarza w api i dbDataAccess
 
 	private async Task<LocalUserModel> GetUserAccountByUserName(string userName)
 	{

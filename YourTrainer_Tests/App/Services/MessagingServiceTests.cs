@@ -1,13 +1,9 @@
 ﻿using Moq;
-using Newtonsoft.Json;
-using NUnit.Framework;
-using System.Net;
 using Xunit.Abstractions;
+using YourTrainer_App.Models;
 using YourTrainer_App.Services.APIServices.IServices;
 using YourTrainer_App.Services.DataServices;
-using YourTrainer_App.Models;
 using static YourTrainer_Utility.StaticDetails;
-using Assert = Xunit.Assert;
 
 namespace YourTrainer_Tests.App.Services;
 
