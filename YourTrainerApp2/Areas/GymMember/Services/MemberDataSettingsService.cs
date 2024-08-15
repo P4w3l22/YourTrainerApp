@@ -59,11 +59,10 @@ public class MemberDataSettingsService : IMemberDataSettingsService
 		return "Wystąpił błąd podczas przetwarzania Twojego żądania. Spróbuj ponownie później.";
 	}
 
-	public async Task<string> ClearMemberData(int memberId, string sessionToken)
+	public async Task ClearMemberData(int memberId, string sessionToken)
 	{
 		await _cooperationProposalService.DeleteTrainerClientCooperation(memberId);
-		APIResponse apiResponse = await _memberDataService.DeleteAsync<APIResponse>(memberId, sessionToken);
-		return GetErrorResponse(apiResponse);
+		await _memberDataService.DeleteAsync<APIResponse>(memberId, sessionToken);
 	}
 
 	public async Task<bool> MemberDataIsPresent(int memberId)

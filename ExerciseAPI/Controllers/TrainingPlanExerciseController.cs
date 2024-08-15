@@ -30,7 +30,8 @@ public class TrainingPlanExerciseController : Controller
 	{
 		try
 		{
-			if (await planIsNotPresent(id))
+			var plan = await _data.GetPlan(id);
+			if (plan == null)
 			{
 				return NotFound();
 			}
@@ -55,7 +56,8 @@ public class TrainingPlanExerciseController : Controller
 	{
 		try
 		{
-			if (await planIsNotPresent(trainingPlanExerciseCreate.TPId))
+			var plan = await _data.GetPlan(trainingPlanExerciseCreate.TPId);
+			if (plan == null)
 			{
 				return NotFound();
 			}
@@ -82,7 +84,8 @@ public class TrainingPlanExerciseController : Controller
 	{
 		try
 		{
-			if (await planIsNotPresent(trainingPlanExerciseUpdate.TPId))
+			var plan = await _data.GetPlan(trainingPlanExerciseUpdate.TPId);
+			if (plan == null)
 			{
 				return NotFound();
 			}
@@ -110,7 +113,8 @@ public class TrainingPlanExerciseController : Controller
 	{
 		try
 		{
-			if (await planIsNotPresent(id))
+			var plan = await _data.GetPlan(id);
+			if (plan == null)
 			{
 				return NotFound();
 			}
@@ -127,7 +131,4 @@ public class TrainingPlanExerciseController : Controller
 		}
 		return _response;
 	}
-
-	private async Task<bool> planIsNotPresent(int id) =>
-		await _data.GetPlan(id) is null;
 }
