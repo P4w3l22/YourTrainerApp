@@ -9,7 +9,7 @@ planowanie treningów oraz komunikację z trenerami.
 - kontakt pomiędzy trenerem a jego klientem<br>
 
 <h3>Technologie:</h3>
-- Framework: ASP.NET Core (wzorzec MVC)
-- Frontend: HTML, CSS, JavaScript
-- API: ASP.NET Core Web API
-- Baza danych: Microsoft SQL Server (MSSQL)
+- Framework: ASP.NET Core (wzorzec MVC)<br>
+- Frontend: HTML, CSS, JavaScript<br>
+- API: ASP.NET Core Web API<br>
+- Baza danych: Microsoft SQL Server (MSSQL)<br>
